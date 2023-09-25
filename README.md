@@ -24,10 +24,9 @@ TAC Database:
 http://tacdb.osmocom.org/
 
 Cellular tower database:
-
-Api key: pk.29b463c496fadb35511458c527371c3a
-
 https://opencellid.org/
+
+* Api key: pk.29b463c496fadb35511458c527371c3a
 
 
 # Feature List
