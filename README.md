@@ -14,6 +14,8 @@ https://hkr.instructure.com/courses/6287
 Android Dev.:
 https://developer.android.com/
 
+
+
 # Feature List
 * Concerning app device
   * Checking available LTE technologies (3G, 4G and 5G etc)
@@ -37,9 +39,10 @@ getSignalStrength() can get us the signal strength of the current connected netw
 The action of switching between different cellular networks (like from Telia to Telenor) is a user-privileged action. It's designed this way to prevent malicious apps from controlling a device's cellular connection or causing unintended roaming charges. 
 Another approach would be to get the device location using the telephonymanager and then checking it against a Mobile Operator coverage service like https://opencellid.org/#zoom=16&lat=37.77889&lon=-122.41942
 
-## Bar code Scanner and Digit recognition
+## Bar code Scanner and Digit Recognition
 Using Googles ML-kit. Its free to use and seems easy to integrate.
 https://developers.google.com/ml-kit/vision/barcode-scanning/android
+https://developers.google.com/ml-kit/vision/text-recognition/v2
 
 ## Local Database
 The app needs a small local storage so that the user can save some information of each scanned device. We opted for SQLite relational database. 
@@ -59,6 +62,3 @@ Matching against existing device databases
 *	Detecting signal strength of different network and providers.
 *	Bar code scanning.
 *	IMEI scanning.
-
-
-
