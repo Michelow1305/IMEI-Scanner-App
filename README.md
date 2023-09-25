@@ -41,7 +41,9 @@ Another approach would be to get the device location using the telephonymanager 
 
 ## Bar code Scanner and Digit Recognition
 Using Googles ML-kit. Its free to use and seems easy to integrate.
+
 https://developers.google.com/ml-kit/vision/barcode-scanning/android
+
 https://developers.google.com/ml-kit/vision/text-recognition/v2
 
 ## Local Database
