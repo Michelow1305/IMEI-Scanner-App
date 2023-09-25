@@ -1,5 +1,11 @@
 # IMEI-Scanner-App
-An app we build for Assimilatus
+Welcome to our repository!
+
+Here we build an app for Assimilatus during the Mobile Development Course (HT2023).
+
+The app should be able to scan IMEI using barcodes, scanning the number directly or entering the IMEI manually.
+
+Then, the selected device will be scanned to evaluate which type of mobile connection is used (3G/4G/5G), to then give a recommendation if an upgrade is possible/needed.
 
 # Important Links
 Jira project:
@@ -36,7 +42,9 @@ Using the telephony manager of Android. E.g with getDataNetworkType() we can fin
 
 ## Network Scanning (detecting signal strength to the device)
 getSignalStrength() can get us the signal strength of the current connected network. Getting it for other providers might be difficult. 
+
 The action of switching between different cellular networks (like from Telia to Telenor) is a user-privileged action. It's designed this way to prevent malicious apps from controlling a device's cellular connection or causing unintended roaming charges. 
+
 Another approach would be to get the device location using the telephonymanager and then checking it against a Mobile Operator coverage service like https://opencellid.org/#zoom=16&lat=37.77889&lon=-122.41942
 
 ## Bar code Scanner and Digit Recognition
@@ -48,6 +56,7 @@ https://developers.google.com/ml-kit/vision/text-recognition/v2
 
 ## Local Database
 The app needs a small local storage so that the user can save some information of each scanned device. We opted for SQLite relational database. 
+
 https://developer.android.com/codelabs/basic-android-kotlin-compose-sql?hl=en#0
 
 Matching against existing device databases 
@@ -64,3 +73,10 @@ Matching against existing device databases
 *	Detecting signal strength of different network and providers.
 *	Bar code scanning.
 *	IMEI scanning.
+
+## Contributors
+* Per Magnusson
+* Joel Andersson
+* Valon Beka
+* Sathwik Kannam
+* Michel Jensen
