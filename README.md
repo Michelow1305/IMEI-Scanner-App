@@ -20,6 +20,14 @@ https://hkr.instructure.com/courses/6287
 Android Dev.:
 https://developer.android.com/
 
+TAC Database:
+http://tacdb.osmocom.org/
+
+Cellular tower database:
+
+Api key: pk.29b463c496fadb35511458c527371c3a
+
+https://opencellid.org/
 
 
 # Feature List
@@ -64,15 +72,17 @@ Matching against existing device databases
 # Grading
 
 ## Basic functions
-*	Designed an application.
-*	Implemented a basic database able to store device information.
-*	Checking available LTE technologies by fetching IMEI of device. (App device)
-*	Entering IMEI manually and checking against databases. (Other devices)
+*	Designed an application. (grade3)
+*	Implemented a basic database able to store device information. (grade3)
+*	Checking hardware type and model by fetching IMEI of device. (App device) (grade3)
+*	Entering IMEI manually and checking against databases. (Other devices) (grade3)
+*	Check current network strength of cellular phone and type (grade3)
 
 ## More Advanced
-*	Detecting signal strength of different network and providers.
-*	Bar code scanning.
-*	IMEI scanning.
+*	Detecting signal strength of different network and providers. (grade5)
+*	Bar code scanning.(grade4)
+*	IMEI scanning.(grade4)
+*	Crosschecking hardware with LTE capabilities (with database?free?) (grade5)
 
 ## Contributors
 * Per Magnusson
