@@ -71,7 +71,7 @@ Matching against existing device databases
 # Grading
 
 ## Basic functions
-*	Designed an application. (grade3)
+*	Design user interface with Jetpack Compose. (grade3)
 *	Implemented a basic database able to store device information. (grade3)
 *	Checking hardware type and model by fetching IMEI of device. (App device) (grade3)
 *	Entering IMEI manually and checking against databases. (Other devices) (grade3)
