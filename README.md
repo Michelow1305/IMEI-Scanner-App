@@ -71,17 +71,17 @@ Matching against existing device databases
 # Grading
 
 ## Basic functions
-*	Design user interface with Jetpack Compose. (grade3)
-*	Implemented a basic database able to store device information. (grade4)
+*	Design user interface with Jetpack Compose.                               (grade3)
+*	Implemented a basic database able to store device information.            (grade4)
 *	Checking hardware type and model by fetching IMEI of device. (App device) (grade3)
-*	Entering IMEI manually and checking against databases. (Other devices) (grade3)
-*	Check current network strength of cellular phone and type (grade4)
+*	Entering IMEI manually and checking against databases. (Other devices)    (grade3)
+*	Check current network strength of cellular phone and type                 (grade4)
 
 ## More Advanced
-*	Detecting signal strength of different network and providers. (grade5)
-*	Bar code scanning.(grade5)
-*	IMEI scanning.(grade5)
-*	Crosschecking hardware with LTE capabilities (with database?free?) (grade5)
+*	Detecting signal strength of different network and providers.       (grade5)
+*	Bar code scanning.                                                  (grade5)
+*	IMEI scanning.                                                      (grade5)
+*	Crosschecking hardware with LTE capabilities (with database?free?)  (grade5)
 
 ## Contributors
 * Per Magnusson
