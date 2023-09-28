@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import com.hkr.mockupforproject.R
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -52,7 +54,8 @@ import kotlinx.coroutines.launch
 
 @Preview
 @Composable
-fun startScreenPreview() {
+fun startScreenPreview()
+{
     StartScreen(appViewModel = viewModel())
 }
 
@@ -61,9 +64,10 @@ fun startScreenPreview() {
 fun StartScreen(
     navController: NavHostController = rememberNavController(),
     appViewModel: AppViewModel
-) {
-    var bottomSheetExpand by remember { mutableStateOf(false) }
-
+)
+{
+    var bottomMenuOption : Int by remember {mutableIntStateOf(1)}
+    // Box holding the camera scan button and the saved devices button
     Box {
         val imagePath = painterResource(id = R.drawable.bg_blue_x2)
         Image(
@@ -92,7 +96,8 @@ fun StartScreen(
                 .padding(bottom = 89.dp, end = 40.dp),
             containerColor = Color.White
 
-        ) {
+        )
+        {
             Icon(
                 painter = painterResource(id = R.drawable.bookmark),
                 contentDescription = "",
@@ -100,6 +105,10 @@ fun StartScreen(
             )
         }
 
+
+
+        // Main content column of the main screen
+        // Hold the logo, intro text etc
         Column {
             Column(
                 modifier = Modifier
@@ -139,103 +148,122 @@ fun StartScreen(
                 )
 
             }
-            Column(
+
+            // Bottom row of the main screen
+            Row(
                 modifier = Modifier
                     .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
+                horizontalArrangement = Arrangement.Center
             ) {
+
                 TextButton(onClick = {
-                    bottomSheetExpand = !bottomSheetExpand;
+                    appViewModel.bottomSheetExpand = !appViewModel.bottomSheetExpand
+                    bottomMenuOption = 1
                 }) {
                     Text(
-                        text = "Enter manually",
+                        text = "Enter IMEI manually",
+                        fontWeight = FontWeight(400),
+                        fontSize = 14.sp,
+                        color = Color(0xFF2F2E51)
+                    )
+                }
+                TextButton(onClick = {
+                    appViewModel.bottomSheetExpand = !appViewModel.bottomSheetExpand
+                    bottomMenuOption = 2
+                }) {
+                    Text(
+                        text = "View this device",
                         fontWeight = FontWeight(400),
                         fontSize = 14.sp,
                         color = Color(0xFF2F2E51)
                     )
                 }
             }
+
         }
-        if (bottomSheetExpand) {
+        if (appViewModel.bottomSheetExpand) {
             ModalBottomSheet(
-                onDismissRequest = { bottomSheetExpand = !bottomSheetExpand },
+                onDismissRequest = { appViewModel.bottomSheetExpand = !appViewModel.bottomSheetExpand },
                 containerColor = Color.Gray
 
             ) {
-                Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-                    var text by remember { mutableStateOf("") }
-                    OutlinedTextField(
-                        shape = RoundedCornerShape(16.dp),
-                        value = text,
-                        modifier = Modifier.fillMaxWidth(),
-                        onValueChange = { text = it },
-                        label = { Text(text = "Enter IMEI", color = Color.White) },
-                        supportingText = { Text(text = "Enter IMEI") },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Done
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onDone = {
-                                appViewModel.searchInfo = !appViewModel.searchInfo
-                                bottomSheetExpand = !bottomSheetExpand
-
-                                //keyboardController?.hide()
-                            }
-
-                        ),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color.White,
-                            disabledContainerColor = Color.White,
-                            cursorColor = Color.Black,
-                            focusedBorderColor = Color.White
-                        )
-                    )
-
-                    Spacer(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(100.dp)
-                    )
-                }
+                // Show either the local device info or "Enter IMEI manually"
+                if(bottomMenuOption == 1)
+                    EnterIMEIManually(appViewModel = appViewModel)
+                else if(bottomMenuOption == 2)
+                    ViewThisDevice(appViewModel = appViewModel, navController = navController)
             }
         }
     }
-    /*
-    BottomSheetScaffold(
-        sheetContainerColor = Color.DarkGray,
-        modifier = Modifier.fillMaxWidth(),
-        scaffoldState = scaffoldState,
-        sheetPeekHeight = 0.dp,
-        sheetContent = {
-            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-
-                OutlinedTextField(
-                    shape = RoundedCornerShape(16.dp),
-                    value = "Enter IMEI",
-                    modifier = Modifier.fillMaxWidth(),
-                    onValueChange = {},
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        disabledContainerColor = Color.White,
-                        cursorColor = Color.Black
-                    )
-                )
-                /*Spacer(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp))
-
-                 */
-                Text(text = "")
-            }
-        }
-    ) {
-
-    }
-
-     */
 }
+
+/*
+Function name:	ViewThisDevice()
+Inputs:			AppViewModel, NavHostController
+Outputs:			Draws local device information on the scaffold sheet
+Called by:		StartScreen() if user clicks "view this device"-button
+Calls:			LocalDeviceResult() in SearchResults.kt
+Author:         Joel Andersson
+ */
+@Composable
+fun ViewThisDevice(appViewModel : AppViewModel, navController : NavHostController)
+{
+    var deviceInformation = FetchDeviceInformation()
+    LocalDeviceResult(appViewModel, navController,
+        networkOperator = deviceInformation["Network Operator"].toString(),
+        iMEI = deviceInformation["IMEI"].toString(),
+        currentNetwork = deviceInformation["Current Network"].toString(),
+        model = deviceInformation["Model"].toString(),
+        signalStrength = deviceInformation["Signal Strength"].toString())
+}
+
+/*
+Function name:	EnterIMEIManually()
+Inputs:			AppViewModel, NavHostController
+Outputs:			Draws input field on the scaffold sheet to allow user to enter an IMEI manually
+Called by:		StartScreen() if user clicks "Enter IMEI manually"-button
+Calls:			SearchResult() in SearchResults.kt
+Author:         Joel Andersson & Per Magnusson
+ */
+@Composable
+fun EnterIMEIManually(appViewModel : AppViewModel)
+{
+    Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+        var text by remember { mutableStateOf("") }
+        OutlinedTextField(
+            shape = RoundedCornerShape(16.dp),
+            value = text,
+            modifier = Modifier.fillMaxWidth(),
+            onValueChange = { text = it },
+            label = { Text(text = "Enter IMEI", color = Color.White) },
+            supportingText = { Text(text = "Enter IMEI") },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    appViewModel.searchInfo = !appViewModel.searchInfo
+                    appViewModel.bottomSheetExpand = !appViewModel.bottomSheetExpand
+
+                    //keyboardController?.hide()
+                }
+
+            ),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                disabledContainerColor = Color.White,
+                cursorColor = Color.Black,
+                focusedBorderColor = Color.White
+            )
+        )
+
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp)
+        )
+    }
+}
+

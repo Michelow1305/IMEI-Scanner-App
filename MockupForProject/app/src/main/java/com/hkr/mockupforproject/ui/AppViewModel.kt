@@ -16,4 +16,5 @@ import kotlinx.coroutines.launch
 
 class AppViewModel: ViewModel() {
     var searchInfo by mutableStateOf(false)
+    var bottomSheetExpand by mutableStateOf(false)
 }

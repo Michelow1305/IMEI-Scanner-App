@@ -50,7 +50,7 @@ fun AppScreen() {
         sheetContainerColor = Color.White,
         scaffoldState = sheetScaffoldState,
         sheetContent = {
-            Box (modifier = Modifier.height(595.dp), contentAlignment = Alignment.Center){
+            Box (modifier = Modifier, contentAlignment = Alignment.Center){
                 bottomAppNavigation(appViewModel)
             }
 
@@ -65,16 +65,12 @@ fun AppScreen() {
             )
         }
 
-
-
         LaunchedEffect(key1 = observer, block = {
             if (observer) {
                 sheetScope.launch { sheetScaffoldState.bottomSheetState.expand() }
             } else {
                 sheetScope.launch { sheetScaffoldState.bottomSheetState.hide()}
             }
-
         })
     }
-
 }
