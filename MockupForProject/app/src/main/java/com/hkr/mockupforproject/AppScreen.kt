@@ -1,5 +1,6 @@
 package com.hkr.mockupforproject
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -49,32 +50,37 @@ fun AppScreen() {
         sheetPeekHeight = 0.dp,
         sheetContainerColor = Color.White,
         scaffoldState = sheetScaffoldState,
+        sheetSwipeEnabled = true,
         sheetContent = {
-            Box (modifier = Modifier.height(595.dp), contentAlignment = Alignment.Center){
+            Box(modifier = Modifier.height(595.dp), contentAlignment = Alignment.Center) {
                 bottomAppNavigation(appViewModel)
             }
-
         }
     ) {
         mainAppNavigation(appViewModel)
         var observer = appViewModel.searchInfo
-        AnimatedVisibility(visible = observer, enter = fadeIn(), exit = fadeOut()) {
-            Box(modifier = Modifier
-                .background(Color.Black.copy(alpha = 0.5f))
-                .fillMaxSize()
-            )
-        }
-
-
 
         LaunchedEffect(key1 = observer, block = {
             if (observer) {
                 sheetScope.launch { sheetScaffoldState.bottomSheetState.expand() }
             } else {
-                sheetScope.launch { sheetScaffoldState.bottomSheetState.hide()}
+                sheetScope.launch { sheetScaffoldState.bottomSheetState.hide() }
             }
 
         })
+
+        LaunchedEffect(
+            key1 = sheetScaffoldState.bottomSheetState.isVisible,
+            block = { appViewModel.searchInfo = sheetScaffoldState.bottomSheetState.isVisible })
+
+        AnimatedVisibility(visible = observer, enter = fadeIn(), exit = fadeOut()) {
+            Box(
+                modifier = Modifier
+                    .background(Color.Black.copy(alpha = 0.5f))
+                    .fillMaxSize()
+            )
+        }
+
     }
 
 }
