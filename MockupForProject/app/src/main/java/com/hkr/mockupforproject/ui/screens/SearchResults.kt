@@ -40,8 +40,11 @@ import com.hkr.mockupforproject.ui.AppViewModel
 @Composable
 fun SearchResult(
     appViewModel: AppViewModel,
-    navController: NavHostController = rememberNavController()) {
-    Box (modifier = Modifier.fillMaxSize().background(Color.White)){
+    navController: NavHostController = rememberNavController()
+) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(Color.White)) {
         Column(modifier = Modifier.padding(40.dp)) {
             Text(
                 text = "IMEI\nInformation",
@@ -97,8 +100,8 @@ fun SearchResult(
 }
 
 @Composable
-fun RowTextElement (textLeft: String, textRight: String) {
-    Row (
+fun RowTextElement(textLeft: String, textRight: String) {
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 10.dp, bottom = 10.dp),

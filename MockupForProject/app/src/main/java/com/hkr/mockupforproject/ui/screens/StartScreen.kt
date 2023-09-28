@@ -50,6 +50,12 @@ import androidx.navigation.compose.rememberNavController
 import com.hkr.mockupforproject.ui.AppViewModel
 import kotlinx.coroutines.launch
 
+@Preview
+@Composable
+fun startScreenPreview() {
+    StartScreen(appViewModel = viewModel())
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartScreen(
@@ -67,18 +73,20 @@ fun StartScreen(
             contentScale = ContentScale.Crop
         )
         LargeFloatingActionButton(
-            onClick = {appViewModel.searchInfo = !appViewModel.searchInfo},
+            onClick = { appViewModel.searchInfo = !appViewModel.searchInfo },
             modifier = Modifier
                 .align(alignment = Alignment.BottomCenter)
                 .padding(bottom = 70.dp),
             containerColor = Color(0xFF3654F4)
         ) {
-            Icon(painter = painterResource(id = R.drawable.scan),
+            Icon(
+                painter = painterResource(id = R.drawable.scan),
                 contentDescription = "",
-                tint = Color.White)
+                tint = Color.White
+            )
         }
         FloatingActionButton(
-            onClick = {navController.navigate("SavedDevices")},
+            onClick = { navController.navigate("SavedDevices") },
             modifier = Modifier
                 .align(alignment = Alignment.BottomEnd)
                 .padding(bottom = 89.dp, end = 40.dp),
@@ -93,42 +101,55 @@ fun StartScreen(
         }
 
         Column {
-            Column (modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.92f)
-                .padding(all = 40.dp), verticalArrangement = Arrangement.Top) {
-                Image(modifier = Modifier.size(80.dp), painter = painterResource(id = R.drawable.assimilatus_logo_blue_), contentDescription = "")
-                Spacer(modifier = Modifier
+            Column(
+                modifier = Modifier
                     .fillMaxWidth()
-                    .height(40.dp))
-                Text(text = "IMEI Scanning application",
+                    .fillMaxHeight(0.92f)
+                    .padding(all = 40.dp), verticalArrangement = Arrangement.Top
+            ) {
+                Image(
+                    modifier = Modifier.size(80.dp),
+                    painter = painterResource(id = R.drawable.assimilatus_logo_blue_),
+                    contentDescription = ""
+                )
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp)
+                )
+                Text(
+                    text = "IMEI Scanning application",
                     fontWeight = FontWeight(900),
-                    lineHeight = 51.sp,style = MaterialTheme.typography.headlineLarge,
+                    lineHeight = 51.sp, style = MaterialTheme.typography.headlineLarge,
                     fontSize = 50.sp,
                     color = Color(0xFF2F2E51)
                 )
 
-                Spacer(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(20.dp))
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(20.dp)
+                )
                 Text(
                     text = stringResource(R.string.startpage_text),
                     //fontWeight = FontWeight(900),
-                    lineHeight = 26.sp,style = MaterialTheme.typography.bodyLarge,
+                    lineHeight = 26.sp, style = MaterialTheme.typography.bodyLarge,
                     color = Color(0xFF2F2E51)
                     //fontSize = 50.sp
                 )
 
             }
-            Column (modifier = Modifier
-                .fillMaxSize(),
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
-            ){
+            ) {
                 TextButton(onClick = {
                     bottomSheetExpand = !bottomSheetExpand;
                 }) {
-                    Text(text = "Enter manually",
+                    Text(
+                        text = "Enter manually",
                         fontWeight = FontWeight(400),
                         fontSize = 14.sp,
                         color = Color(0xFF2F2E51)
@@ -138,7 +159,7 @@ fun StartScreen(
         }
         if (bottomSheetExpand) {
             ModalBottomSheet(
-                onDismissRequest = {bottomSheetExpand = !bottomSheetExpand},
+                onDismissRequest = { bottomSheetExpand = !bottomSheetExpand },
                 containerColor = Color.Gray
 
             ) {
@@ -150,7 +171,7 @@ fun StartScreen(
                         modifier = Modifier.fillMaxWidth(),
                         onValueChange = { text = it },
                         label = { Text(text = "Enter IMEI", color = Color.White) },
-                        supportingText = { Text(text = "Enter IMEI")},
+                        supportingText = { Text(text = "Enter IMEI") },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
                             imeAction = ImeAction.Done
@@ -173,9 +194,11 @@ fun StartScreen(
                         )
                     )
 
-                    Spacer(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(100.dp))
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(100.dp)
+                    )
                 }
             }
         }

@@ -24,11 +24,17 @@ import androidx.navigation.compose.rememberNavController
 import com.hkr.mockupforproject.ui.AppViewModel
 import kotlinx.coroutines.delay
 
+@Preview
+@Composable
+fun SearchResult_finishPreview() {
+    SearchResult_finish(appViewModel = viewModel())
+}
 
 @Composable
 fun SearchResult_finish(
     appViewModel: AppViewModel,
-    navController: NavHostController = rememberNavController()) {
+    navController: NavHostController = rememberNavController()
+) {
 
     // State to track whether navigation should occur
     var shouldNavigate by remember { mutableStateOf(false) }
@@ -49,8 +55,13 @@ fun SearchResult_finish(
     // When this composable is opened, set shouldNavigate to true
     shouldNavigate = true
 
-    Box(modifier = Modifier.fillMaxSize()){
-        Icon(Icons.Default.Check, contentDescription = "", tint = Color.Black, modifier = Modifier.size(60.dp).align(
-            Alignment.Center))
+    Box(modifier = Modifier.fillMaxSize()) {
+        Icon(
+            Icons.Default.Check, contentDescription = "", tint = Color.Black, modifier = Modifier
+                .size(60.dp)
+                .align(
+                    Alignment.Center
+                )
+        )
     }
 }

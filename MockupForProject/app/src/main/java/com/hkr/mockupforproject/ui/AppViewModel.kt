@@ -16,5 +16,4 @@ import kotlinx.coroutines.launch
 
 class AppViewModel: ViewModel() {
     var searchInfo by mutableStateOf(false)
-    var skip by mutableStateOf(false)
 }

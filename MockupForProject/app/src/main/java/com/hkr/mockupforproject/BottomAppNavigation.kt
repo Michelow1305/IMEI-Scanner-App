@@ -21,10 +21,29 @@ import com.hkr.mockupforproject.ui.screens.StartScreen
 fun bottomAppNavigation(appViewModel: AppViewModel) {
     val bottomNavController = rememberNavController()
 
-    NavHost(navController = bottomNavController, startDestination = "SearchResults", enterTransition = {EnterTransition.None}, exitTransition = { ExitTransition.None}) {
-        composable("SearchResults") { SearchResult(appViewModel,bottomNavController) }
-        composable("SearchResults_saveDevice") { SearchResult_saveDevice(appViewModel,bottomNavController) }
-        composable("SearchResults_updatePriority") { SearchResult_updatePriority(appViewModel,bottomNavController)}
-        composable("SearchResults_finish") { SearchResult_finish(appViewModel,bottomNavController) }
+    NavHost(
+        navController = bottomNavController,
+        startDestination = "SearchResults",
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None }) {
+        composable("SearchResults") { SearchResult(appViewModel, bottomNavController) }
+        composable("SearchResults_saveDevice") {
+            SearchResult_saveDevice(
+                appViewModel,
+                bottomNavController
+            )
+        }
+        composable("SearchResults_updatePriority") {
+            SearchResult_updatePriority(
+                appViewModel,
+                bottomNavController
+            )
+        }
+        composable("SearchResults_finish") {
+            SearchResult_finish(
+                appViewModel,
+                bottomNavController
+            )
+        }
     }
 }

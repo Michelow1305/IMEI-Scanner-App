@@ -50,27 +50,47 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.hkr.mockupforproject.R
 import com.hkr.mockupforproject.ui.AppViewModel
 
+@Preview
+@Composable
+fun SavedDevicesPreview() {
+    SavedDevices(appViewModel = viewModel())
+}
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SavedDevices(
     appViewModel: AppViewModel,
-    navController: NavHostController = rememberNavController()) {
+    navController: NavHostController = rememberNavController()
+) {
     var showCard = remember { mutableStateOf(false) }
 
-    Box (modifier = Modifier
-        .background(Color.White)
-        .fillMaxSize()){
+    Box(
+        modifier = Modifier
+            .background(Color.White)
+            .fillMaxSize()
+    ) {
 
         val scrollState = rememberScrollState()
-        Column (modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 24.dp).verticalScroll(scrollState)) {
-            TextButton(modifier = Modifier.padding(start = 10.dp),onClick = {navController.navigate("StartScreen")}) {
-                Icon(Icons.Default.KeyboardArrowLeft, contentDescription = "", tint = Color.Gray, modifier = Modifier.size(24.dp))
+        Column(
+            modifier = Modifier
+                .padding(start = 20.dp, end = 20.dp, top = 24.dp)
+                .verticalScroll(scrollState)
+        ) {
+            TextButton(
+                modifier = Modifier.padding(start = 10.dp),
+                onClick = { navController.navigate("StartScreen") }) {
+                Icon(
+                    Icons.Default.KeyboardArrowLeft,
+                    contentDescription = "",
+                    tint = Color.Gray,
+                    modifier = Modifier.size(24.dp)
+                )
                 Text(text = "Back", color = Color.Gray, fontSize = 16.sp)
             }
             Text(
@@ -99,9 +119,10 @@ fun SavedDevices(
     }
     moreInfoCard(showCard = showCard)
 }
+
 @Composable
 fun imeiInformation() {
-    Column (modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 50.dp)) {
+    Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 50.dp)) {
         Text(
             text = "IMEI Information",
             modifier = Modifier.padding(bottom = 14.dp),
@@ -124,19 +145,19 @@ fun imeiInformation() {
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun moreInfoCard (showCard: MutableState<Boolean>) {
+fun moreInfoCard(showCard: MutableState<Boolean>) {
     AnimatedVisibility(
         visible = showCard.value,
         enter = fadeIn(),
         exit = fadeOut()
     ) {
-        Box (
+        Box(
             modifier = Modifier
                 .background(Color.Black.copy(0.5f))
                 .fillMaxSize()
-                //.animateEnterExit(enter = fadeIn(), exit = fadeOut())
-        ){
-            Card (
+            //.animateEnterExit(enter = fadeIn(), exit = fadeOut())
+        ) {
+            Card(
                 modifier = Modifier
                     .fillMaxWidth(0.93f)
                     .align(Alignment.Center)
@@ -148,7 +169,7 @@ fun moreInfoCard (showCard: MutableState<Boolean>) {
             ) {
                 IconButton(modifier = Modifier
                     .align(Alignment.End)
-                    .size(44.dp),onClick = { showCard.value = !showCard.value }) {
+                    .size(44.dp), onClick = { showCard.value = !showCard.value }) {
                     Icon(Icons.Filled.Close, contentDescription = null)
                 }
                 imeiInformation()
@@ -159,46 +180,54 @@ fun moreInfoCard (showCard: MutableState<Boolean>) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun listObjectMaker(linethroughOrNo: TextDecoration, checked: Boolean, showCard: MutableState<Boolean>) {
-        Row (modifier = Modifier.padding(5.dp), verticalAlignment = Alignment.CenterVertically){
-            val checkedState = remember { mutableStateOf(checked) }
-            Checkbox(checked = checkedState.value,
-                onCheckedChange = {checkedState.value = it},
-                colors = CheckboxDefaults.colors(checkedColor = Color(0xFF3654F4), checkmarkColor = Color.White)
+fun listObjectMaker(
+    linethroughOrNo: TextDecoration,
+    checked: Boolean,
+    showCard: MutableState<Boolean>
+) {
+    Row(modifier = Modifier.padding(5.dp), verticalAlignment = Alignment.CenterVertically) {
+        val checkedState = remember { mutableStateOf(checked) }
+        Checkbox(
+            checked = checkedState.value,
+            onCheckedChange = { checkedState.value = it },
+            colors = CheckboxDefaults.colors(
+                checkedColor = Color(0xFF3654F4),
+                checkmarkColor = Color.White
+            )
+        )
+        TextButton(onClick = { showCard.value = !showCard.value }) {
+            Column(modifier = Modifier.fillMaxWidth(0.7f)) {
+                Text(
+                    text = "Sony Ericsson",
+                    textDecoration = linethroughOrNo,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
                 )
-                TextButton(onClick = {showCard.value = !showCard.value}) {
-                    Column (modifier = Modifier.fillMaxWidth(0.7f)) {
-                        Text(
-                            text = "Sony Ericsson",
-                            textDecoration = linethroughOrNo,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black
-                        )
-                        Text(
-                            text = "Phone at Infanterivägen 16",
-                            textDecoration = linethroughOrNo,
-                            color = Color.Gray,
-                            fontWeight = FontWeight.Normal
-                        )
-                    }
-                }
-            var expanded by remember { mutableStateOf(false) }
-            Box{
-                IconButton(onClick = { expanded = !expanded}) {
-                    Icon(Icons.Filled.MoreVert, contentDescription = "")
-                }
-                DropdownMenu(expanded = expanded, onDismissRequest = {expanded = !expanded}) {
-                    DropdownMenuItem(text = { Text(text = "Delete") }, onClick = { /*TODO*/ })
-                }
-            }
-
-            BadgedBox(
-                badge = {
-                    Badge {
-                        Text(text = "5")
-                    }
-                }) {
-                Icon(painter = painterResource(id = R.drawable.star), contentDescription = "star")
+                Text(
+                    text = "Phone at Infanterivägen 16",
+                    textDecoration = linethroughOrNo,
+                    color = Color.Gray,
+                    fontWeight = FontWeight.Normal
+                )
             }
         }
+        var expanded by remember { mutableStateOf(false) }
+        Box {
+            IconButton(onClick = { expanded = !expanded }) {
+                Icon(Icons.Filled.MoreVert, contentDescription = "")
+            }
+            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = !expanded }) {
+                DropdownMenuItem(text = { Text(text = "Delete") }, onClick = { /*TODO*/ })
+            }
+        }
+
+        BadgedBox(
+            badge = {
+                Badge {
+                    Text(text = "5")
+                }
+            }) {
+            Icon(painter = painterResource(id = R.drawable.star), contentDescription = "star")
+        }
+    }
 }

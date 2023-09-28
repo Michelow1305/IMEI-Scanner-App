@@ -45,12 +45,20 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.hkr.mockupforproject.R
 import com.hkr.mockupforproject.ui.AppViewModel
+
+@Preview
+@Composable
+fun SearchResults_updatePriorityPreview() {
+    SearchResult_updatePriority(appViewModel = viewModel())
+}
+
 @Composable
 fun SearchResult_updatePriority(
     appViewModel: AppViewModel,
-    navController: NavHostController = rememberNavController()) {
+    navController: NavHostController = rememberNavController()
+) {
 
-    Column (modifier = Modifier.padding(40.dp)) {
+    Column(modifier = Modifier.padding(40.dp)) {
         Text(
             text = "Update priority",
             modifier = Modifier.padding(bottom = 14.dp),
@@ -58,28 +66,36 @@ fun SearchResult_updatePriority(
             fontWeight = FontWeight(700),
             color = Color.Black
         )
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 15.dp))
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 15.dp)
+        )
 
         Text(text = "Drag the slider to update the priority of the device", color = Color.Black)
         var sliderPosition by remember { mutableStateOf(0f) }
         val interactionSource = remember { MutableInteractionSource() }
         Slider(
-            colors = SliderDefaults.colors(thumbColor = Color(0xFF3654F4), activeTrackColor = Color(0xFF3654F4), activeTickColor = Color.White),
+            colors = SliderDefaults.colors(
+                thumbColor = Color(0xFF3654F4),
+                activeTrackColor = Color(0xFF3654F4),
+                activeTickColor = Color.White
+            ),
             value = sliderPosition,
-            onValueChange = {sliderPosition=it},
+            onValueChange = { sliderPosition = it },
             steps = 5,
         )
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 50.dp))
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 50.dp)
+        )
         Button(
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3654F4)),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(75.dp),
-            onClick = {navController.navigate("SearchResults_finish")},
+            onClick = { navController.navigate("SearchResults_finish") },
         ) {
             Text(
                 text = "Next",
@@ -92,13 +108,16 @@ fun SearchResult_updatePriority(
                     .padding(start = 13.dp)
                     .size(25.dp),
                 tint = Color.White
-                )
+            )
         }
         TextButton(
             modifier = Modifier
                 .padding(top = 24.dp)
                 .align(Alignment.CenterHorizontally),
-            onClick = { appViewModel.searchInfo = !appViewModel.searchInfo; navController.navigate("SearchResults") }
+            onClick = {
+                appViewModel.searchInfo =
+                    !appViewModel.searchInfo; navController.navigate("SearchResults")
+            }
         ) {
             Text(
                 text = "Skip",

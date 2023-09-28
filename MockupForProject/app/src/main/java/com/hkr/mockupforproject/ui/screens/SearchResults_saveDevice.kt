@@ -42,12 +42,19 @@ import androidx.navigation.compose.rememberNavController
 import com.hkr.mockupforproject.R
 import com.hkr.mockupforproject.ui.AppViewModel
 
+@Preview
+@Composable
+fun SearchResult_saveDevicePreview() {
+    SearchResult_saveDevice(appViewModel = viewModel())
+}
+
 @Composable
 fun SearchResult_saveDevice(
     appViewModel: AppViewModel,
-    navController: NavHostController = rememberNavController()) {
+    navController: NavHostController = rememberNavController()
+) {
 
-    Column (modifier = Modifier.padding(40.dp)) {
+    Column(modifier = Modifier.padding(40.dp)) {
         Text(
             text = "Save device",
             modifier = Modifier.padding(bottom = 14.dp),
@@ -55,17 +62,19 @@ fun SearchResult_saveDevice(
             fontWeight = FontWeight(700),
             color = Color.Black
         )
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 15.dp))
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 15.dp)
+        )
 
         var text1 by remember { mutableStateOf("") }
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = text1,
-            onValueChange = {text1 = it},
-            label = { Text(text = "Name")},
-            supportingText = { Text(text = "Name this device")}
+            onValueChange = { text1 = it },
+            label = { Text(text = "Name") },
+            supportingText = { Text(text = "Name this device") }
         )
         Spacer(modifier = Modifier.size(10.dp))
 
@@ -73,20 +82,22 @@ fun SearchResult_saveDevice(
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = text2,
-            onValueChange = {text2 = it},
-            label = { Text(text = "Name")},
-            supportingText = { Text(text = "Name this device")}
+            onValueChange = { text2 = it },
+            label = { Text(text = "Name") },
+            supportingText = { Text(text = "Name this device") }
         )
 
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 50.dp))
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 50.dp)
+        )
         Button(
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3654F4)),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(75.dp),
-            onClick = {navController.navigate("SearchResults_updatePriority")},
+            onClick = { navController.navigate("SearchResults_updatePriority") },
         ) {
             Text(
                 text = "Next",
@@ -99,13 +110,16 @@ fun SearchResult_saveDevice(
                     .padding(start = 13.dp)
                     .size(25.dp),
                 tint = Color.White
-                )
+            )
         }
         TextButton(
             modifier = Modifier
                 .padding(top = 24.dp)
                 .align(Alignment.CenterHorizontally),
-            onClick = { appViewModel.searchInfo = !appViewModel.searchInfo; navController.navigate("SearchResults")}
+            onClick = {
+                appViewModel.searchInfo =
+                    !appViewModel.searchInfo; navController.navigate("SearchResults")
+            }
         ) {
             Text(
                 text = "Skip",
