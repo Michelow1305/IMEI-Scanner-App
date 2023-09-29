@@ -73,19 +73,12 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    /*
-        CSV READER
-     */
-
+    // CSV READER
     implementation("com.opencsv:opencsv:5.5.2")
 
-    /*
-        ROOM
-     */
-    val room_version = "2.5.2"
 
-    implementation("androidx.room:room-runtime:$room_version")
-    annotationProcessor("androidx.room:room-compiler:$room_version")
-
-
+    // ROOM
+    val roomVersion = "2.5.2"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
 }
