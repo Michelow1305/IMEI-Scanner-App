@@ -44,5 +44,11 @@ data class CellTower(
     */
     @ColumnInfo(name = "range") val range: Float?
 
-)
+
+
+) {
+    override fun toString(): String {
+        return "CellTower(cid=$cid, radio=$radio, mcc=$mcc, mnc=$mnc, longitude=$longitude, latitude=$latitude, range=$range)"
+    }
+}
 
