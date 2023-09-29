@@ -1,8 +1,8 @@
 package com.hkr.mockupforproject.data
 
-import androidx.room.Room
 import com.opencsv.CSVReader
 import java.io.FileReader
+import com.hkr.mockupforproject.data.*
 
 
 const val MINIMUM_SAMPLES = 5
@@ -98,18 +98,7 @@ val providers = arrayOf(
 )
 
 
-fun main() {
-    val csvFilePath = "app\\src\\main\\java\\com\\hkr\\mockupforproject\\data\\240.csv"
-
-    val cells = parseCSV(csvFilePath)
-
-    cells.forEach { i ->
-        println(i)
-    }
-
-}
-
-fun parseCSV(path: String): List<CellTower> {
+public fun parseCSV(dao : CellTowerDao): List<CellTower> {
     val reader = CSVReader(FileReader("app\\src\\main\\java\\com\\hkr\\mockupforproject\\data\\240.csv"))
     val csvObjects = mutableListOf<CellTower>()
     var nextLine: Array<String>?
@@ -127,7 +116,7 @@ fun parseCSV(path: String): List<CellTower> {
         if (samples != null && samples < MINIMUM_SAMPLES && radio != "LTE") {
             nextLine = reader.readNext()
         }
-        CellTower(
+        val celltower = CellTower(
             radio = radio,
             mcc = mcc,
             mnc = mnc,
@@ -136,7 +125,10 @@ fun parseCSV(path: String): List<CellTower> {
             latitude = latitude,
             range = range,
         )
+
+        dao.insertCellTower(celltower)
     }
 
     return csvObjects
 }
+
