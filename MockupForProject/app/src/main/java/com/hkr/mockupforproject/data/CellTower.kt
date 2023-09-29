@@ -69,4 +69,7 @@ interface CellTowerDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertUser(cellTower: CellTower)
 
+    @Query("SELECT * FROM cell_towers WHERE longitude BETWEEN :minLongitude AND :maxLongitude AND latitude BETWEEN :minLatitude AND :maxLatitude")
+    fun getCellTowersInRange(minLongitude: Float, maxLongitude: Float, minLatitude: Float, maxLatitude: Float): List<CellTower>
+
 }
