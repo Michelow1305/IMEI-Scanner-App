@@ -203,39 +203,4 @@ fun StartScreen(
             }
         }
     }
-    /*
-    BottomSheetScaffold(
-        sheetContainerColor = Color.DarkGray,
-        modifier = Modifier.fillMaxWidth(),
-        scaffoldState = scaffoldState,
-        sheetPeekHeight = 0.dp,
-        sheetContent = {
-            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-
-                OutlinedTextField(
-                    shape = RoundedCornerShape(16.dp),
-                    value = "Enter IMEI",
-                    modifier = Modifier.fillMaxWidth(),
-                    onValueChange = {},
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        disabledContainerColor = Color.White,
-                        cursorColor = Color.Black
-                    )
-                )
-                /*Spacer(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp))
-
-                 */
-                Text(text = "")
-            }
-        }
-    ) {
-
-    }
-
-     */
 }
