@@ -7,12 +7,12 @@ import androidx.room.PrimaryKey
 /*
         src: https://wiki.opencellid.org/wiki/Menu_map_view#database
  */
-@Entity
+@Entity(tableName = "cell_towers")
 data class CellTower(
     /*
          This is a unique number used to identify each Base transceiver station or sector of BTS
      */
-    @PrimaryKey val cid: Int? = null,
+    @PrimaryKey @ColumnInfo(name = "cid") val cid: Int? = null,
 
     /*
         The generation of broadband cellular network technology (Eg. LTE, GSM)
@@ -43,7 +43,6 @@ data class CellTower(
         Approximate area within which the cell could be. (In meters)
     */
     @ColumnInfo(name = "range") val range: Float?
-
 
 
 ) {

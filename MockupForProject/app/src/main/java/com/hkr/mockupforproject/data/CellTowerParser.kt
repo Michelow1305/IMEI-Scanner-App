@@ -79,7 +79,7 @@ fun parseCSV(path: String): List<CellTower> {
     while (reader.readNext().also { nextLine = it } != null) {
         val radio = nextLine!![0]
         val mcc = nextLine!![1].toInt()
-        val mnc = MNClabels.get(nextLine!![2].toInt())
+        val mnc = MNClabels[nextLine!![2].toInt()]
         val cid = nextLine!![4].toInt()
         val longitude = nextLine!![5].toFloat()
         val latitude = nextLine!![6].toFloat()
