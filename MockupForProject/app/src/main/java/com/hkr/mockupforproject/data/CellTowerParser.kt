@@ -1,5 +1,6 @@
 package com.hkr.mockupforproject.data
 
+import androidx.room.Room
 import com.opencsv.CSVReader
 import java.io.FileReader
 
@@ -109,7 +110,7 @@ fun main() {
 }
 
 fun parseCSV(path: String): List<CellTower> {
-    val reader = CSVReader(FileReader(path))
+    val reader = CSVReader(FileReader("app\\src\\main\\java\\com\\hkr\\mockupforproject\\data\\240.csv"))
     val csvObjects = mutableListOf<CellTower>()
     var nextLine: Array<String>?
 

@@ -1,19 +1,23 @@
 package com.hkr.mockupforproject.ui
 
-import androidx.compose.material3.BottomSheetScaffoldState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import androidx.room.Room
+import com.hkr.mockupforproject.data.AppDatabase
 
 class AppViewModel: ViewModel() {
     var searchInfo by mutableStateOf(false)
+    lateinit var db : AppDatabase
+
+
+    fun init_db(context : Context){
+        db = Room.databaseBuilder(context, AppDatabase::class.java, "app_database").build()
+    }
+
+
+
+
 }
