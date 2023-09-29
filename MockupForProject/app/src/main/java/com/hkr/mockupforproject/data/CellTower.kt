@@ -64,11 +64,19 @@ interface CellTowerDao {
 
     @Query("SELECT * FROM cell_towers WHERE cid = :cid")
     fun findByCid(cid: Int): CellTower
+    
+    @Query("SELECT * FROM cell_towers WHERE mnc = :mnc")
+    fun findByMnc(mnc: Int): CellTower
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertUser(cellTower: CellTower)
 
     @Query("SELECT * FROM cell_towers WHERE longitude BETWEEN :minLongitude AND :maxLongitude AND latitude BETWEEN :minLatitude AND :maxLatitude")
-    fun getCellTowersInRange(minLongitude: Float, maxLongitude: Float, minLatitude: Float, maxLatitude: Float): List<CellTower>
+    fun getCellTowersInRange(
+        minLongitude: Float,
+        maxLongitude: Float,
+        minLatitude: Float,
+        maxLatitude: Float
+    ): List<CellTower>
 
 }
