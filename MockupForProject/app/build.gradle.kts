@@ -67,6 +67,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate")
     implementation("androidx.navigation:navigation-compose:2.7.3")
 
+    implementation("com.opencsv:opencsv:5.5.2")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
