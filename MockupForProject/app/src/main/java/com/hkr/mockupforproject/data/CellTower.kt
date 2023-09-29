@@ -60,16 +60,16 @@ data class CellTower(
 @Dao
 interface CellTowerDao {
     @Query("SELECT * FROM cell_towers")
-    fun getAll(): List<CellTower>
+    suspend fun getAll(): List<CellTower>
 
     @Query("SELECT * FROM cell_towers WHERE cid = :cid")
-    fun findByCid(cid: Int): CellTower
+    suspend fun findByCid(cid: Int): CellTower
 
     @Query("SELECT * FROM cell_towers WHERE mnc = :mnc")
-    fun findByMnc(mnc: Int): CellTower
+    suspend fun findByMnc(mnc: Int): CellTower
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCellTower(cellTower: CellTower)
+    suspend fun insertCellTower(cellTower: CellTower)
 
     @Query(
         """ SELECT * FROM cell_towers 
@@ -77,6 +77,6 @@ interface CellTowerDao {
             AND longitude BETWEEN (:referenceLon - :range) AND (:referenceLon + :range)
             """
     )
-    fun getCellTowersInRange(referenceLat: Float, referenceLon: Float, range: Int): List<CellTower>
+    suspend fun getCellTowersInRange(referenceLat: Float, referenceLon: Float, range: Int): List<CellTower>
 
 }

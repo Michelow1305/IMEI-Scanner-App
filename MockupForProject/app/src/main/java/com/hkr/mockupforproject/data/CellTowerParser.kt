@@ -3,6 +3,8 @@ package com.hkr.mockupforproject.data
 import com.opencsv.CSVReader
 import java.io.FileReader
 import com.hkr.mockupforproject.data.*
+import java.io.File
+import java.io.Reader
 
 
 const val MINIMUM_SAMPLES = 5
@@ -98,8 +100,8 @@ val providers = arrayOf(
 )
 
 
-public fun parseCSV(dao : CellTowerDao): List<CellTower> {
-    val reader = CSVReader(FileReader("app\\src\\main\\java\\com\\hkr\\mockupforproject\\data\\240.csv"))
+suspend fun parseCSV(path: Reader, dao : CellTowerDao): List<CellTower> {
+    val reader = CSVReader(path)
     val csvObjects = mutableListOf<CellTower>()
     var nextLine: Array<String>?
 
