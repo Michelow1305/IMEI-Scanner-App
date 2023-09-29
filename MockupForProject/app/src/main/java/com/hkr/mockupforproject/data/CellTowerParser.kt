@@ -100,11 +100,10 @@ val providers = arrayOf(
 )
 
 
-suspend fun parseCSV(path: Reader, dao : CellTowerDao): List<CellTower> {
+suspend fun parseCSV(path: Reader, dao : CellTowerDao): List<CellTower>? {
     val reader = CSVReader(path)
     val csvObjects = mutableListOf<CellTower>()
     var nextLine: Array<String>?
-
     while (reader.readNext().also { nextLine = it } != null) {
         val radio = nextLine!![0]
         val mcc = nextLine!![1].toInt()
@@ -129,6 +128,7 @@ suspend fun parseCSV(path: Reader, dao : CellTowerDao): List<CellTower> {
         )
 
         dao.insertCellTower(celltower)
+
     }
 
     return csvObjects
