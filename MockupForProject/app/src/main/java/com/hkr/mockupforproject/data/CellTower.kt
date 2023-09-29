@@ -11,8 +11,7 @@ import androidx.room.Query
 /*
         src: https://wiki.opencellid.org/wiki/Menu_map_view#database
 
-        MNC codes to operator name:
-        src: https://cellidfinder.com/mcc-mnc
+        MNC codes to operator name: https://cellidfinder.com/mcc-mnc
  */
 @Entity(tableName = "cell_towers")
 data class CellTower(
