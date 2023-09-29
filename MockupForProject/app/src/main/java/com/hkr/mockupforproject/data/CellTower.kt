@@ -1,11 +1,18 @@
 package com.hkr.mockupforproject.data
 
 import androidx.room.ColumnInfo
+import androidx.room.Dao
 import androidx.room.Entity
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
+import androidx.room.Query
 
 /*
         src: https://wiki.opencellid.org/wiki/Menu_map_view#database
+
+        MNC codes to operator name:
+        src: https://cellidfinder.com/mcc-mnc
  */
 @Entity(tableName = "cell_towers")
 data class CellTower(
@@ -51,3 +58,15 @@ data class CellTower(
     }
 }
 
+@Dao
+interface CellTowerDao {
+    @Query("SELECT * FROM cell_towers")
+    fun getAll(): List<CellTower>
+
+    @Query("SELECT * FROM cell_towers WHERE cid = :cid")
+    fun findByCid(cid: Int): CellTower
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertUser(cellTower: CellTower)
+
+}
