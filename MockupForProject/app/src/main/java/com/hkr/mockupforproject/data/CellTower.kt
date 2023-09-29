@@ -27,7 +27,7 @@ data class CellTower(
     /*
         Mobile network code
      */
-    @ColumnInfo(name = "mnc") val mnc: Int?,
+    @ColumnInfo(name = "mnc") val mnc: String?,
 
     /*
         Longitude, is a geographic coordinate that specifies the east-west position of a point on the Earth's surface
