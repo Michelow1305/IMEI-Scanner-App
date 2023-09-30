@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
@@ -62,9 +63,11 @@ interface CellTowerDao {
     @Query("SELECT * FROM cell_towers")
     fun getAll(): Flow<List<CellTower>>
 
+    @Transaction
     @Query("SELECT * FROM cell_towers WHERE cid = :cid")
-    suspend fun findByCid(cid: Int): CellTower
+    suspend fun findByCid(cid: Int): CellTower?
 
+    @Transaction
     @Query("SELECT * FROM cell_towers WHERE mnc = :mnc")
     suspend fun findByMnc(mnc: Int): CellTower
 
@@ -81,6 +84,8 @@ interface CellTowerDao {
     @Query("DELETE FROM cell_towers")
     suspend fun clearTable()
 
+
+    @Transaction
     @Query(
         """ SELECT * FROM cell_towers 
             WHERE latitude BETWEEN (:referenceLat - :range) AND (:referenceLat + :range)

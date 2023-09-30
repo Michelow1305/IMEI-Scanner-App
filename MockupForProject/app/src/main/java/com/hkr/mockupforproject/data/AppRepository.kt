@@ -9,17 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.io.Reader
 
-class AppRepository(context : Context, private val cellTowerDao: CellTowerDao) {
-    val reader : Reader = context.resources.openRawResource(R.raw.data).reader()
-    private val db: AppDatabase = AppDatabase.getDatabase(context)
-
-//    suspend fun fetchData(): List<CellTower> {
-//        return withContext(Dispatchers.IO) {
-//            db.cellTowerDao().getAll()
-//        }
-//    }
-
-
+class AppRepository(private val cellTowerDao: CellTowerDao) {
     val allCellTowers : Flow<List<CellTower>> = cellTowerDao.getAll()
 
     @WorkerThread
@@ -33,12 +23,19 @@ class AppRepository(context : Context, private val cellTowerDao: CellTowerDao) {
         cellTowerDao.getCellTowersInRange(referenceLat = referenceLat, referenceLon = referenceLon, range = range)
     }
 
-
-    suspend fun parseCellTowers() {
-        parseCSV(reader,db.cellTowerDao())
+    suspend fun getAll(): Flow<List<CellTower>> {
+        return cellTowerDao.getAll()
     }
 
+
+    @WorkerThread
     suspend fun clearTable() {
         cellTowerDao.clearTable()
     }
+
+    @WorkerThread
+    suspend fun findByCellTowerCid(cid: Int) : CellTower? {
+        return cellTowerDao.findByCid(60298)
+    }
+
 }

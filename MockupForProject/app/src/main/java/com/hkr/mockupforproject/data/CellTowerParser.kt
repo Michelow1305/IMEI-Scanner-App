@@ -127,7 +127,10 @@ suspend fun parseCSV(path: Reader, dao : CellTowerDao) {
             )
 
             dao.upsertCellTower(celltower)
+
         }
+
+
 
 
     }

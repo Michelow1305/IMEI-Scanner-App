@@ -23,26 +23,25 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
-        fun getDatabase(context: Context): AppDatabase {
+        fun getDatabase(
+            context: Context,
+        ): AppDatabase {
+            // if the INSTANCE is not null, then return it,
+            // if it is, then create the database
             return INSTANCE ?: synchronized(this) {
-
-                /*
-                    Creates an instance of the built Room database.
-                 */
                 val instance = Room.databaseBuilder(
-                    context,
+                    context.applicationContext,
                     AppDatabase::class.java,
                     "app_database"
-                ).build()
-
+                )
+                    .createFromAsset("app_database")
+                    .build()
                 INSTANCE = instance
-
-                /*
-                    Return the instance.
-                 */
+                // return instance
                 instance
             }
         }
+
     }
 
 }
