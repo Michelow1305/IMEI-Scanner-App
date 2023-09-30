@@ -1,6 +1,8 @@
 package com.hkr.mockupforproject
 
+import androidx.lifecycle.lifecycleScope
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -19,6 +21,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
+import com.hkr.mockupforproject.data.AppRepository
 import com.hkr.mockupforproject.data.CellTower
 import com.hkr.mockupforproject.data.parseCSV
 import com.hkr.mockupforproject.ui.AppViewModel
@@ -31,8 +34,13 @@ import java.util.concurrent.Executors
 
 class MainActivity : ComponentActivity() {
 
-    val viewmodel : AppViewModel by viewModels()
-    var towers : List<CellTower> = emptyList()
+
+    private lateinit var viewModel: AppViewModel
+    //val viewmodel : AppViewModel by viewModels()
+
+    //var towers : List<CellTower> = emptyList()
+
+
 
     @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +49,9 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MockupForProjectTheme {
+                /*
                 val coroutineScope = rememberCoroutineScope()
+
 
                 LaunchedEffect(Unit) {
                     coroutineScope.launch(Dispatchers.Default) {
@@ -51,12 +61,17 @@ class MainActivity : ComponentActivity() {
                         //showToast(towers.size.toString())
                     }
                 }
+                */
+
 
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    viewModel = AppViewModel.create(this)
+                    viewModel.initiateTowerCsvReading()
+
                     AppScreen()
 
 
@@ -69,7 +84,7 @@ class MainActivity : ComponentActivity() {
 
     }
 
-
+/*
     suspend fun test(){
         viewmodel.init_db(applicationContext)
         val db = viewmodel.db
@@ -89,6 +104,8 @@ class MainActivity : ComponentActivity() {
 
     }
 
+ */
+/*
     fun showToast(message: String, to : CellTower) {
         Handler(Looper.getMainLooper()).post {
             // Display the toast here
@@ -96,6 +113,7 @@ class MainActivity : ComponentActivity() {
             Log.d("MainActivity", to.toString())
         }
     }
+    */
 }
 
 
