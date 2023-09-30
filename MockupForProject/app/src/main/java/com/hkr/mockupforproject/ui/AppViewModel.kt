@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.hkr.mockupforproject.data.AppRepository
 import com.hkr.mockupforproject.data.CellTower
+import com.hkr.mockupforproject.data.deltaLat
+import com.hkr.mockupforproject.data.deltaLon
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
