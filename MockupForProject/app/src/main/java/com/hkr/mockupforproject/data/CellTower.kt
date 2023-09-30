@@ -68,7 +68,7 @@ interface CellTowerDao {
 
     @Transaction
     @Query("SELECT * FROM cell_towers WHERE mnc = :mnc")
-    suspend fun findByMnc(mnc: Int): CellTower?
+    suspend fun findByMnc(mnc: String): List<CellTower>?
 
     /*
         Upsert:

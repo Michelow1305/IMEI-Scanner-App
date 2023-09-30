@@ -2,6 +2,7 @@ package com.hkr.mockupforproject.ui
 
 import androidx.annotation.WorkerThread
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -27,25 +28,25 @@ class AppViewModelFactory(private val repository: AppRepository) : ViewModelProv
 }
 
 /*
-    All queries are in a separate thread.
+    All queries are run in a separate thread.
  */
 class AppViewModel(private val repository: AppRepository) : ViewModel() {
 
-    private var _allTowers : List<CellTower> = mutableListOf()
+    private var _allTowers : MutableList<CellTower> = mutableStateListOf()
     private var _findByCidResult = MutableStateFlow(CellTower())
-    private var _findByMncResult = MutableStateFlow(CellTower())
-    private var _cellTowersInRange : List<CellTower> = mutableListOf()
+    private var _findByMncResult : MutableList<CellTower> = mutableListOf()
+    private var _cellTowersInRange : MutableList<CellTower> = mutableStateListOf()
     /*
         Accessible by the UI
      */
     val allTowers = _allTowers
     val findByCidResult = _findByCidResult.asStateFlow()
-    val findByMncResult = _findByMncResult.asStateFlow()
-    val cellTowersInRangeResult = _cellTowersInRange
+    val findByMncResult = _findByMncResult
+    val cellTowersInRangeResult : List<CellTower> = _cellTowersInRange
     var searchInfo by mutableStateOf(false)
 
     fun getAll() = viewModelScope.launch(Dispatchers.IO) {
-        _allTowers = repository.getAll()
+        _allTowers.addAll(repository.getAll())
     }
 
 
@@ -55,8 +56,8 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
     }
 
 
-    fun findByMnc(mnc : Int) = viewModelScope.launch(Dispatchers.IO) {
-        _findByMncResult.value = repository.findByMnc(mnc)!!
+    fun findByMnc(mnc : String) = viewModelScope.launch(Dispatchers.IO) {
+        repository.findByMnc(mnc)?.let { _findByMncResult.addAll(it) }
 
     }
 
@@ -79,12 +80,12 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
 
 
     fun getCellTowersInRange(phoneLat: Float, phoneLon: Float) = viewModelScope.launch(Dispatchers.IO){
-        _cellTowersInRange = repository.getCellTowersInRange(
+        _cellTowersInRange.addAll(repository.getCellTowersInRange(
             phoneLat = phoneLat,
             phoneLon = phoneLon,
             deltaLat = deltaLat(phoneLat).toFloat(),
             deltaLon = deltaLon(phoneLon, phoneLat).toFloat()
-        )
+        ))
     }
 
 }

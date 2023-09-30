@@ -16,7 +16,7 @@ class AppRepository(private val cellTowerDao: CellTowerDao) {
 
 
     @WorkerThread
-    suspend fun findByMnc(mnc : Int) : CellTower?  {
+    suspend fun findByMnc(mnc : String) : List<CellTower>?  {
         return cellTowerDao.findByMnc(mnc)
     }
 
