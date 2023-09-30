@@ -40,8 +40,8 @@ class AppRepository(private val cellTowerDao: CellTowerDao) {
 
 
     @WorkerThread
-    suspend fun getCellTowersInRange(phoneLat: Float, phoneLon: Float, deltaLat : Float, deltaLon : Float) {
-        cellTowerDao.getCellTowersInRange(
+    suspend fun getCellTowersInRange(phoneLat: Float, phoneLon: Float, deltaLat : Float, deltaLon : Float): List<CellTower> {
+        return cellTowerDao.getCellTowersInRange(
             phoneLat = phoneLat,
             phoneLon = phoneLon,
             deltaLat = deltaLat,

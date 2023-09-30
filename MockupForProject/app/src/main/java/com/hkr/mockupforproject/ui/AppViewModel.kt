@@ -79,7 +79,7 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
 
 
     fun getCellTowersInRange(phoneLat: Float, phoneLon: Float) = viewModelScope.launch(Dispatchers.IO){
-        repository.getCellTowersInRange(
+        _cellTowersInRange = repository.getCellTowersInRange(
             phoneLat = phoneLat,
             phoneLon = phoneLon,
             deltaLat = deltaLat(phoneLat).toFloat(),
