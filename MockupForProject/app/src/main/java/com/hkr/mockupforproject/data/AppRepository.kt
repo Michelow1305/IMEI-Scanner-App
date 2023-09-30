@@ -1,23 +1,35 @@
 package com.hkr.mockupforproject.data
 
 import androidx.annotation.WorkerThread
-import kotlinx.coroutines.flow.Flow
 
 class AppRepository(private val cellTowerDao: CellTowerDao) {
-    val allCellTowers : Flow<List<CellTower>> = cellTowerDao.getAll()
     @WorkerThread
-    suspend fun addCellTowers(cellTowers: List<CellTower>) {
-        cellTowerDao.upsertAllCellTowers(cellTowers)
+    suspend fun getAll() : List<CellTower>{
+        return cellTowerDao.getAll()
     }
 
 
     @WorkerThread
-    suspend fun getCellTowersInRange(referenceLat: Float, referenceLon: Float, range: Int) {
-        cellTowerDao.getCellTowersInRange(
-            referenceLat = referenceLat,
-            referenceLon = referenceLon,
-            range = range
-        )
+    suspend fun findByCid(cid : Int) : CellTower? {
+        return cellTowerDao.findByCid(cid)
+    }
+
+
+    @WorkerThread
+    suspend fun findByMnc(mnc : Int) : CellTower?  {
+        return cellTowerDao.findByMnc(mnc)
+    }
+
+
+    @WorkerThread
+    suspend fun upsertCellTower(cellTower: CellTower) {
+        cellTowerDao.upsertCellTower(cellTower)
+    }
+
+
+    @WorkerThread
+    suspend fun upsertAllCellTowers(cellTowers: List<CellTower>) {
+        cellTowerDao.upsertAllCellTowers(cellTowers)
     }
 
 
@@ -26,9 +38,14 @@ class AppRepository(private val cellTowerDao: CellTowerDao) {
         cellTowerDao.clearTable()
     }
 
+
     @WorkerThread
-    suspend fun findByCellTowerCid(cid: Int): CellTower? {
-        return cellTowerDao.findByCid(60298)
+    suspend fun getCellTowersInRange(referenceLat: Float, referenceLon: Float, range: Int) : List<CellTower>{
+        return cellTowerDao.getCellTowersInRange(
+            referenceLat = referenceLat,
+            referenceLon = referenceLon,
+            range = range
+        )
     }
 
 }

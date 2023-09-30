@@ -7,7 +7,6 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
-import kotlinx.coroutines.flow.Flow
 
 /*
         src: https://wiki.opencellid.org/wiki/Menu_map_view#database
@@ -24,32 +23,32 @@ data class CellTower(
     /*
         The generation of broadband cellular network technology (Eg. LTE, GSM)
      */
-    @ColumnInfo(name = "radio") val radio: String?,
+    @ColumnInfo(name = "radio") val radio: String? = null,
 
     /*
         Mobile country code.
      */
-    @ColumnInfo(name = "mcc") val mcc: Int?,
+    @ColumnInfo(name = "mcc") val mcc: Int? = null,
 
     /*
         Mobile network code
      */
-    @ColumnInfo(name = "mnc") val mnc: String?,
+    @ColumnInfo(name = "mnc") val mnc: String? = null,
 
     /*
         Longitude, is a geographic coordinate that specifies the east-west position of a point on the Earth's surface
      */
-    @ColumnInfo(name = "longitude") val longitude: Float?,
+    @ColumnInfo(name = "longitude") val longitude: Float? = null,
 
     /*
         Latitude is a geographic coordinate that specifies the north–south position of a point on the Earth's surface.
      */
-    @ColumnInfo(name = "latitude") val latitude: Float?,
+    @ColumnInfo(name = "latitude") val latitude: Float? = null,
 
     /*
         Approximate area within which the cell could be. (In meters)
     */
-    @ColumnInfo(name = "range") val range: Float?
+    @ColumnInfo(name = "range") val range: Float? = null
 
 
 ) {
@@ -61,7 +60,7 @@ data class CellTower(
 @Dao
 interface CellTowerDao {
     @Query("SELECT * FROM cell_towers")
-    fun getAll(): Flow<List<CellTower>>
+    suspend fun getAll(): List<CellTower>
 
     @Transaction
     @Query("SELECT * FROM cell_towers WHERE cid = :cid")
@@ -69,7 +68,7 @@ interface CellTowerDao {
 
     @Transaction
     @Query("SELECT * FROM cell_towers WHERE mnc = :mnc")
-    suspend fun findByMnc(mnc: Int): CellTower
+    suspend fun findByMnc(mnc: Int): CellTower?
 
     /*
         Upsert:
