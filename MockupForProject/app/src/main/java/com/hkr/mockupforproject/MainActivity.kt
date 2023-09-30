@@ -20,11 +20,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.hkr.mockupforproject.data.AppRepository
 import com.hkr.mockupforproject.data.CellTower
 import com.hkr.mockupforproject.data.parseCSV
 import com.hkr.mockupforproject.ui.AppViewModel
+import com.hkr.mockupforproject.ui.AppViewModelFactory
 import com.hkr.mockupforproject.ui.theme.MockupForProjectTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,8 +36,11 @@ import java.util.concurrent.Executors
 
 class MainActivity : ComponentActivity() {
 
+    val repository = AppRepository(context = applicationContext)
+    val viewModelFactory = AppViewModelFactory(repository)
+    val viewModel = ViewModelProvider(this, viewModelFactory).get(AppViewModel::class.java)
 
-    private lateinit var viewModel: AppViewModel
+
     //val viewmodel : AppViewModel by viewModels()
 
     //var towers : List<CellTower> = emptyList()
@@ -45,6 +50,8 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        viewModel.initiateTowerCsvReading()
 
 
         setContent {
@@ -69,8 +76,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    viewModel = AppViewModel.create(this)
-                    viewModel.initiateTowerCsvReading()
 
                     AppScreen()
 

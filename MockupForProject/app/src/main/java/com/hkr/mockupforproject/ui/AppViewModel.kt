@@ -5,12 +5,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import com.hkr.mockupforproject.data.AppDatabase
 import com.hkr.mockupforproject.data.AppRepository
 import kotlinx.coroutines.launch
-
+class AppViewModelFactory(private val repository: AppRepository) : ViewModelProvider.Factory {
+     fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
+            return AppViewModel(repository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
 class AppViewModel(private val repository: AppRepository) : ViewModel() {
 
     var searchInfo by mutableStateOf(false)
@@ -31,13 +39,6 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
 
     private suspend fun readTowerCsv() {
         repository.parseCellTowers()
-    }
-
-    companion object {
-        fun create(context: Context): AppViewModel {
-            val repository = AppRepository(context = context.applicationContext)
-            return AppViewModel(repository)
-        }
     }
 
 }
