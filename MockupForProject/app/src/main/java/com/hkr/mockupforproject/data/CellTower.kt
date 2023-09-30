@@ -83,14 +83,13 @@ interface CellTowerDao {
     @Query("DELETE FROM cell_towers")
     suspend fun clearTable()
 
-
     @Transaction
     @Query(
         """ SELECT * FROM cell_towers 
-            WHERE latitude BETWEEN (:referenceLat - :range) AND (:referenceLat + :range)
-            AND longitude BETWEEN (:referenceLon - :range) AND (:referenceLon + :range)
+            WHERE latitude BETWEEN (:phoneLat - :deltaLat) AND (:phoneLat + :deltaLat)
+            AND longitude BETWEEN (:phoneLon - :deltaLon) AND (:phoneLon + :deltaLon)
             """
     )
-    suspend fun getCellTowersInRange(referenceLat: Float, referenceLon: Float, range: Int): List<CellTower>
+    suspend fun getCellTowersInRange(phoneLat: Float, phoneLon: Float, deltaLat: Float, deltaLon: Float): List<CellTower>
 
 }

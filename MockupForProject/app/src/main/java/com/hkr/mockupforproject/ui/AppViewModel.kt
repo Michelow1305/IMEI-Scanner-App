@@ -1,5 +1,6 @@
 package com.hkr.mockupforproject.ui
 
+import androidx.annotation.WorkerThread
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -75,11 +76,12 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
     }
 
 
-    fun getCellTowersInRange(referenceLat: Float, referenceLon: Float, range: Int) = viewModelScope.launch{Dispatchers.IO
-        _cellTowersInRange = repository.getCellTowersInRange(
-            referenceLat = referenceLat,
-            referenceLon = referenceLon,
-            range = range
+    fun getCellTowersInRange(phoneLat: Float, phoneLon: Float) = viewModelScope.launch(Dispatchers.IO){
+        repository.getCellTowersInRange(
+            phoneLat = phoneLat,
+            phoneLon = phoneLon,
+            deltaLat = deltaLat(phoneLat).toFloat(),
+            deltaLon = deltaLon(phoneLon, phoneLat).toFloat()
         )
     }
 
