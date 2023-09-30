@@ -109,22 +109,26 @@ suspend fun parseCSV(path: Reader, dao : CellTowerDao) {
         val longitude = nextLine!![5].toFloat()
         val latitude = nextLine!![6].toFloat()
         val range = nextLine!![7].toFloat()
-        val samples = nextLine?.get(8)?.toInt()
+        val samples = nextLine!![8].toInt()
 
-        if (samples != null && samples < MINIMUM_SAMPLES && radio != "LTE") {
+        if (samples < MINIMUM_SAMPLES) {
             nextLine = reader.readNext()
         }
-        val celltower = CellTower(
-            radio = radio,
-            mcc = mcc,
-            mnc = mnc,
-            cid = cid,
-            longitude = longitude,
-            latitude = latitude,
-            range = range,
-        )
 
-        dao.upsertCellTower(celltower)
+        if(radio == "LTE"){
+            val celltower = CellTower(
+                radio = radio,
+                mcc = mcc,
+                mnc = mnc,
+                cid = cid,
+                longitude = longitude,
+                latitude = latitude,
+                range = range,
+            )
+
+            dao.upsertCellTower(celltower)
+        }
+
 
     }
 
