@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 
         MNC codes to operator name: https://cellidfinder.com/mcc-mnc
  */
-@Entity(tableName = "cell_towers", /*indices = [Index(value = ["longitude", "latitude"])]*/)
+@Entity(tableName = "cell_towers")
 data class CellTower(
     /*
          This is a unique number used to identify each Base transceiver station or sector of BTS

@@ -11,6 +11,9 @@ import androidx.lifecycle.viewModelScope
 import com.hkr.mockupforproject.data.AppRepository
 import com.hkr.mockupforproject.data.CellTower
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class AppViewModelFactory(private val repository: AppRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -21,19 +24,20 @@ class AppViewModelFactory(private val repository: AppRepository) : ViewModelProv
     }
 
 }
+
 class AppViewModel(private val repository: AppRepository) : ViewModel() {
 
     var searchInfo by mutableStateOf(false)
     var allCellTowers : LiveData<List<CellTower>> = repository.allCellTowers.asLiveData()
 
-
-    fun addCellTowers(cellTowers : List<CellTower>) = viewModelScope.launch {
+    fun addCellTowers(cellTowers: List<CellTower>) = viewModelScope.launch {
         repository.addCellTowers(cellTowers)
     }
 
-    fun getCellTowersInRange(referenceLat: Float, referenceLon: Float, range: Int) = viewModelScope.launch {
-        repository.getCellTowersInRange(referenceLat, referenceLon, range)
-    }
+    fun getCellTowersInRange(referenceLat: Float, referenceLon: Float, range: Int) =
+        viewModelScope.launch {
+            repository.getCellTowersInRange(referenceLat, referenceLon, range)
+        }
 
 
 }
