@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.hkr.mockupforproject.data.AppDatabase
 import com.hkr.mockupforproject.data.AppRepository
 import com.hkr.mockupforproject.data.CellTower
 import com.hkr.mockupforproject.data.parseCSV
@@ -36,9 +37,10 @@ import java.util.concurrent.Executors
 
 class MainActivity : ComponentActivity() {
 
-    val repository = AppRepository(context = applicationContext)
-    val viewModelFactory = AppViewModelFactory(repository)
-    val viewModel = ViewModelProvider(this, viewModelFactory).get(AppViewModel::class.java)
+//    val repository = AppRepository(context = applicationContext)
+//    val viewModelFactory = AppViewModelFactory(repository)
+//    val viewModel = ViewModelProvider(this, viewModelFactory).get(AppViewModel::class.java)
+
 
 
     //val viewmodel : AppViewModel by viewModels()
@@ -51,8 +53,22 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.initiateTowerCsvReading()
+        val database by lazy { AppDatabase.getDatabase(this) }
+        val repository by lazy { AppRepository(this, database.cellTowerDao()) }
+        val viewModelFactory = AppViewModelFactory(repository)
 
+        val viewModel : AppViewModel by viewModels {
+            viewModelFactory
+        }
+
+        //viewModel.initiateTowerCsvReading()
+
+        viewModel.allCellTowers.observe(this) { cellTower ->
+            cellTower.forEach { i ->
+                showToast("", i)
+            }
+
+        }
 
         setContent {
             MockupForProjectTheme {
@@ -110,7 +126,7 @@ class MainActivity : ComponentActivity() {
     }
 
  */
-/*
+
     fun showToast(message: String, to : CellTower) {
         Handler(Looper.getMainLooper()).post {
             // Display the toast here
@@ -118,7 +134,7 @@ class MainActivity : ComponentActivity() {
             Log.d("MainActivity", to.toString())
         }
     }
-    */
+
 }
 
 

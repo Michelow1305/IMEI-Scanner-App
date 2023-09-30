@@ -1,9 +1,6 @@
 package com.hkr.mockupforproject.data
 
 import com.opencsv.CSVReader
-import java.io.FileReader
-import com.hkr.mockupforproject.data.*
-import java.io.File
 import java.io.Reader
 
 
@@ -100,10 +97,10 @@ val providers = arrayOf(
 )
 
 
-suspend fun parseCSV(path: Reader, dao : CellTowerDao): List<CellTower>? {
+suspend fun parseCSV(path: Reader, dao : CellTowerDao) {
     val reader = CSVReader(path)
-    val csvObjects = mutableListOf<CellTower>()
     var nextLine: Array<String>?
+
     while (reader.readNext().also { nextLine = it } != null) {
         val radio = nextLine!![0]
         val mcc = nextLine!![1].toInt()
@@ -127,10 +124,9 @@ suspend fun parseCSV(path: Reader, dao : CellTowerDao): List<CellTower>? {
             range = range,
         )
 
-        dao.insertCellTower(celltower)
+        dao.upsertCellTower(celltower)
 
     }
 
-    return csvObjects
 }
 

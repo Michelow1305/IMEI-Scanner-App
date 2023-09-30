@@ -3,17 +3,17 @@ package com.hkr.mockupforproject.data
 import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Entity
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.Upsert
+import kotlinx.coroutines.flow.Flow
 
 /*
         src: https://wiki.opencellid.org/wiki/Menu_map_view#database
 
         MNC codes to operator name: https://cellidfinder.com/mcc-mnc
  */
-@Entity(tableName = "cell_towers")
+@Entity(tableName = "cell_towers", /*indices = [Index(value = ["longitude", "latitude"])]*/)
 data class CellTower(
     /*
          This is a unique number used to identify each Base transceiver station or sector of BTS
@@ -60,7 +60,7 @@ data class CellTower(
 @Dao
 interface CellTowerDao {
     @Query("SELECT * FROM cell_towers")
-    suspend fun getAll(): List<CellTower>
+    fun getAll(): Flow<List<CellTower>>
 
     @Query("SELECT * FROM cell_towers WHERE cid = :cid")
     suspend fun findByCid(cid: Int): CellTower
@@ -68,8 +68,18 @@ interface CellTowerDao {
     @Query("SELECT * FROM cell_towers WHERE mnc = :mnc")
     suspend fun findByMnc(mnc: Int): CellTower
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCellTower(cellTower: CellTower)
+    /*
+        Upsert:
+        If the passed cell tower already exists in the table, it will update it.
+     */
+    @Upsert
+    suspend fun upsertCellTower(cellTower: CellTower)
+
+    @Upsert
+    suspend fun upsertAllCellTowers(cellTowers: List<CellTower>)
+
+    @Query("DELETE FROM cell_towers")
+    suspend fun clearTable()
 
     @Query(
         """ SELECT * FROM cell_towers 
