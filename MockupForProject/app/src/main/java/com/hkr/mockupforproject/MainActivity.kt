@@ -45,9 +45,12 @@ class MainActivity : ComponentActivity() {
 
 
         viewModel.findByMnc("Telia")
+        //viewModel.getCellTowersInRange(56.0499F, 14.1503725F)
 
         setContent {
             val cellTowers by viewModel.findByMncResult.observeAsState(initial = emptyList())
+            //val cellTowers by viewModel.cellTowersInRangeResult.observeAsState(initial = emptyList())
+
 
             MockupForProjectTheme {
                 // A surface container using the 'background' color from the theme
@@ -60,7 +63,7 @@ class MainActivity : ComponentActivity() {
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color.Black, shape = RoundedCornerShape(10.dp))
+                            .background(Color.White, shape = RoundedCornerShape(10.dp))
                             .height(200.dp)
 
                     ) {
