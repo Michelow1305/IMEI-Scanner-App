@@ -3,7 +3,9 @@ package com.hkr.mockupforproject.ui
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -16,10 +18,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class AppViewModelFactory(private val repository: AppRepository) : ViewModelProvider.Factory {
+class AppViewModelFactory(
+    private val repository: AppRepository,
+    private val owner: LifecycleOwner
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
-            return AppViewModel(repository) as T
+            return AppViewModel(repository, owner) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
@@ -29,7 +34,10 @@ class AppViewModelFactory(private val repository: AppRepository) : ViewModelProv
 /*
     All queries are run in a separate thread.
  */
-class AppViewModel(private val repository: AppRepository) : ViewModel() {
+class AppViewModel(
+    private val repository: AppRepository,
+    private val owner: LifecycleOwner
+) : ViewModel() {
 
     private lateinit var _allTowers: LiveData<List<CellTower>>
     private lateinit var _findByMncResult: LiveData<List<CellTower>>
@@ -43,6 +51,7 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
     val findByMncResult: LiveData<List<CellTower>> get() = _findByMncResult
     val cellTowersInRangeResult: LiveData<List<CellTower>> get() = _cellTowersInRange
     val findByCidResult = _findByCidResult.asStateFlow()
+    var cellTowersInRangeHasTowers by mutableStateOf(false)
     var searchInfo by mutableStateOf(false)
 
 
@@ -86,4 +95,7 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
             ))
         }
 
+    fun InRangeHasTowers() {
+        cellTowersInRangeResult.observe(owner, Observer { value -> cellTowersInRangeHasTowers = true})
+    }
 }

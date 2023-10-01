@@ -24,8 +24,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import com.hkr.mockupforproject.data.AppDatabase
 import com.hkr.mockupforproject.data.AppRepository
+import com.hkr.mockupforproject.data.haversineDistance
 import com.hkr.mockupforproject.ui.AppViewModel
 import com.hkr.mockupforproject.ui.AppViewModelFactory
 import com.hkr.mockupforproject.ui.theme.MockupForProjectTheme
@@ -39,7 +42,7 @@ class MainActivity : ComponentActivity() {
 
         val database by lazy { AppDatabase.getDatabase(this) }
         val repository by lazy { AppRepository(database.cellTowerDao()) }
-        val viewModelFactory = AppViewModelFactory(repository)
+        val viewModelFactory = AppViewModelFactory(repository, this)
 
         val viewModel : AppViewModel by viewModels {
             viewModelFactory
@@ -52,6 +55,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             //val cellTowers by viewModel.findByMncResult.observeAsState(initial = emptyList())
             val cellTowers by viewModel.cellTowersInRangeResult.observeAsState(initial = emptyList())
+            viewModel.InRangeHasTowers()
 
             MockupForProjectTheme {
                 // A surface container using the 'background' color from the theme
@@ -69,8 +73,10 @@ class MainActivity : ComponentActivity() {
 
                     ) {
                         items(cellTowers) { step ->
-                            Log.d("", viewModel.findByCidResult.collectAsState().toString())
-                            //Log.d("",step.toString())
+                            if (viewModel.cellTowersInRangeHasTowers) {
+                                Log.d("", haversineDistance(56.049877, 14.150383,step.latitude!!.toDouble(), step.longitude!!.toDouble()).toString())
+                            }
+
                             Text(
 
                                 text = step.toString()
