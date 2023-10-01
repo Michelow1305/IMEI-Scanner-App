@@ -1,7 +1,6 @@
 package com.hkr.mockupforproject.ui
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
@@ -32,64 +31,59 @@ class AppViewModelFactory(private val repository: AppRepository) : ViewModelProv
  */
 class AppViewModel(private val repository: AppRepository) : ViewModel() {
 
-    private var _allTowers : MutableList<CellTower> = mutableStateListOf()
-    private var _findByCidResult = MutableStateFlow(CellTower())
-    //private var _findByMncResult : MutableList<CellTower> = mutableListOf()
+    private lateinit var _allTowers: LiveData<List<CellTower>>
     private lateinit var _findByMncResult: LiveData<List<CellTower>>
-    private var _cellTowersInRange : MutableList<CellTower> = mutableStateListOf()
+    private lateinit var _cellTowersInRange: LiveData<List<CellTower>?>
+    private var _findByCidResult = MutableStateFlow(CellTower())
+
     /*
         Accessible by the UI
      */
-    val allTowers = _allTowers
-    val findByCidResult = _findByCidResult.asStateFlow()
-    //val findByMncResult = _findByMncResult
+    val allTowers: LiveData<List<CellTower>> get() = _allTowers
     val findByMncResult: LiveData<List<CellTower>> get() = _findByMncResult
-    val cellTowersInRangeResult : List<CellTower> = _cellTowersInRange
+    val cellTowersInRangeResult: LiveData<List<CellTower>?> get() = _cellTowersInRange
+    val findByCidResult = _findByCidResult.asStateFlow()
     var searchInfo by mutableStateOf(false)
 
+
     fun getAll() = viewModelScope.launch(Dispatchers.IO) {
-        _allTowers.addAll(repository.getAll())
+        _allTowers = repository.getAll()
     }
 
 
-
-    fun findByCid(cid : Int) = viewModelScope.launch(Dispatchers.IO) {
+    fun findByCid(cid: Int) = viewModelScope.launch(Dispatchers.IO) {
         _findByCidResult.value = repository.findByCid(cid)!!
-
     }
 
 
-    fun findByMnc(mnc : String) = viewModelScope.launch(Dispatchers.IO) {
+    fun findByMnc(mnc: String) = viewModelScope.launch(Dispatchers.IO) {
         _findByMncResult = repository.findByMnc(mnc)
-
     }
 
 
     fun upsertCellTower(cellTower: CellTower) = viewModelScope.launch(Dispatchers.IO) {
         repository.upsertCellTower(cellTower)
-
     }
 
 
     fun upsertAllCellTowers(cellTowers: List<CellTower>) = viewModelScope.launch(Dispatchers.IO) {
         repository.upsertAllCellTowers(cellTowers)
-
     }
 
 
     fun clearTable() = viewModelScope.launch(Dispatchers.IO) {
         repository.clearTable()
-
     }
 
 
-    fun getCellTowersInRange(phoneLat: Float, phoneLon: Float) = viewModelScope.launch(Dispatchers.IO){
-        _cellTowersInRange.addAll(repository.getCellTowersInRange(
-            phoneLat = phoneLat,
-            phoneLon = phoneLon,
-            deltaLat = deltaLat(phoneLat).toFloat(),
-            deltaLon = deltaLon(phoneLon, phoneLat).toFloat()
-        ))
-    }
+    fun getCellTowersInRange(phoneLat: Float, phoneLon: Float) =
+        viewModelScope.launch(Dispatchers.IO) {
+            _cellTowersInRange = (repository.getCellTowersInRange(
+                phoneLat = phoneLat,
+                phoneLon = phoneLon,
+                deltaLat = deltaLat(phoneLat).toFloat(),
+                deltaLon = deltaLon(phoneLon, phoneLat).toFloat()
+            ))
+        }
 
 }

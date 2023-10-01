@@ -5,19 +5,19 @@ import androidx.lifecycle.LiveData
 
 class AppRepository(private val cellTowerDao: CellTowerDao) {
     @WorkerThread
-    suspend fun getAll() : List<CellTower>{
+    fun getAll(): LiveData<List<CellTower>> {
         return cellTowerDao.getAll()
     }
 
 
     @WorkerThread
-    suspend fun findByCid(cid : Int) : CellTower? {
+    suspend fun findByCid(cid: Int): CellTower? {
         return cellTowerDao.findByCid(cid)
     }
 
 
     @WorkerThread
-    fun findByMnc(mnc : String) : LiveData<List<CellTower>> {
+    fun findByMnc(mnc: String): LiveData<List<CellTower>> {
         return cellTowerDao.findByMnc(mnc)
     }
 
@@ -41,7 +41,12 @@ class AppRepository(private val cellTowerDao: CellTowerDao) {
 
 
     @WorkerThread
-    suspend fun getCellTowersInRange(phoneLat: Float, phoneLon: Float, deltaLat : Float, deltaLon : Float): List<CellTower> {
+    fun getCellTowersInRange(
+        phoneLat: Float,
+        phoneLon: Float,
+        deltaLat: Float,
+        deltaLon: Float
+    ): LiveData<List<CellTower>?> {
         return cellTowerDao.getCellTowersInRange(
             phoneLat = phoneLat,
             phoneLon = phoneLon,

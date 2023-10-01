@@ -8,7 +8,6 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
-import kotlinx.coroutines.flow.Flow
 
 /*
         src: https://wiki.opencellid.org/wiki/Menu_map_view#database
@@ -62,7 +61,7 @@ data class CellTower(
 @Dao
 interface CellTowerDao {
     @Query("SELECT * FROM cell_towers")
-    suspend fun getAll(): List<CellTower>
+    fun getAll(): LiveData<List<CellTower>>
 
     @Transaction
     @Query("SELECT * FROM cell_towers WHERE cid = :cid")
@@ -92,6 +91,11 @@ interface CellTowerDao {
             AND longitude BETWEEN (:phoneLon - :deltaLon) AND (:phoneLon + :deltaLon)
             """
     )
-    suspend fun getCellTowersInRange(phoneLat: Float, phoneLon: Float, deltaLat: Float, deltaLon: Float): List<CellTower>
+    fun getCellTowersInRange(
+        phoneLat: Float,
+        phoneLon: Float,
+        deltaLat: Float,
+        deltaLon: Float
+    ): LiveData<List<CellTower>?>
 
 }
