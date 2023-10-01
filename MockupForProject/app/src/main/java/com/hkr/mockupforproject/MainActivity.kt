@@ -2,6 +2,7 @@ package com.hkr.mockupforproject
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -16,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -43,11 +45,13 @@ class MainActivity : ComponentActivity() {
             viewModelFactory
         }
 
-
-        viewModel.findByMnc("Telia")
+        viewModel.getCellTowersInRange(56.049877F, 14.150383F)
+        viewModel.findByCid(208942101)
+        //viewModel.findByMnc("Telia")
 
         setContent {
-            val cellTowers by viewModel.findByMncResult.observeAsState(initial = emptyList())
+            //val cellTowers by viewModel.findByMncResult.observeAsState(initial = emptyList())
+            val cellTowers by viewModel.cellTowersInRangeResult.observeAsState(initial = emptyList())
 
             MockupForProjectTheme {
                 // A surface container using the 'background' color from the theme
@@ -65,6 +69,8 @@ class MainActivity : ComponentActivity() {
 
                     ) {
                         items(cellTowers) { step ->
+                            Log.d("", viewModel.findByCidResult.collectAsState().toString())
+                            //Log.d("",step.toString())
                             Text(
 
                                 text = step.toString()

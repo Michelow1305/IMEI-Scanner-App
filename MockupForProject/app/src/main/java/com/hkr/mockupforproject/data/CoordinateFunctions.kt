@@ -7,11 +7,11 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 fun deltaLat(Lat: Float): Double {
-    return 2500 / 111000.0
+    return 750 / 111000.0
 }
 
 fun deltaLon(Lon: Float, phoneLat: Float): Double {
-    return 2500 / (111000.0 * cos(Math.toRadians(phoneLat.toDouble())))
+    return 750 / (111000.0 * cos(Math.toRadians(phoneLat.toDouble())))
 }
 
 fun haversineDistance(p1_lat: Double, p1_lon: Double, p2_lat: Double, p2_lon: Double): Double {
