@@ -106,10 +106,10 @@ suspend fun parseCSV(path: Reader, dao : CellTowerDao) {
         val mcc = nextLine!![1].toInt()
         val mnc = providers[nextLine!![2].toInt()]
         val cid = nextLine!![4].toInt()
-        val longitude = nextLine!![5].toFloat()
-        val latitude = nextLine!![6].toFloat()
-        val range = nextLine!![7].toFloat()
-        val samples = nextLine!![8].toInt()
+        val longitude = nextLine!![6].toFloat()
+        val latitude = nextLine!![7].toFloat()
+        val range = nextLine!![8].toFloat()
+        val samples = nextLine!![9].toInt()
 
         if (samples < MINIMUM_SAMPLES) {
             nextLine = reader.readNext()
