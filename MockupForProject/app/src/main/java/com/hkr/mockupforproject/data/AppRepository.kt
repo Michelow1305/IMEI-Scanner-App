@@ -1,6 +1,7 @@
 package com.hkr.mockupforproject.data
 
 import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
 
 class AppRepository(private val cellTowerDao: CellTowerDao) {
     @WorkerThread
@@ -16,7 +17,7 @@ class AppRepository(private val cellTowerDao: CellTowerDao) {
 
 
     @WorkerThread
-    suspend fun findByMnc(mnc : String) : List<CellTower>?  {
+    fun findByMnc(mnc : String) : LiveData<List<CellTower>> {
         return cellTowerDao.findByMnc(mnc)
     }
 

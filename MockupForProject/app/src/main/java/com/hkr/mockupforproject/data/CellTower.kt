@@ -1,5 +1,6 @@
 package com.hkr.mockupforproject.data
 
+import androidx.lifecycle.LiveData
 import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Entity
@@ -7,6 +8,7 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
+import kotlinx.coroutines.flow.Flow
 
 /*
         src: https://wiki.opencellid.org/wiki/Menu_map_view#database
@@ -68,7 +70,7 @@ interface CellTowerDao {
 
     @Transaction
     @Query("SELECT * FROM cell_towers WHERE mnc = :mnc")
-    suspend fun findByMnc(mnc: String): List<CellTower>?
+    fun findByMnc(mnc: String): LiveData<List<CellTower>>
 
     /*
         Upsert:

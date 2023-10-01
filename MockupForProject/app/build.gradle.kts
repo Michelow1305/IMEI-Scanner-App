@@ -74,35 +74,37 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    // CSV READER
+    // Runtime livedata to observe LiveData objects with observeAsState()
+    implementation ("androidx.compose.runtime:runtime-livedata:1.5.2")
+
+    // Csv reader
     implementation("com.opencsv:opencsv:5.5.2")
 
-    //ksp(project(":test-processor"))
-    // ROOM
-    val room_version = "2.5.2"
+    // Room
+    val roomVersion = "2.5.2"
 
-    implementation("androidx.room:room-runtime:$room_version")
-    annotationProcessor("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-runtime:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
 
     // To use Kotlin Symbol Processing (KSP)
-    ksp("androidx.room:room-compiler:$room_version")
+    ksp("androidx.room:room-compiler:$roomVersion")
 
     // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:$room_version")
+    implementation("androidx.room:room-ktx:$roomVersion")
 
     // optional - RxJava2 support for Room
-    implementation("androidx.room:room-rxjava2:$room_version")
+    implementation("androidx.room:room-rxjava2:$roomVersion")
 
     // optional - RxJava3 support for Room
-    implementation("androidx.room:room-rxjava3:$room_version")
+    implementation("androidx.room:room-rxjava3:$roomVersion")
 
     // optional - Guava support for Room, including Optional and ListenableFuture
-    implementation("androidx.room:room-guava:$room_version")
+    implementation("androidx.room:room-guava:$roomVersion")
 
     // optional - Test helpers
-    testImplementation("androidx.room:room-testing:$room_version")
+    testImplementation("androidx.room:room-testing:$roomVersion")
 
     // optional - Paging 3 Integration
-    implementation("androidx.room:room-paging:$room_version")
+    implementation("androidx.room:room-paging:$roomVersion")
 
 }

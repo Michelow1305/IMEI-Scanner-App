@@ -1,10 +1,10 @@
 package com.hkr.mockupforproject.ui
 
-import androidx.annotation.WorkerThread
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -34,20 +34,23 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
 
     private var _allTowers : MutableList<CellTower> = mutableStateListOf()
     private var _findByCidResult = MutableStateFlow(CellTower())
-    private var _findByMncResult : MutableList<CellTower> = mutableListOf()
+    //private var _findByMncResult : MutableList<CellTower> = mutableListOf()
+    private lateinit var _findByMncResult: LiveData<List<CellTower>>
     private var _cellTowersInRange : MutableList<CellTower> = mutableStateListOf()
     /*
         Accessible by the UI
      */
     val allTowers = _allTowers
     val findByCidResult = _findByCidResult.asStateFlow()
-    val findByMncResult = _findByMncResult
+    //val findByMncResult = _findByMncResult
+    val findByMncResult: LiveData<List<CellTower>> get() = _findByMncResult
     val cellTowersInRangeResult : List<CellTower> = _cellTowersInRange
     var searchInfo by mutableStateOf(false)
 
     fun getAll() = viewModelScope.launch(Dispatchers.IO) {
         _allTowers.addAll(repository.getAll())
     }
+
 
 
     fun findByCid(cid : Int) = viewModelScope.launch(Dispatchers.IO) {
@@ -57,9 +60,10 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
 
 
     fun findByMnc(mnc : String) = viewModelScope.launch(Dispatchers.IO) {
-        repository.findByMnc(mnc)?.let { _findByMncResult.addAll(it) }
+        _findByMncResult = repository.findByMnc(mnc)
 
     }
+
 
     fun upsertCellTower(cellTower: CellTower) = viewModelScope.launch(Dispatchers.IO) {
         repository.upsertCellTower(cellTower)
