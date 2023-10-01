@@ -4,7 +4,7 @@ import com.opencsv.CSVReader
 import java.io.Reader
 
 
-const val MINIMUM_SAMPLES = 5
+const val MINIMUM_SAMPLES = 1
 val providers = arrayOf(
     "Direct2 Internet",
     "Telia",
