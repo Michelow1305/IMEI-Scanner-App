@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color.Black, shape = RoundedCornerShape(10.dp))
+                            .background(Color.White, shape = RoundedCornerShape(10.dp))
                             .height(200.dp)
 
                     ) {
