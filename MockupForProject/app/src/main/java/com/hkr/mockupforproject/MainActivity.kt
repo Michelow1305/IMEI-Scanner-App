@@ -45,12 +45,9 @@ class MainActivity : ComponentActivity() {
 
 
         viewModel.findByMnc("Telia")
-        //viewModel.getCellTowersInRange(56.0499F, 14.1503725F)
 
         setContent {
             val cellTowers by viewModel.findByMncResult.observeAsState(initial = emptyList())
-            //val cellTowers by viewModel.cellTowersInRangeResult.observeAsState(initial = emptyList())
-
 
             MockupForProjectTheme {
                 // A surface container using the 'background' color from the theme

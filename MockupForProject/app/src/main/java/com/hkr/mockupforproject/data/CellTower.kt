@@ -96,6 +96,6 @@ interface CellTowerDao {
         phoneLon: Float,
         deltaLat: Float,
         deltaLon: Float
-    ): LiveData<List<CellTower>>
+    ): LiveData<List<CellTower>?>
 
 }

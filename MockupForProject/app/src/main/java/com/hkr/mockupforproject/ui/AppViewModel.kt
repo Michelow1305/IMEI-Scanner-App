@@ -33,7 +33,7 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
 
     private lateinit var _allTowers: LiveData<List<CellTower>>
     private lateinit var _findByMncResult: LiveData<List<CellTower>>
-    private lateinit var _cellTowersInRange: LiveData<List<CellTower>>
+    private lateinit var _cellTowersInRange: LiveData<List<CellTower>?>
     private var _findByCidResult = MutableStateFlow(CellTower())
 
     /*
@@ -41,7 +41,7 @@ class AppViewModel(private val repository: AppRepository) : ViewModel() {
      */
     val allTowers: LiveData<List<CellTower>> get() = _allTowers
     val findByMncResult: LiveData<List<CellTower>> get() = _findByMncResult
-    val cellTowersInRangeResult: LiveData<List<CellTower>> get() = _cellTowersInRange
+    val cellTowersInRangeResult: LiveData<List<CellTower>?> get() = _cellTowersInRange
     val findByCidResult = _findByCidResult.asStateFlow()
     var searchInfo by mutableStateOf(false)
 

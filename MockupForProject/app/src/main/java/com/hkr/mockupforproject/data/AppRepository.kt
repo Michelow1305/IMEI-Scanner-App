@@ -46,7 +46,7 @@ class AppRepository(private val cellTowerDao: CellTowerDao) {
         phoneLon: Float,
         deltaLat: Float,
         deltaLon: Float
-    ): LiveData<List<CellTower>> {
+    ): LiveData<List<CellTower>?> {
         return cellTowerDao.getCellTowersInRange(
             phoneLat = phoneLat,
             phoneLon = phoneLon,
