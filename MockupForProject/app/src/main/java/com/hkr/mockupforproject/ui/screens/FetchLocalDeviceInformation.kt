@@ -1,5 +1,6 @@
 package com.hkr.mockupforproject.ui.screens
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
@@ -10,6 +11,9 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.hkr.mockupforproject.MainActivity
 
 /*
 Function name:	FetchDeviceInformation()
@@ -65,7 +69,7 @@ Calls:			Methods of the TelephonyManager
 Author:         Joel Andersson
  */
 @SuppressLint("MissingPermission")
-fun FetchNetworkType(context : Context, telephonyManager : TelephonyManager) : String
+fun FetchSecureData(context : Context, telephonyManager : TelephonyManager) : String
 {
 
     val networkName = when (telephonyManager!!.networkType) {
@@ -98,4 +102,28 @@ fun FetchLocalIMEI()
 {
 
 
+}
+
+fun hasReadPhoneStatePermission(context: Context): Boolean {
+    return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
+}
+
+fun requestReadPhoneStatePermission(activity: MainActivity) {
+    ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_PHONE_STATE), REQUEST_CODE)
+}
+
+override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    when (requestCode) {
+        REQUEST_CODE -> {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                FetchSecureData() // Create a data class
+            } else {
+                // Permission denied, provide alternative functionality or notify user
+            }
+            return
+        }
+        else -> {
+            // Handle other request codes if needed.
+        }
+    }
 }
