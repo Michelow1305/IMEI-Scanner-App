@@ -36,6 +36,7 @@ fun SearchResult_finish(
     navController: NavHostController = rememberNavController()
 ) {
 
+    appViewModel.setCurreninitDeviceToSave()
     // State to track whether navigation should occur
     var shouldNavigate by remember { mutableStateOf(false) }
 

@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.hkr.mockupforproject.data.AppRepository
 import com.hkr.mockupforproject.data.CellTower
+import com.hkr.mockupforproject.data.SavedDevice
 import com.hkr.mockupforproject.data.deltaLat
 import com.hkr.mockupforproject.data.deltaLon
 import kotlinx.coroutines.Dispatchers
@@ -54,6 +55,23 @@ class AppViewModel(
     var cellTowersInRangeHasTowers by mutableStateOf(false)
     var searchInfo by mutableStateOf(false)
 
+
+    // Variables for saving devices
+    lateinit var currentDeviceToSave: SavedDevice
+    lateinit var deviceName: String
+    lateinit var deviceDescription: String
+    lateinit var brand: String
+    lateinit var model: String
+    lateinit var nearbyTowers: List<CellTower>
+    var imei: Int = 0
+    var priority: Int = 0
+
+    //Function to set a device to save
+    fun setCurreninitDeviceToSave() {
+        currentDeviceToSave = SavedDevice(
+            imei, deviceName, deviceDescription, brand, model, nearbyTowers, priority
+        )
+    }
 
     fun getAll() = viewModelScope.launch(Dispatchers.IO) {
         _allTowers = repository.getAll()

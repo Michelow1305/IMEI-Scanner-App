@@ -37,6 +37,12 @@ import androidx.navigation.compose.rememberNavController
 import com.hkr.mockupforproject.R
 import com.hkr.mockupforproject.ui.AppViewModel
 
+@Preview
+@Composable
+fun SearchResultPreview() {
+    SearchResult(appViewModel = viewModel())
+}
+
 @Composable
 fun SearchResult(
     appViewModel: AppViewModel,
@@ -53,6 +59,7 @@ fun SearchResult(
                 fontWeight = FontWeight(700),
                 color = Color.Black
             )
+            appViewModel.imei = 12381239
             RowTextElement(textLeft = "IMEI", textRight = "345454279843245")
             RowTextElement(textLeft = "Brand", textRight = "Samsung")
             RowTextElement(textLeft = "Model", textRight = "Smart system 1")
