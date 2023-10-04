@@ -23,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,13 +35,24 @@ import com.hkr.mockupforproject.data.haversineDistance
 import com.hkr.mockupforproject.ui.AppViewModel
 import com.hkr.mockupforproject.ui.AppViewModelFactory
 import com.hkr.mockupforproject.ui.theme.MockupForProjectTheme
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.hkr.mockupforproject.ui.screens.FetchDeviceInformation
+import com.hkr.mockupforproject.ui.screens.SavedDevices
+import com.hkr.mockupforproject.ui.screens.StartScreen
+import com.hkr.mockupforproject.ui.theme.MockupForProjectTheme
 
-class MainActivity : ComponentActivity() {
 
-    @SuppressLint("CoroutineCreationDuringComposition")
+open class MainActivity : ComponentActivity() {
+
+    private val viewModel: AppViewModel by viewModels()
+    companion object {
+        const val PHONE_STATE_REQUEST_CODE = 1001
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 
         val database by lazy { AppDatabase.getDatabase(this) }
         val repository by lazy { AppRepository(database.cellTowerDao()) }
@@ -54,61 +64,6 @@ class MainActivity : ComponentActivity() {
 
         viewModel.getCellTowersInRange(56.049877F, 14.150383F)
         viewModel.findByCid(208942101)
-        //viewModel.findByMnc("Telia")
-
-        setContent {
-            //val cellTowers by viewModel.findByMncResult.observeAsState(initial = emptyList())
-            val cellTowers by viewModel.cellTowersInRangeResult.observeAsState(initial = emptyList())
-            viewModel.InRangeHasTowers()
-
-            MockupForProjectTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    //AppScreen()
-
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.White, shape = RoundedCornerShape(10.dp))
-                            .height(200.dp)
-
-                    ) {
-                        items(cellTowers) { step ->
-                            if (viewModel.cellTowersInRangeHasTowers) {
-                                Log.d("", haversineDistance(56.049877, 14.150383,step.latitude!!.toDouble(), step.longitude!!.toDouble()).toString())
-                            }
-
-                            Text(
-
-                                text = step.toString()
-
-                            )
-
-                        }
-
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
-import com.hkr.mockupforproject.ui.AppViewModel
-import com.hkr.mockupforproject.ui.screens.FetchDeviceInformation
-import com.hkr.mockupforproject.ui.screens.SavedDevices
-import com.hkr.mockupforproject.ui.screens.StartScreen
-import com.hkr.mockupforproject.ui.theme.MockupForProjectTheme
-
-open class MainActivity : ComponentActivity() {
-
-    private val viewModel: AppViewModel by viewModels()
-    companion object {
-        const val PHONE_STATE_REQUEST_CODE = 1001
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
         // Observe the LiveData in Appviewmodel for permission request
         // If we need more permissions add it to the array below
@@ -128,21 +83,59 @@ open class MainActivity : ComponentActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when (requestCode) {
             PHONE_STATE_REQUEST_CODE -> {
-                setContent {
-                    MockupForProjectTheme {
+                setContent()
+                {
+                    //val cellTowers by viewModel.findByMncResult.observeAsState(initial = emptyList())
+                    val cellTowers by viewModel.cellTowersInRangeResult.observeAsState(initial = emptyList())
+                    viewModel.InRangeHasTowers()
+
+                    MockupForProjectTheme
+                    {
+                        // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
-                        ) {
-                            AppScreen(viewModel = viewModel)
+                        )
+                        {
+                            //AppScreen()
+
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(Color.White, shape = RoundedCornerShape(10.dp))
+                                    .height(200.dp)
+
+                            )
+                            {
+                                items(cellTowers)
+                                { step ->
+                                    if (viewModel.cellTowersInRangeHasTowers)
+                                    {
+                                        Log.d(
+                                            "",
+                                            haversineDistance(
+                                                56.049877,
+                                                14.150383,
+                                                step.latitude!!.toDouble(),
+                                                step.longitude!!.toDouble()
+                                            ).toString()
+                                        )
+                                    }
+
+                                    Text(
+
+                                        text = step.toString()
+
+                                    )
+
+                                }
+                            }
                         }
                     }
                 }
             }
         }
-
     }
-
 }
 
 

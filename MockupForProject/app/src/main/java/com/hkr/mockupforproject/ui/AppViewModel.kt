@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.hkr.mockupforproject.MainActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -130,14 +129,28 @@ class AppViewModel(
         }
 
     fun InRangeHasTowers() {
-        cellTowersInRangeResult.observe(owner, Observer { value -> cellTowersInRangeHasTowers = true})
-    var bottomSheetExpand by mutableStateOf(false)
+        cellTowersInRangeResult.observe(
+            owner,
+            Observer { value -> cellTowersInRangeHasTowers = true })
+        var bottomSheetExpand by mutableStateOf(false)
 
+    }
+
+
+    // This will notify the Activity, which is observing this LiveData, to request permissions
+    /*
+    Function name:	checkAndAskPermission()
+    Inputs:			NA
+    Outputs:		requestPermission is observed by MainActivity. When function is called MainActivity will react
+    Called by:		MainActivity
+    Calls:			NA
+    Author:         Joel Andersson
+     */
     val requestPermission = MutableLiveData<Unit>()
     fun checkAndAskPermission() {
-        // This will notify the Activity, which is observing this LiveData, to request permissions
         requestPermission.value = Unit
     }
+
     fun hasReadPhoneStatePermission(context: Context): Boolean {
         return ContextCompat.checkSelfPermission(
             context,
