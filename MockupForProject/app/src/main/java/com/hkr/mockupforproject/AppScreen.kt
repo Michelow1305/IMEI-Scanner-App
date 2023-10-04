@@ -1,19 +1,18 @@
 package com.hkr.mockupforproject
 
+import android.Manifest
+import android.content.ContentValues
+import android.content.Context
+import android.content.pm.PackageManager
+import android.telephony.TelephonyManager
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetValue
@@ -25,20 +24,23 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hkr.mockupforproject.ui.AppViewModel
 import kotlinx.coroutines.launch
 
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Preview
 @Composable
-fun AppScreen() {
+fun AppScreen(viewModel : AppViewModel) {
 
+    val appViewModel: AppViewModel = viewModel
 
-    val appViewModel: AppViewModel = viewModel()
     val sheetScope = rememberCoroutineScope()
     val bottomSheetState = rememberStandardBottomSheetState(
         initialValue = SheetValue.Hidden,
@@ -52,13 +54,19 @@ fun AppScreen() {
         scaffoldState = sheetScaffoldState,
         sheetSwipeEnabled = true,
         sheetContent = {
-            Box(modifier = Modifier.height(595.dp), contentAlignment = Alignment.Center) {
+            Box (modifier = Modifier, contentAlignment = Alignment.Center){
                 bottomAppNavigation(appViewModel)
             }
         }
     ) {
         mainAppNavigation(appViewModel)
         var observer = appViewModel.searchInfo
+        AnimatedVisibility(visible = observer, enter = fadeIn(), exit = fadeOut()) {
+            Box(modifier = Modifier
+                .background(Color.Black.copy(alpha = 0.5f))
+                .fillMaxSize()
+            )
+        }
 
         LaunchedEffect(key1 = observer, block = {
             if (observer) {
@@ -66,7 +74,6 @@ fun AppScreen() {
             } else {
                 sheetScope.launch { sheetScaffoldState.bottomSheetState.hide() }
             }
-
         })
 
         LaunchedEffect(
@@ -82,5 +89,7 @@ fun AppScreen() {
         }
 
     }
-
 }
+
+
+
