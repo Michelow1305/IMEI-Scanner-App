@@ -32,14 +32,20 @@ import com.hkr.mockupforproject.ui.AppViewModelFactory
 import com.hkr.mockupforproject.ui.theme.MockupForProjectTheme
 import androidx.core.app.ActivityCompat
 import com.hkr.mockupforproject.ui.screens.FetchDeviceInformation
-import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 
 
 
-open class MainActivity : ComponentActivity() {
+abstract class MainActivity : ComponentActivity() {
 
-    private val viewModel: AppViewModel by viewModels()
+    private val database by lazy { AppDatabase.getDatabase(this) }
+    private val repository by lazy { AppRepository(database.cellTowerDao()) }
+    private val viewModelFactory = AppViewModelFactory(repository, this)
+
+    private val viewModel : AppViewModel by viewModels()
+    {
+        viewModelFactory
+    }
 
     companion object {
         const val PHONE_STATE_REQUEST_CODE = 1001
@@ -48,14 +54,7 @@ open class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val database by lazy { AppDatabase.getDatabase(this) }
-        val repository by lazy { AppRepository(database.cellTowerDao()) }
-        val viewModelFactory = AppViewModelFactory(repository, this)
-
-        val viewModel: AppViewModel by viewModels()
-        {
-            viewModelFactory
-        }
+        Log.d(ContentValues.TAG, "Created viewmodel")
 
         viewModel.getCellTowersInRange(56.049877F, 14.150383F)
         viewModel.findByCid(208942101)
@@ -64,6 +63,7 @@ open class MainActivity : ComponentActivity() {
         // If we need more permissions add it to the array below
         viewModel.requestPermission.observe(this, Observer
         {
+            Log.d(ContentValues.TAG, "Requesting Permission")
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(
@@ -82,6 +82,7 @@ open class MainActivity : ComponentActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
     {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PHONE_STATE_REQUEST_CODE)
         {
             setContent {

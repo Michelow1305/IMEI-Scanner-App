@@ -3,15 +3,15 @@ package com.hkr.mockupforproject.data
 import com.hkr.mockupforproject.ui.AppViewModel
 
 data class LocalDeviceInformation(
-    var iMEI: String = TODO(),
+    var iMEI: String = "NA",
     var brand: String = "NA",
     var model: String = "NA",
     var currentNetwork: String = "NA",
     var networkOperator: String = "NA",
-    var signalStrength: Int = TODO(),
-    var mCC_mCN: String = TODO(),
-    var latitude: Double = TODO(),
-    var longitude: Double = TODO()
+    var signalStrength: Int = 0,
+    var mCC_mCN: String = "NA",
+    var latitude: Double = 0.0,
+    var longitude: Double = 0.0
 ) {
 
     /*
