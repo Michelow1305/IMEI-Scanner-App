@@ -100,8 +100,10 @@ fun fetchLocation(context: Context, appViewModel: AppViewModel) {
     val locationProvider = LocationManager.GPS_PROVIDER
     val lastKnownLocation = locationManager?.getLastKnownLocation(locationProvider)
 
-    appViewModel.localDeviceInformation.latitude = lastKnownLocation?.latitude!!
-    appViewModel.localDeviceInformation.longitude = lastKnownLocation?.longitude!!
+    lastKnownLocation?.let {
+        appViewModel.localDeviceInformation.latitude = it.latitude
+        appViewModel.localDeviceInformation.longitude = it.longitude
+    }
 }
 
 

@@ -1,6 +1,8 @@
 package com.hkr.mockupforproject.ui.screens
 
+import android.content.Context
 import android.telephony.CellSignalStrength
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +13,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -23,6 +28,11 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,11 +46,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.hkr.mockupforproject.R
+import com.hkr.mockupforproject.data.haversineDistance
 import com.hkr.mockupforproject.ui.AppViewModel
 
 @Preview
 @Composable
 fun SearchResultPreview() {
+
     SearchResult(appViewModel = viewModel())
 }
 
@@ -57,7 +69,6 @@ fun SearchResult(
 
 ) {
     Box(modifier = Modifier
-        .fillMaxSize()
         .background(Color.White)) {
         Column(modifier = Modifier.padding(40.dp)) {
             Text(
@@ -67,18 +78,11 @@ fun SearchResult(
                 fontWeight = FontWeight(700),
                 color = Color.Black
             )
-            appViewModel.imei = 12381239
-            RowTextElement(textLeft = "IMEI", textRight = "345454279843245")
-            RowTextElement(textLeft = "Brand", textRight = "Samsung")
-            RowTextElement(textLeft = "Model", textRight = "Smart system 1")
-            RowTextElement(textLeft = "Current Network", textRight = "3G/ -105dBm")
-            RowTextElement(textLeft = "Available Network", textRight = "4G/ -76dBm")
-            RowTextElement(textLeft = "Recommendation", textRight = "Upgrade to 4G device")
             RowTextElement(textLeft = "IMEI", textRight = iMEI)
             RowTextElement(textLeft = "Brand", textRight = brand)
             RowTextElement(textLeft = "Model", textRight = model)
             RowTextElement(textLeft = "Current Network", textRight = currentNetwork)
-            RowTextElement(textLeft = "Available Network", textRight = availableNetwork)
+            ShowCellTowers(appViewModel = appViewModel)
             RowTextElement(textLeft = "Recommendation", textRight = recommendation)
             Spacer(
                 modifier = Modifier
@@ -119,7 +123,6 @@ fun SearchResult(
         }
     }
 }
-
 
 /*
 Function name:	LocalDeviceResult()
@@ -184,4 +187,38 @@ fun RowTextElement(textLeft: String, textRight: String) {
             color = Color.Gray,
         )
     }
+}
+
+@Composable
+fun ShowCellTowers(appViewModel: AppViewModel) {
+    FetchDeviceInformation(appViewModel = appViewModel)
+    val cellTowers by appViewModel.cellTowersInRangeResult.observeAsState(initial = emptyList())
+    appViewModel.getCellTowersInRange(appViewModel.localDeviceInformation.latitude.toFloat(), appViewModel.localDeviceInformation.longitude.toFloat())
+    appViewModel.InRangeHasTowers()
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White, shape = RoundedCornerShape(10.dp))
+            .height(200.dp)
+    )
+    {
+        items(cellTowers)
+        { step ->
+            Log.d("DEBUG", appViewModel.localDeviceInformation.latitude.toString())
+            if (appViewModel.cellTowersInRangeHasTowers) {
+                val theDistance = haversineDistance(
+                    appViewModel.localDeviceInformation.latitude,
+                    appViewModel.localDeviceInformation.longitude,
+                    step.latitude!!.toDouble(),
+                    step.longitude!!.toDouble()
+                ).toInt().toString()
+                Row {
+                    Text(text = "Operator: "+step.mnc.toString()+" ")
+                    Text(text = "Distance: "+theDistance+"m")
+                }
+
+            }
+        }
+    }
+
 }

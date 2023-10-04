@@ -84,8 +84,8 @@ class MainActivity : ComponentActivity() {
         {
             setContent {
                 //val cellTowers by viewModel.findByMncResult.observeAsState(initial = emptyList())
-                val cellTowers by viewModel.cellTowersInRangeResult.observeAsState(initial = emptyList())
-                viewModel.InRangeHasTowers()
+                //val cellTowers by viewModel.cellTowersInRangeResult.observeAsState(initial = emptyList())
+                //viewModel.InRangeHasTowers()
 
                 MockupForProjectTheme {
                     // A surface container using the 'background' color from the theme
@@ -96,11 +96,29 @@ class MainActivity : ComponentActivity() {
                     {
                         // Fetches local device information
                         FetchDeviceInformation(viewModel)
-                        //AppScreen(viewModel)
+                        AppScreen(viewModel)
 
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    MockupForProjectTheme {
+        //StartScreen()
+    }
+}
+
+
+/*
                         LazyColumn(
                             modifier = Modifier
-                                .fillMaxWidth()
+                                  .fillMaxWidth()
                                 .background(Color.White, shape = RoundedCornerShape(10.dp))
                                 .height(200.dp)
                         )
@@ -123,22 +141,5 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         }
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MockupForProjectTheme {
-        //StartScreen()
-    }
-}
-
-
-
+ */
 
