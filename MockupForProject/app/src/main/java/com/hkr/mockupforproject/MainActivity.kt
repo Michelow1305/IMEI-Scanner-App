@@ -36,17 +36,13 @@ import androidx.compose.runtime.livedata.observeAsState
 
 
 
-abstract class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity() {
 
     private val database by lazy { AppDatabase.getDatabase(this) }
     private val repository by lazy { AppRepository(database.cellTowerDao()) }
-    private val viewModelFactory = AppViewModelFactory(repository, this)
+    private val viewModelFactory by lazy { AppViewModelFactory(repository, this) }
 
-    private val viewModel : AppViewModel by viewModels()
-    {
-        viewModelFactory
-    }
-
+    private val viewModel: AppViewModel by viewModels { viewModelFactory }
     companion object {
         const val PHONE_STATE_REQUEST_CODE = 1001
     }
@@ -55,6 +51,7 @@ abstract class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         Log.d(ContentValues.TAG, "Created viewmodel")
+
 
         viewModel.getCellTowersInRange(56.049877F, 14.150383F)
         viewModel.findByCid(208942101)
