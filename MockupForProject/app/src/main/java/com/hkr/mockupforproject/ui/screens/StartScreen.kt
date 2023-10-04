@@ -208,16 +208,14 @@ Author:         Joel Andersson
 @Composable
 fun ViewThisDevice(appViewModel : AppViewModel, navController : NavHostController)
 {
-    var deviceInformation = FetchDeviceInformation(appViewModel)
-
-    logDeviceInformation(deviceInformation)
+    appViewModel.localDeviceInformation.logDeviceInformation()
 
     LocalDeviceResult(appViewModel, navController,
-        networkOperator = deviceInformation["Network Operator"].toString(),
-        iMEI = deviceInformation["IMEI"].toString(),
-        currentNetwork = deviceInformation["Current Network"].toString(),
-        model = deviceInformation["Model"].toString(),
-        signalStrength = deviceInformation["Signal Strength"].toString())
+        networkOperator = appViewModel.localDeviceInformation.networkOperator,
+        iMEI = appViewModel.localDeviceInformation.iMEI,
+        currentNetwork = appViewModel.localDeviceInformation.currentNetwork,
+        model = appViewModel.localDeviceInformation.model,
+        signalStrength = appViewModel.localDeviceInformation.signalStrength.toString())
 }
 
 /*
@@ -269,5 +267,5 @@ fun EnterIMEIManually(appViewModel : AppViewModel)
         )
     }
 }
-}
+
 

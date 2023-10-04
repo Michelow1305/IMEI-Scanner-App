@@ -31,6 +31,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import com.hkr.mockupforproject.MainActivity
+import com.hkr.mockupforproject.data.LocalDeviceInformation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -54,6 +55,9 @@ class AppViewModel(
     private val repository: AppRepository,
     private val owner: LifecycleOwner
 ) : ViewModel() {
+    var bottomSheetExpand by mutableStateOf(false)
+
+    val localDeviceInformation = LocalDeviceInformation()
 
     private lateinit var _allTowers: LiveData<List<CellTower>>
     private lateinit var _findByMncResult: LiveData<List<CellTower>>
@@ -132,8 +136,6 @@ class AppViewModel(
         cellTowersInRangeResult.observe(
             owner,
             Observer { value -> cellTowersInRangeHasTowers = true })
-        var bottomSheetExpand by mutableStateOf(false)
-
     }
 
 
@@ -164,4 +166,7 @@ class AppViewModel(
             Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
     }
+
+
+
 }

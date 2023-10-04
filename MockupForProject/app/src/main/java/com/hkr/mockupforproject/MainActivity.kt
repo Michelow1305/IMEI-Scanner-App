@@ -47,6 +47,7 @@ import com.hkr.mockupforproject.ui.theme.MockupForProjectTheme
 open class MainActivity : ComponentActivity() {
 
     private val viewModel: AppViewModel by viewModels()
+
     companion object {
         const val PHONE_STATE_REQUEST_CODE = 1001
     }
@@ -58,7 +59,8 @@ open class MainActivity : ComponentActivity() {
         val repository by lazy { AppRepository(database.cellTowerDao()) }
         val viewModelFactory = AppViewModelFactory(repository, this)
 
-        val viewModel : AppViewModel by viewModels {
+        val viewModel: AppViewModel by viewModels()
+        {
             viewModelFactory
         }
 
@@ -67,78 +69,86 @@ open class MainActivity : ComponentActivity() {
 
         // Observe the LiveData in Appviewmodel for permission request
         // If we need more permissions add it to the array below
-        viewModel.requestPermission.observe(this, Observer {
+        viewModel.requestPermission.observe(this, Observer
+        {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(
                     Manifest.permission.READ_PHONE_STATE,
-                    Manifest.permission.ACCESS_FINE_LOCATION),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ),
                 PHONE_STATE_REQUEST_CODE
             )
         })
         viewModel.checkAndAskPermission()
-        Log.d(ContentValues.TAG, "Has permission " + viewModel.hasReadPhoneStatePermission(this).toString())
+        Log.d(
+            ContentValues.TAG,
+            "Has permission " + viewModel.hasReadPhoneStatePermission(this).toString()
+        )
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when (requestCode) {
-            PHONE_STATE_REQUEST_CODE -> {
-                setContent()
-                {
-                    //val cellTowers by viewModel.findByMncResult.observeAsState(initial = emptyList())
-                    val cellTowers by viewModel.cellTowersInRangeResult.observeAsState(initial = emptyList())
-                    viewModel.InRangeHasTowers()
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
+    {
+        if (requestCode == PHONE_STATE_REQUEST_CODE)
+        {
+            setContent {
+                /*
+                //val cellTowers by viewModel.findByMncResult.observeAsState(initial = emptyList())
+                val cellTowers by viewModel.cellTowersInRangeResult.observeAsState(initial = emptyList())
+                viewModel.InRangeHasTowers()
 
-                    MockupForProjectTheme
+                 */
+
+                MockupForProjectTheme {
+                    // A surface container using the 'background' color from the theme
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    )
                     {
-                        // A surface container using the 'background' color from the theme
-                        Surface(
-                            modifier = Modifier.fillMaxSize(),
-                            color = MaterialTheme.colorScheme.background
+                        FetchDeviceInformation(viewModel)
+                        AppScreen(viewModel)
+
+                        /*
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color.White, shape = RoundedCornerShape(10.dp))
+                                .height(200.dp)
+
                         )
                         {
-                            //AppScreen()
-
-                            LazyColumn(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(Color.White, shape = RoundedCornerShape(10.dp))
-                                    .height(200.dp)
-
-                            )
-                            {
-                                items(cellTowers)
-                                { step ->
-                                    if (viewModel.cellTowersInRangeHasTowers)
-                                    {
-                                        Log.d(
-                                            "",
-                                            haversineDistance(
-                                                56.049877,
-                                                14.150383,
-                                                step.latitude!!.toDouble(),
-                                                step.longitude!!.toDouble()
-                                            ).toString()
-                                        )
-                                    }
-
-                                    Text(
-
-                                        text = step.toString()
-
+                            items(cellTowers)
+                            { step ->
+                                if (viewModel.cellTowersInRangeHasTowers) {
+                                    Log.d(
+                                        "",
+                                        haversineDistance(
+                                            56.049877,
+                                            14.150383,
+                                            step.latitude!!.toDouble(),
+                                            step.longitude!!.toDouble()
+                                        ).toString()
                                     )
-
                                 }
+
+                                Text(
+
+                                    text = step.toString()
+
+                                )
+
                             }
                         }
+
+                         */
                     }
                 }
             }
         }
+
     }
 }
-
-
 
 
 @Preview(showBackground = true)
