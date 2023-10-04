@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -119,11 +120,8 @@ open class MainActivity : ComponentActivity() {
                                         ).toString()
                                     )
                                 }
-
                                 Text(
-
                                     text = step.toString()
-
                                 )
                             }
                         }
