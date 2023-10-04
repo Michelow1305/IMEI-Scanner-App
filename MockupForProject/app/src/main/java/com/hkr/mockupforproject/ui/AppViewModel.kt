@@ -54,7 +54,8 @@ class AppViewModelFactory(
 class AppViewModel(
     private val repository: AppRepository,
     private val owner: LifecycleOwner
-) : ViewModel() {
+) : ViewModel()
+{
     var bottomSheetExpand by mutableStateOf(false)
 
     val localDeviceInformation = LocalDeviceInformation()
