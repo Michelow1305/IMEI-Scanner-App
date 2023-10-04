@@ -5,29 +5,33 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Build
 import android.telephony.TelephonyManager
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.hkr.mockupforproject.MainActivity
+import com.hkr.mockupforproject.ui.AppViewModel
 
 /*
 Function name:	FetchDeviceInformation()
-Inputs:			None
+Inputs:			appViewModel : AppViewModel
 Outputs:		Fetches local device information
 Called by:		ViewThisDevice() if user clicks "View this device"-button
 Calls:			Methods of the TelephonyManager
 Author:         Joel Andersson
  */
-@SuppressLint("MissingPermission", "NewApi")
-@RequiresApi(Build.VERSION_CODES.N)
+
 @Composable
-fun FetchDeviceInformation() :  MutableMap<String, String>
-{
+fun FetchDeviceInformation(appViewModel : AppViewModel): MutableMap<String, String> {
+
+    val context = LocalContext.current
+    val telephonyManager =
+        context.getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
+
     var deviceInformation = mutableMapOf(
         "IMEI" to "",
         "Brand" to "",
@@ -36,29 +40,48 @@ fun FetchDeviceInformation() :  MutableMap<String, String>
         "Network Operator" to "",
         "Signal Strength" to "",
         "Available Network" to "",
-        "Recommendation" to "")
+        "Recommendation" to "",
+        "MCC and MCN" to "",
+        "Latitude" to "",
+        "Longitude" to ""
+    )
 
-    val context = LocalContext.current
-    val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
+    // Fetching the device location
+    if(appViewModel.hasReadPhoneLocationPermission(context)) {
+        fetchLocation(context, deviceInformation)
+    }
+    else Log.d(ContentValues.TAG, "No permission to access location")
+
+    // Getting IMEI and Signal Strength etc, most are only available on (26 < API < 28)
+    fetchSecureInformation(appViewModel, telephonyManager!!, context, deviceInformation)
 
     deviceInformation["Network Operator"] = telephonyManager!!.networkOperatorName
-    Log.d(ContentValues.TAG,"Network Operator")
+    deviceInformation["MCC and MCN"] = telephonyManager.networkOperator
 
+    deviceInformation["Brand"] = Build.MANUFACTURER
+    deviceInformation["Model"] = Build.MODEL
 
-    //deviceInformation["Current Network"] = FetchNetworkType(context, telephonyManager)
-    //Log.d(ContentValues.TAG,"Current Network")
-
-
-    //deviceInformation["IMEI"] = telephonyManager!!.imei
-    //Log.d(ContentValues.TAG,"IMEI")
-
-
-    deviceInformation["Model"] = telephonyManager!!.phoneType.toString()
-    Log.d(ContentValues.TAG,"Model")
-    deviceInformation["Signal Strength"] = telephonyManager!!.signalStrength.toString()
-    Log.d(ContentValues.TAG,"Signal Strength")
     return deviceInformation
 }
+
+
+/*
+Function name:	logDeviceInformation()
+Inputs:			deviceInformation : MutableMap<String, String>
+Outputs:		Prints all information stored in the device information to the Logcat
+Called by:		FetchDeviceInformation()
+Calls:			NA
+Author:         Joel Andersson
+ */
+fun logDeviceInformation(deviceInformation : MutableMap<String, String>)
+{
+    println("-- DEVICE INFORMATION -- ")
+    for ((key, value) in deviceInformation) {
+        println("$key: $value")
+    }
+    println("-- END -- ")
+}
+
 
 /*
 Function name:	FetchNetworkType()
@@ -69,10 +92,9 @@ Calls:			Methods of the TelephonyManager
 Author:         Joel Andersson
  */
 @SuppressLint("MissingPermission")
-fun FetchSecureData(context : Context, telephonyManager : TelephonyManager) : String
+fun FetchNetworkType(context : Context, telephonyManager : TelephonyManager) : String
 {
-
-    val networkName = when (telephonyManager!!.networkType) {
+    val networkName = when (telephonyManager.networkType) {
         TelephonyManager.NETWORK_TYPE_GPRS,
         TelephonyManager.NETWORK_TYPE_EDGE,
         TelephonyManager.NETWORK_TYPE_CDMA,
@@ -98,32 +120,65 @@ fun FetchSecureData(context : Context, telephonyManager : TelephonyManager) : St
     return networkName
 }
 
-fun FetchLocalIMEI()
+
+/*
+Function name:	FetchLocation()
+Inputs:			Context, TelephonyManager
+Outputs:		Fetches Network type from the telephony manager (e.g 3G, 2G etc)
+Called by:		FetchDeviceInformation()
+Calls:			Methods of the TelephonyManager
+Author:         Joel Andersson
+ */
+@SuppressLint("MissingPermission")
+fun fetchLocation(context: Context, deviceInformation : MutableMap<String, String>) {
+    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
+    val locationProvider = LocationManager.GPS_PROVIDER
+    val lastKnownLocation = locationManager?.getLastKnownLocation(locationProvider)
+
+    deviceInformation["Latitude"] = lastKnownLocation?.latitude.toString()
+    deviceInformation["Longitude"] = lastKnownLocation?.longitude.toString()
+}
+
+
+/*
+Function name:	fetchSecureInformation()
+Inputs:			appViewModel: AppViewModel, telephonyManager: TelephonyManager, context: Context, deviceInformation : MutableMap
+Outputs:		Fetches Secure Information from the telephony manager (e.g 3G, 2G etc)
+Called by:		FetchDeviceInformation()
+Calls:			Methods of the TelephonyManager
+Author:         Joel Andersson
+ */
+@SuppressLint("MissingPermission")
+fun fetchSecureInformation(appViewModel: AppViewModel, telephonyManager: TelephonyManager, context: Context, deviceInformation : MutableMap<String, String>)
 {
+    // Getting IMEI, only available on (26 < API < 28)
+    if (appViewModel.hasReadPhoneStatePermission(context)) {
+        // Getting the current network type
+        Log.d(ContentValues.TAG, "Current Network")
+        deviceInformation["Current Network"] = FetchNetworkType(context, telephonyManager!!)
 
-
-}
-
-fun hasReadPhoneStatePermission(context: Context): Boolean {
-    return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
-}
-
-fun requestReadPhoneStatePermission(activity: MainActivity) {
-    ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_PHONE_STATE), REQUEST_CODE)
-}
-
-override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-    when (requestCode) {
-        REQUEST_CODE -> {
-            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                FetchSecureData() // Create a data class
-            } else {
-                // Permission denied, provide alternative functionality or notify user
+        // Getting IMEI, require API > 26
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            try {
+                if (telephonyManager != null) {
+                    deviceInformation["IMEI"] = telephonyManager.imei
+                }
+            } catch (e: SecurityException) {
+                Log.d(ContentValues.TAG, "Security Exception", e)
             }
-            return
+        } else {
+            Log.d(ContentValues.TAG, "Can not fetch IMEI, Incorrect Version")
+            deviceInformation["IMEI"] = "NA"
         }
-        else -> {
-            // Handle other request codes if needed.
+
+        // Getting signal strength, require API >28
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+            deviceInformation["Signal Strength"] =
+                telephonyManager.signalStrength!!.level.toString()
+        else {
+            Log.d(ContentValues.TAG, "Can not fetch signal strength, Incorrect Version")
+            deviceInformation["Signal Strength"] = "NA"
         }
-    }
+
+    } else Log.d(ContentValues.TAG, "No permission to access telephone states")
 }

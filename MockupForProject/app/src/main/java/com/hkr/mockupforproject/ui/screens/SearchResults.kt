@@ -147,8 +147,6 @@ fun LocalDeviceResult(
             RowTextElement(textLeft = "Network Operator", textRight = networkOperator)
             RowTextElement(textLeft = "Current Network", textRight = currentNetwork)
             RowTextElement(textLeft = "Signal Strength", textRight = signalStrength)
-            RowTextElement(textLeft = "Available Network", textRight = availableNetwork)
-            RowTextElement(textLeft = "Recommendation", textRight = recommendation)
         }
     }
 }

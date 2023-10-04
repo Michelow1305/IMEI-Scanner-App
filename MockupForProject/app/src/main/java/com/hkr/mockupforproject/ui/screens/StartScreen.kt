@@ -208,7 +208,10 @@ Author:         Joel Andersson
 @Composable
 fun ViewThisDevice(appViewModel : AppViewModel, navController : NavHostController)
 {
-    var deviceInformation = FetchDeviceInformation()
+    var deviceInformation = FetchDeviceInformation(appViewModel)
+
+    logDeviceInformation(deviceInformation)
+
     LocalDeviceResult(appViewModel, navController,
         networkOperator = deviceInformation["Network Operator"].toString(),
         iMEI = deviceInformation["IMEI"].toString(),
