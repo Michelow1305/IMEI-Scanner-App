@@ -51,7 +51,7 @@ class AppViewModelFactory(
 /*
     All queries are run in a separate thread.
  */
-class AppViewModel(
+open class AppViewModel(
     private val repository: AppRepository,
     private val owner: LifecycleOwner
 ) : ViewModel()

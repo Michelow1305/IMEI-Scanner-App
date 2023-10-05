@@ -35,7 +35,6 @@ import com.hkr.mockupforproject.ui.AppViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
-@Preview
 @Composable
 fun AppScreen(viewModel : AppViewModel) {
 
