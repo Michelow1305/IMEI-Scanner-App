@@ -66,22 +66,8 @@ open class AppViewModel(
     var searchInfo by mutableStateOf(false)
 
 
-    // Variables for saving devices
-    lateinit var currentDeviceToSave: SavedDevice
-    lateinit var deviceName: String
-    lateinit var deviceDescription: String
-    lateinit var brand: String
-    lateinit var model: String
-    lateinit var nearbyTowers: List<CellTower>
-    var imei: Int = 0
-    var priority: Int = 0
-
-    //Function to set a device to save
-    fun setCurreninitDeviceToSave() {
-        currentDeviceToSave = SavedDevice(
-            imei, deviceName, deviceDescription, brand, model, nearbyTowers, priority
-        )
-    }
+    // Current Device to save
+    val currentDeviceToSave: SavedDevice = SavedDevice()
 
     fun getAll() = viewModelScope.launch(Dispatchers.IO) {
         _allTowers = repository.getAll()

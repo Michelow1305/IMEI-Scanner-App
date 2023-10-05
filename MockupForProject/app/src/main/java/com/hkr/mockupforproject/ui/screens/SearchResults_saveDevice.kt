@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.KeyboardArrowRight
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -70,6 +72,7 @@ fun SearchResult_saveDevice(
 
         var text1 by remember { mutableStateOf("") }
         OutlinedTextField(
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             modifier = Modifier.fillMaxWidth(),
             value = text1,
             onValueChange = { text1 = it },
@@ -80,6 +83,7 @@ fun SearchResult_saveDevice(
 
         var text2 by remember { mutableStateOf("") }
         OutlinedTextField(
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             modifier = Modifier.fillMaxWidth(),
             value = text2,
             onValueChange = { text2 = it },
@@ -97,7 +101,11 @@ fun SearchResult_saveDevice(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(75.dp),
-            onClick = { navController.navigate("SearchResults_updatePriority") },
+            onClick = {
+                navController.navigate("SearchResults_updatePriority");
+                appViewModel.currentDeviceToSave.deviceName = text1;
+                appViewModel.currentDeviceToSave.deviceName = text2
+                      },
         ) {
             Text(
                 text = "Next",

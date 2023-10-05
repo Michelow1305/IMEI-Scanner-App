@@ -7,12 +7,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.KeyboardArrowRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -75,6 +79,7 @@ fun SearchResult_updatePriority(
         Text(text = "Drag the slider to update the priority of the device", color = Color.Black)
         var sliderPosition by remember { mutableStateOf(0f) }
         val interactionSource = remember { MutableInteractionSource() }
+
         Slider(
             colors = SliderDefaults.colors(
                 thumbColor = Color(0xFF3654F4),
@@ -85,6 +90,7 @@ fun SearchResult_updatePriority(
             onValueChange = { sliderPosition = it },
             steps = 5,
         )
+
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()

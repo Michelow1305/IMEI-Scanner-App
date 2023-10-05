@@ -1,5 +1,6 @@
 package com.hkr.mockupforproject.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
@@ -35,11 +36,9 @@ fun SearchResult_finish(
     appViewModel: AppViewModel,
     navController: NavHostController = rememberNavController()
 ) {
-
-    appViewModel.setCurreninitDeviceToSave()
     // State to track whether navigation should occur
     var shouldNavigate by remember { mutableStateOf(false) }
-
+    Log.d("Device to save",appViewModel.currentDeviceToSave.toString())
     // Use LaunchedEffect to trigger navigation after 1000ms
     LaunchedEffect(shouldNavigate) {
         if (shouldNavigate) {

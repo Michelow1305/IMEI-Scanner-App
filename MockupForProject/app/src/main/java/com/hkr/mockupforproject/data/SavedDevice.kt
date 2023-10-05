@@ -1,13 +1,13 @@
 package com.hkr.mockupforproject.data
 
 data class SavedDevice(
-    val imei: Int,
-    val deviceName: String,
-    val deviceDescription: String,
-    val brand: String,
-    val model: String,
-    val nearbyTowers: List<CellTower>,
-    val priority: Int,
+    var deviceName: String = "Not defined",
+    var deviceDescription: String = "Not defined",
+    var brand: String = "Not defined",
+    var model: String = "Not defined",
+    var nearbyTowers: List<CellTower> = emptyList(),
+    var imei: Int = 0,
+    var priority: Int = 0
 ) {
     
 }

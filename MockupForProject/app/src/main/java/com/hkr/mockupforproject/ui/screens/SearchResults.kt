@@ -8,17 +8,10 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -50,6 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.times
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -96,7 +90,11 @@ fun SearchResult(
             RowTextElement(textLeft = "IMEI", textRight = iMEI)
             RowTextElement(textLeft = "Brand", textRight = brand)
             RowTextElement(textLeft = "Model", textRight = model)
-            RowTextElement(textLeft = "Current Network", textRight = appViewModel.localDeviceInformation.currentNetwork+"/"+appViewModel.localDeviceInformation.networkOperator+"/"+appViewModel.localDeviceInformation.signalStrength)
+            RowTextElement(
+                textLeft = "Current Network",
+                textRight = appViewModel.localDeviceInformation.networkOperator+"/"+appViewModel.localDeviceInformation.currentNetwork+" ",
+                elementRight = {SignalStrengthBar(appViewModel.localDeviceInformation.signalStrength)}
+            )
             Box(
                 modifier = Modifier.clickable(onClick = {expandAvailableOperators=!expandAvailableOperators})
             ) {
@@ -118,7 +116,13 @@ fun SearchResult(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(75.dp),
-                onClick = { navController.navigate("SearchResults_saveDevice") },
+                onClick = {
+                    navController.navigate("SearchResults_saveDevice");
+                    appViewModel.currentDeviceToSave.imei = 123123;
+                    appViewModel.currentDeviceToSave.brand = "test1";
+                    appViewModel.currentDeviceToSave.model = "Motorola";
+                    //appViewModel.currentDeviceToSave.nearbyTowers = appViewModel.cellTowersInRangeResult.value!!;
+                          },
             ) {
                 Text(
                     text = "Save Device",
@@ -211,12 +215,15 @@ fun RowTextElement(
             fontWeight = FontWeight(500),
             color = Color.Black
         )
-        Text(
-            text = textRight,
-            fontWeight = FontWeight(500),
-            color = Color.Gray,
-        )
-        elementRight()
+        Row {
+            Text(
+                text = textRight,
+                fontWeight = FontWeight(500),
+                color = Color.Gray,
+            )
+            elementRight()
+        }
+
     }
 }
 
@@ -235,23 +242,38 @@ fun ShowCellTowers(appViewModel: AppViewModel) {
 
     if (cellTowersList != null) {
         cellTowersList?.let { cellTowers ->
+            val sortedCellTowers = cellTowers.sortedBy { step ->
+                haversineDistance(
+                    localDeviceLatitude,
+                    localDeviceLongitude,
+                    step.latitude!!.toDouble(),
+                    step.longitude!!.toDouble()
+                )
+            }
+            appViewModel.currentDeviceToSave.nearbyTowers = sortedCellTowers
+            Log.d("Towers to save", appViewModel.currentDeviceToSave.nearbyTowers.toString())
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White, shape = RoundedCornerShape(10.dp))
+                    .background(Color.Black.copy(alpha = 0.05f))
+                    .padding(8.dp)
                     .height(200.dp)
             )
             {
-                items(cellTowers)
-                { step ->
+                itemsIndexed(sortedCellTowers)
+                { index, step ->
                     val theDistance = haversineDistance(
                         localDeviceLatitude,
                         localDeviceLongitude,
                         step.latitude!!.toDouble(),
                         step.longitude!!.toDouble()
                     ).toInt().toString()
-                    Row {
-                        Text(text = "Operator: "+step.mnc.toString()+" ")
+                    Row (horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth())  {
+                        Row {
+                            Text(text = (index+1).toString()+". ")
+                            Text(text = step.mnc.toString()+"/")
+                            Text(text = step.radio.toString())
+                        }
                         Text(text = "Distance: "+theDistance+"m")
                     }
                 }
@@ -278,4 +300,29 @@ fun AnimatedExpandArrow(expanded: Boolean, modifier: Modifier = Modifier) {
         contentDescription = null,
         modifier = modifier.rotate(rotationDegree)
     )
+}
+
+@Composable
+fun SignalStrengthBar(strength: Int) {
+    Row(
+        modifier = Modifier
+            .width(24.dp)
+            .height(20.dp)
+            .padding(start = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Bottom
+    ) {
+        // Draw n bars
+        for (i in 1..4) {
+            Box(
+                modifier = Modifier
+                    .height((i * 4).dp)  // Adjust the height based on the index
+                    .width(3.dp)
+                    .background(
+                        color = if (i <= strength) Color.Green else Color.Gray,
+                        shape = RoundedCornerShape(topStart = 2.dp, topEnd = 2.dp)
+                    )
+            )
+        }
+    }
 }
