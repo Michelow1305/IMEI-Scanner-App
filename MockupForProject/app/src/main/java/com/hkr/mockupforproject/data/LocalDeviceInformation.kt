@@ -1,6 +1,7 @@
 package com.hkr.mockupforproject.data
 
-import com.hkr.mockupforproject.ui.AppViewModel
+import androidx.compose.runtime.MutableDoubleState
+import androidx.compose.runtime.mutableDoubleStateOf
 
 data class LocalDeviceInformation(
     var iMEI: String = "NA",
@@ -10,8 +11,8 @@ data class LocalDeviceInformation(
     var networkOperator: String = "NA",
     var signalStrength: Int = 0,
     var mCC_mCN: String = "NA",
-    var latitude: Double = 0.0,
-    var longitude: Double = 0.0
+    var latitude: MutableDoubleState = mutableDoubleStateOf(0.0),
+    var longitude: MutableDoubleState = mutableDoubleStateOf(0.0)
 ) {
 
     /*

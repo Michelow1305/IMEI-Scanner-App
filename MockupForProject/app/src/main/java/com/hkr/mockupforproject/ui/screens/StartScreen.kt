@@ -216,8 +216,8 @@ fun ViewThisDevice(appViewModel : AppViewModel, navController : NavHostControlle
         currentNetwork = appViewModel.localDeviceInformation.currentNetwork,
         model = appViewModel.localDeviceInformation.model,
         signalStrength = appViewModel.localDeviceInformation.signalStrength.toString(),
-        latitude = appViewModel.localDeviceInformation.latitude,
-        longitude = appViewModel.localDeviceInformation.longitude)
+        latitude = appViewModel.localDeviceInformation.latitude.value,
+        longitude = appViewModel.localDeviceInformation.longitude.value)
 
 }
 

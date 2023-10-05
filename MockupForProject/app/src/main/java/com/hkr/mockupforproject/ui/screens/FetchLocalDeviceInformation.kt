@@ -123,7 +123,8 @@ fun fetchLocation(context: Context, appViewModel: AppViewModel) {
         }
         gpsLocation == null -> {
             Log.d("LocationProvider", "Using Network location provider.")
-            networkLocation
+            //networkLocation
+            gpsLocation
         }
         networkLocation == null -> {
             Log.d("LocationProvider", "Using GPS location provider.")
@@ -140,8 +141,8 @@ fun fetchLocation(context: Context, appViewModel: AppViewModel) {
     }
 
     if (bestLocation != null) {
-        appViewModel.localDeviceInformation.latitude = bestLocation.latitude
-        appViewModel.localDeviceInformation.longitude = bestLocation.longitude
+        appViewModel.localDeviceInformation.latitude.value = bestLocation.latitude
+        appViewModel.localDeviceInformation.longitude.value = bestLocation.longitude
     }
     else {
         Log.d(ContentValues.TAG, "GPS Location Not Available")

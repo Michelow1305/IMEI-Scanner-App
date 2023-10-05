@@ -59,7 +59,7 @@ class MainActivity : ComponentActivity() {
 
         Thread.sleep(500)
 
-        viewModel.getCellTowersInRange(viewModel.localDeviceInformation.latitude.toFloat(), viewModel.localDeviceInformation.longitude.toFloat())
+        viewModel.getCellTowersInRange(viewModel.localDeviceInformation.latitude.value.toFloat(), viewModel.localDeviceInformation.longitude.value.toFloat())
         viewModel.findByCid(208942101)
 
         // Observe the LiveData in Appviewmodel for permission request

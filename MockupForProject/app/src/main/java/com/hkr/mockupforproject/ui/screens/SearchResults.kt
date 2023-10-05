@@ -46,6 +46,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.hkr.mockupforproject.R
+import com.hkr.mockupforproject.data.CellTower
 import com.hkr.mockupforproject.data.haversineDistance
 import com.hkr.mockupforproject.ui.AppViewModel
 
@@ -193,34 +194,47 @@ fun RowTextElement(textLeft: String, textRight: String) {
 
 @Composable
 fun ShowCellTowers(appViewModel: AppViewModel) {
-    FetchDeviceInformation(appViewModel = appViewModel)
-    val cellTowers by appViewModel.cellTowersInRangeResult.observeAsState(initial = emptyList())
-    appViewModel.getCellTowersInRange(appViewModel.localDeviceInformation.latitude.toFloat(), appViewModel.localDeviceInformation.longitude.toFloat())
-    appViewModel.InRangeHasTowers()
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White, shape = RoundedCornerShape(10.dp))
-            .height(200.dp)
-    )
-    {
-        items(cellTowers)
-        { step ->
-            Log.d("DEBUG", appViewModel.localDeviceInformation.latitude.toString())
-            if (appViewModel.cellTowersInRangeHasTowers) {
-                val theDistance = haversineDistance(
-                    appViewModel.localDeviceInformation.latitude,
-                    appViewModel.localDeviceInformation.longitude,
-                    step.latitude!!.toDouble(),
-                    step.longitude!!.toDouble()
-                ).toInt().toString()
-                Row {
-                    Text(text = "Operator: "+step.mnc.toString()+" ")
-                    Text(text = "Distance: "+theDistance+"m")
-                }
+    val localDeviceLatitude by remember { appViewModel.localDeviceInformation.latitude }
+    val localDeviceLongitude by remember { appViewModel.localDeviceInformation.longitude }
+    val cellTowersList: List<CellTower>? by appViewModel.cellTowersInRangeResult.observeAsState()
 
+    Log.d("LatitudePhone", localDeviceLatitude.toString())
+    Log.d("LongitudePhone", localDeviceLongitude.toString())
+
+    appViewModel.getCellTowersInRange(localDeviceLatitude.toFloat(),localDeviceLongitude.toFloat())
+
+    Log.d("DEBUG3", appViewModel.cellTowersInRangeResult.value.toString())
+
+    if (cellTowersList != null) {
+        cellTowersList?.let { cellTowers ->
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White, shape = RoundedCornerShape(10.dp))
+                    .height(200.dp)
+            )
+            {
+                items(cellTowers)
+                { step ->
+                    Log.d("DEBUG", localDeviceLatitude.toString())
+                    val theDistance = haversineDistance(
+                        localDeviceLatitude,
+                        localDeviceLongitude,
+                        step.latitude!!.toDouble(),
+                        step.longitude!!.toDouble()
+                    ).toInt().toString()
+                    Row {
+                        Text(text = "Operator: "+step.mnc.toString()+" ")
+                        Text(text = "Distance: "+theDistance+"m")
+                    }
+                }
             }
         }
+
+    } else {
+        Text(text = "List is null")
+        // Handle the case when the list is null, e.g., show a loading indicator or a message
     }
+    FetchDeviceInformation(appViewModel = appViewModel)
 
 }

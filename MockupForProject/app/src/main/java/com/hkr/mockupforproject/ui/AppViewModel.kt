@@ -1,15 +1,8 @@
 package com.hkr.mockupforproject.ui
 
 import android.Manifest
-import android.content.ContentValues
 import android.content.Context
 import android.content.pm.PackageManager
-import android.util.Log
-import androidx.compose.material3.BottomSheetScaffoldState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -27,12 +20,9 @@ import com.hkr.mockupforproject.data.deltaLon
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
-import com.hkr.mockupforproject.MainActivity
 import com.hkr.mockupforproject.data.LocalDeviceInformation
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class AppViewModelFactory(
@@ -59,7 +49,6 @@ open class AppViewModel(
     var bottomSheetExpand by mutableStateOf(false)
 
     var localDeviceInformation : LocalDeviceInformation = LocalDeviceInformation()
-
 
     private lateinit var _allTowers: LiveData<List<CellTower>>
     private lateinit var _findByMncResult: LiveData<List<CellTower>>
