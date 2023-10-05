@@ -179,7 +179,6 @@ fun StartScreen(
                     )
                 }
             }
-
         }
         if (appViewModel.bottomSheetExpand) {
             ModalBottomSheet(

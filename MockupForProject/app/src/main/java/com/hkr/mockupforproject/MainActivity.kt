@@ -52,8 +52,14 @@ class MainActivity : ComponentActivity() {
 
         Log.d(ContentValues.TAG, "Created viewmodel")
 
+        Log.d(ContentValues.TAG, viewModel.localDeviceInformation.latitude.toString() + " " + viewModel.localDeviceInformation.longitude.toString())
 
-        viewModel.getCellTowersInRange(56.049877F, 14.150383F)
+        println(viewModel.localDeviceInformation.latitude)
+        println(viewModel.localDeviceInformation.longitude)
+
+        Thread.sleep(500)
+
+        viewModel.getCellTowersInRange(viewModel.localDeviceInformation.latitude.toFloat(), viewModel.localDeviceInformation.longitude.toFloat())
         viewModel.findByCid(208942101)
 
         // Observe the LiveData in Appviewmodel for permission request
@@ -79,11 +85,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
     {
+        Log.d(ContentValues.TAG, "Entered onRequestPermissionResult")
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PHONE_STATE_REQUEST_CODE)
         {
             setContent {
                 //val cellTowers by viewModel.findByMncResult.observeAsState(initial = emptyList())
+
                 val cellTowers by viewModel.cellTowersInRangeResult.observeAsState(initial = emptyList())
                 viewModel.InRangeHasTowers()
 
@@ -96,7 +104,9 @@ class MainActivity : ComponentActivity() {
                     {
                         // Fetches local device information
                         FetchDeviceInformation(viewModel)
-                        //AppScreen(viewModel)
+                        AppScreen(viewModel)
+
+                        /*
 
                         LazyColumn(
                             modifier = Modifier
@@ -111,8 +121,8 @@ class MainActivity : ComponentActivity() {
                                     Log.d(
                                         "",
                                         haversineDistance(
-                                            56.049877,
-                                            14.150383,
+                                            viewModel.localDeviceInformation.latitude,
+                                            viewModel.localDeviceInformation.longitude,
                                             step.latitude!!.toDouble(),
                                             step.longitude!!.toDouble()
                                         ).toString()
@@ -123,6 +133,8 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         }
+
+                         */
                     }
                 }
             }

@@ -29,23 +29,26 @@ Author:         Joel Andersson
 fun FetchDeviceInformation(appViewModel : AppViewModel) {
 
     val context = LocalContext.current
-    val telephonyManager =
-        context.getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
+    val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
+
+    // Getting IMEI and Signal Strength etc, most are only available on (26 < API < 28)
+    Log.d(ContentValues.TAG, "Fetching Secure Information")
+    fetchSecureInformation(appViewModel, telephonyManager!!, context)
+
+    Log.d(ContentValues.TAG, "Fetching Network Information")
+    appViewModel.localDeviceInformation.networkOperator = telephonyManager!!.networkOperatorName
+    appViewModel.localDeviceInformation.mCC_mCN = telephonyManager.networkOperator
+
+    Log.d(ContentValues.TAG, "Fetching Manufacturer and Build")
+    appViewModel.localDeviceInformation.brand = Build.MANUFACTURER
+    appViewModel.localDeviceInformation.model = Build.MODEL
 
     // Fetching the device location
+    Log.d(ContentValues.TAG, "Fetching Location")
     if(appViewModel.hasReadPhoneLocationPermission(context)) {
         fetchLocation(context, appViewModel)
     }
     else Log.d(ContentValues.TAG, "No permission to access location")
-
-    // Getting IMEI and Signal Strength etc, most are only available on (26 < API < 28)
-    fetchSecureInformation(appViewModel, telephonyManager!!, context)
-
-    appViewModel.localDeviceInformation.networkOperator = telephonyManager!!.networkOperatorName
-    appViewModel.localDeviceInformation.mCC_mCN = telephonyManager.networkOperator
-
-    appViewModel.localDeviceInformation.brand = Build.MANUFACTURER
-    appViewModel.localDeviceInformation.model = Build.MODEL
 }
 
 /*
@@ -100,8 +103,12 @@ fun fetchLocation(context: Context, appViewModel: AppViewModel) {
     val locationProvider = LocationManager.GPS_PROVIDER
     val lastKnownLocation = locationManager?.getLastKnownLocation(locationProvider)
 
-    appViewModel.localDeviceInformation.latitude = lastKnownLocation?.latitude!!
-    appViewModel.localDeviceInformation.longitude = lastKnownLocation?.longitude!!
+    if (lastKnownLocation != null) {
+        appViewModel.localDeviceInformation.latitude = lastKnownLocation.latitude
+        appViewModel.localDeviceInformation.longitude = lastKnownLocation.longitude
+    } else {
+        Log.d(ContentValues.TAG, "Location Not Available")
+    }
 }
 
 

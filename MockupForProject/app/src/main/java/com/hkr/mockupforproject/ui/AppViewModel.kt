@@ -58,7 +58,8 @@ class AppViewModel(
 {
     var bottomSheetExpand by mutableStateOf(false)
 
-    val localDeviceInformation = LocalDeviceInformation()
+    var localDeviceInformation : LocalDeviceInformation = LocalDeviceInformation()
+
 
     private lateinit var _allTowers: LiveData<List<CellTower>>
     private lateinit var _findByMncResult: LiveData<List<CellTower>>
