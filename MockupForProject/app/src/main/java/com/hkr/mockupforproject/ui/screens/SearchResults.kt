@@ -101,7 +101,7 @@ fun SearchResult(
                 RowTextElement(textLeft = "Nearby cell towers...", elementRight = { AnimatedExpandArrow(expanded = expandAvailableOperators) })
             }
 
-            if(expandAvailableOperators) {
+            if(expandAvailableOperators || !appViewModel.searchInfo) {
                 ShowCellTowers(appViewModel = appViewModel)
             }
 
@@ -121,7 +121,7 @@ fun SearchResult(
                     appViewModel.currentDeviceToSave.imei = 123123;
                     appViewModel.currentDeviceToSave.brand = "test1";
                     appViewModel.currentDeviceToSave.model = "Motorola";
-                    //appViewModel.currentDeviceToSave.nearbyTowers = appViewModel.cellTowersInRangeResult.value!!;
+                    appViewModel.currentDeviceToSave.recommendation = "Upgrade"
                           },
             ) {
                 Text(

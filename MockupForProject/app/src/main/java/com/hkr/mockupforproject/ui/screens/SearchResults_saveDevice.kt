@@ -104,7 +104,7 @@ fun SearchResult_saveDevice(
             onClick = {
                 navController.navigate("SearchResults_updatePriority");
                 appViewModel.currentDeviceToSave.deviceName = text1;
-                appViewModel.currentDeviceToSave.deviceName = text2
+                appViewModel.currentDeviceToSave.deviceDescription = text2
                       },
         ) {
             Text(

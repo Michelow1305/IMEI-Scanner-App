@@ -1,5 +1,6 @@
 package com.hkr.mockupforproject.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -49,6 +50,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.hkr.mockupforproject.R
 import com.hkr.mockupforproject.ui.AppViewModel
+import java.lang.Math.round
 
 @Preview
 @Composable
@@ -86,9 +88,11 @@ fun SearchResult_updatePriority(
                 activeTrackColor = Color(0xFF3654F4),
                 activeTickColor = Color.White
             ),
+            modifier = Modifier.fillMaxWidth(),
+            valueRange = 1f..5f,
             value = sliderPosition,
-            onValueChange = { sliderPosition = it },
-            steps = 5,
+            onValueChange = { sliderPosition = round(it).toFloat()},
+            steps = 4,
         )
 
         Spacer(
@@ -101,7 +105,10 @@ fun SearchResult_updatePriority(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(75.dp),
-            onClick = { navController.navigate("SearchResults_finish") },
+            onClick = {
+                navController.navigate("SearchResults_finish");
+                appViewModel.currentDeviceToSave.priority = sliderPosition.toInt()
+                      },
         ) {
             Text(
                 text = "Next",
