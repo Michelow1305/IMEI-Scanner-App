@@ -104,7 +104,6 @@ class MainActivity : ComponentActivity() {
                         // Fetches local device information
                         FetchDeviceInformation(viewModel)
                         AppScreen(viewModel)
-
                     }
                 }
             }

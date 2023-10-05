@@ -207,6 +207,7 @@ Author:         Joel Andersson
 @Composable
 fun ViewThisDevice(appViewModel : AppViewModel, navController : NavHostController)
 {
+    FetchDeviceInformation(appViewModel)
     appViewModel.localDeviceInformation.logDeviceInformation()
 
     LocalDeviceResult(appViewModel, navController,
@@ -214,7 +215,10 @@ fun ViewThisDevice(appViewModel : AppViewModel, navController : NavHostControlle
         iMEI = appViewModel.localDeviceInformation.iMEI,
         currentNetwork = appViewModel.localDeviceInformation.currentNetwork,
         model = appViewModel.localDeviceInformation.model,
-        signalStrength = appViewModel.localDeviceInformation.signalStrength.toString())
+        signalStrength = appViewModel.localDeviceInformation.signalStrength.toString(),
+        latitude = appViewModel.localDeviceInformation.latitude,
+        longitude = appViewModel.localDeviceInformation.longitude)
+
 }
 
 /*

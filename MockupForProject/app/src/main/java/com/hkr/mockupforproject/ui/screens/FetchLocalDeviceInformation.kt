@@ -5,8 +5,11 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Build
+import android.os.Bundle
 import android.telephony.TelephonyManager
 import android.util.Log
 import androidx.compose.runtime.Composable
@@ -100,15 +103,79 @@ Author:         Joel Andersson
 @SuppressLint("MissingPermission")
 fun fetchLocation(context: Context, appViewModel: AppViewModel) {
     val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
+
+    val gpsLocation = if (locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) == true) {
+        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+    } else {
+        null
+    }
+
+    val networkLocation = if (locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) == true) {
+        locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+    } else {
+        null
+    }
+
+    val bestLocation: Location? = when {
+        gpsLocation == null && networkLocation == null -> {
+            Log.d("LocationProvider", "Neither GPS nor Network location is available.")
+            null
+        }
+        gpsLocation == null -> {
+            Log.d("LocationProvider", "Using Network location provider.")
+            networkLocation
+        }
+        networkLocation == null -> {
+            Log.d("LocationProvider", "Using GPS location provider.")
+            gpsLocation
+        }
+        gpsLocation.accuracy <= networkLocation.accuracy -> {
+            Log.d("LocationProvider", "GPS location is more accurate or equally accurate. Using GPS.")
+            gpsLocation // Lower accuracy value means higher precision
+        }
+        else -> {
+            Log.d("LocationProvider", "Network location is more accurate. Using Network.")
+            networkLocation
+        }
+    }
+
+    if (bestLocation != null) {
+        appViewModel.localDeviceInformation.latitude = bestLocation.latitude
+        appViewModel.localDeviceInformation.longitude = bestLocation.longitude
+    }
+    else {
+        Log.d(ContentValues.TAG, "GPS Location Not Available")
+        Log.d(ContentValues.TAG, "Trying to use tower triangulation instead")
+    }
+
+
+// You can now use latitude and longitude
+
+
+    /*
+    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
     val locationProvider = LocationManager.GPS_PROVIDER
     val lastKnownLocation = locationManager?.getLastKnownLocation(locationProvider)
+
+
+    val hasGps = locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    val hasNetwork = locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+
+    Log.d(ContentValues.TAG, "GPS available: " + hasGps.toString())
+    Log.d(ContentValues.TAG, "Network Location available: " + hasNetwork.toString())
+
+
 
     if (lastKnownLocation != null) {
         appViewModel.localDeviceInformation.latitude = lastKnownLocation.latitude
         appViewModel.localDeviceInformation.longitude = lastKnownLocation.longitude
     } else {
-        Log.d(ContentValues.TAG, "Location Not Available")
+        Log.d(ContentValues.TAG, "GPS Location Not Available")
+        Log.d(ContentValues.TAG, "Trying to use tower triangulation instead")
+
     }
+
+     */
 }
 
 
@@ -136,7 +203,7 @@ fun fetchSecureInformation(appViewModel: AppViewModel, telephonyManager: Telepho
                     appViewModel.localDeviceInformation.iMEI = telephonyManager.imei
                 }
             } catch (e: SecurityException) {
-                Log.d(ContentValues.TAG, "Security Exception", e)
+                Log.d(ContentValues.TAG, "Security Exception Fetching IMEI")
             }
         } else {
             Log.d(ContentValues.TAG, "Can not fetch IMEI, Incorrect Version")

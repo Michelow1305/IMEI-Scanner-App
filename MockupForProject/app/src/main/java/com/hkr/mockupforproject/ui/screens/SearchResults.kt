@@ -142,8 +142,8 @@ fun LocalDeviceResult(
     networkOperator : String = "Telia",
     signalStrength : String = "1",
     currentNetwork : String = "3G/ -105dBm",
-    availableNetwork : String = "4G/ -76dBm",
-    recommendation : String = "Upgrade to 4G device"
+    longitude : Double = 0.0,
+    latitude : Double = 0.0
 
 ) {
     Box(modifier = Modifier
@@ -163,6 +163,8 @@ fun LocalDeviceResult(
             RowTextElement(textLeft = "Network Operator", textRight = networkOperator)
             RowTextElement(textLeft = "Current Network", textRight = currentNetwork)
             RowTextElement(textLeft = "Signal Strength", textRight = signalStrength)
+            RowTextElement(textLeft = "Longitude", textRight = longitude.toString())
+            RowTextElement(textLeft = "Latitude", textRight = latitude.toString())
         }
     }
 }
