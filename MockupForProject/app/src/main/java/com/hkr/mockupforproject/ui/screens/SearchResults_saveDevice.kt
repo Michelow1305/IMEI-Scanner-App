@@ -87,8 +87,8 @@ fun SearchResult_saveDevice(
             modifier = Modifier.fillMaxWidth(),
             value = text2,
             onValueChange = { text2 = it },
-            label = { Text(text = "Name") },
-            supportingText = { Text(text = "Name this device") }
+            label = { Text(text = "Description") },
+            supportingText = { Text(text = "Describe this device,\n e.g., 'in the living room of this address.") }
         )
 
         Spacer(

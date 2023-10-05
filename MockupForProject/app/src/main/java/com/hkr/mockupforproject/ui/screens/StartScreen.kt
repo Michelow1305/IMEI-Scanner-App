@@ -39,6 +39,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -183,7 +185,7 @@ fun StartScreen(
         if (appViewModel.bottomSheetExpand) {
             ModalBottomSheet(
                 onDismissRequest = { appViewModel.bottomSheetExpand = !appViewModel.bottomSheetExpand },
-                containerColor = Color.Gray
+                containerColor = Color.White
 
             ) {
                 // Show either the local device info or "Enter IMEI manually"
@@ -232,25 +234,34 @@ Author:         Joel Andersson & Per Magnusson
 @Composable
 fun EnterIMEIManually(appViewModel : AppViewModel)
 {
-    Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+    Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp)) {
         var text by remember { mutableStateOf("") }
+        val focusRequester = remember { FocusRequester() }
+        var isError by remember { mutableStateOf(false) }
+
         OutlinedTextField(
             shape = RoundedCornerShape(16.dp),
             value = text,
-            modifier = Modifier.fillMaxWidth(),
-            onValueChange = { text = it },
-            label = { Text(text = "Enter IMEI", color = Color.White) },
-            supportingText = { Text(text = "Enter IMEI") },
+            modifier = Modifier.fillMaxWidth()
+                .focusRequester(focusRequester),
+            onValueChange = { if (it.length<=15) text = it; if (it.length==15) isError = false },
+            isError = isError,
+            label = { Text(text = "Enter IMEI", color = Color.Black) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions(
                 onDone = {
-                    appViewModel.searchInfo = !appViewModel.searchInfo
-                    appViewModel.bottomSheetExpand = !appViewModel.bottomSheetExpand
-
-                    //keyboardController?.hide()
+                    if (text.length != 15) {
+                        isError = true
+                        // Optionally show a toast or some other feedback
+                    } else {
+                        isError = false
+                        appViewModel.searchInfo = !appViewModel.searchInfo
+                        appViewModel.bottomSheetExpand = !appViewModel.bottomSheetExpand
+                        //keyboardController?.hide()
+                    }
                 }
 
             ),
@@ -259,15 +270,16 @@ fun EnterIMEIManually(appViewModel : AppViewModel)
                 unfocusedContainerColor = Color.White,
                 disabledContainerColor = Color.White,
                 cursorColor = Color.Black,
-                focusedBorderColor = Color.White
+                focusedBorderColor = Color.Black
             )
         )
+        if (isError) {
+            Text(text = "Please enter 15 digits.", color = Color.Red)
+        }
+        LaunchedEffect(Unit) {
+            focusRequester.requestFocus()
+        }
 
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-        )
     }
 }
 

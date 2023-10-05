@@ -92,7 +92,7 @@ fun SearchResult_updatePriority(
             valueRange = 1f..5f,
             value = sliderPosition,
             onValueChange = { sliderPosition = round(it).toFloat()},
-            steps = 4,
+            steps = 3,
         )
 
         Spacer(
