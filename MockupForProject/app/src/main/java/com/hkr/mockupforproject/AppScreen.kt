@@ -13,6 +13,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetValue
@@ -53,7 +54,7 @@ fun AppScreen(viewModel : AppViewModel) {
         scaffoldState = sheetScaffoldState,
         sheetSwipeEnabled = true,
         sheetContent = {
-            Box (modifier = Modifier, contentAlignment = Alignment.Center){
+            Box(modifier = Modifier.height(595.dp), contentAlignment = Alignment.Center) {
                 bottomAppNavigation(appViewModel)
             }
         }
