@@ -79,7 +79,14 @@ fun StartScreen(
             contentScale = ContentScale.Crop
         )
         LargeFloatingActionButton(
-            onClick = { appViewModel.searchInfo = !appViewModel.searchInfo },
+            onClick = {
+                /*
+                    When I click on this button, it opens the bottom sheet, "View this device",
+                    so I uncommented this temporarily.
+                 */
+                //appViewModel.searchInfo = !appViewModel.searchInfo
+                navController.navigate("CameraWithBoundedBox")
+                      },
             modifier = Modifier
                 .align(alignment = Alignment.BottomCenter)
                 .padding(bottom = 70.dp),

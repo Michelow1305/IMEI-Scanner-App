@@ -37,7 +37,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
-fun AppScreen(viewModel : AppViewModel) {
+fun AppScreen(viewModel : AppViewModel, context: Context) {
 
     val appViewModel: AppViewModel = viewModel
 
@@ -59,7 +59,7 @@ fun AppScreen(viewModel : AppViewModel) {
             }
         }
     ) {
-        mainAppNavigation(appViewModel)
+        mainAppNavigation(appViewModel, context = context)
         var observer = appViewModel.searchInfo
         AnimatedVisibility(visible = observer, enter = fadeIn(), exit = fadeOut()) {
             Box(modifier = Modifier

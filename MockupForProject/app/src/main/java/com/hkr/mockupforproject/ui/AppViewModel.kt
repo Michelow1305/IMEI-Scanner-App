@@ -55,6 +55,14 @@ open class AppViewModel(
     private lateinit var _cellTowersInRange: LiveData<List<CellTower>>
     private var _findByCidResult = MutableStateFlow(CellTower())
 
+
+    /*
+        For scanning IMEI
+     */
+    private val _scannedImeis = MutableLiveData<List<Long>>()
+    val scannedImeis: LiveData<List<Long>> get() = _scannedImeis
+
+
     /*
         Accessible by the UI
      */
@@ -64,6 +72,13 @@ open class AppViewModel(
     val findByCidResult = _findByCidResult.asStateFlow()
     var cellTowersInRangeHasTowers by mutableStateOf(false)
     var searchInfo by mutableStateOf(false)
+
+
+    fun addScannedImeis(newImeis: List<Long>) {
+        val currentImeis = _scannedImeis.value ?: emptyList()
+        val uniqueImeis = newImeis.filter { it !in currentImeis }
+        _scannedImeis.value = currentImeis + uniqueImeis
+    }
 
 
     // Current Device to save
