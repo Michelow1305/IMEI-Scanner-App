@@ -71,7 +71,8 @@ class MainActivity : ComponentActivity() {
                 this,
                 arrayOf(
                     Manifest.permission.READ_PHONE_STATE,
-                    Manifest.permission.ACCESS_FINE_LOCATION
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.CAMERA
                 ),
                 PHONE_STATE_REQUEST_CODE
             )
