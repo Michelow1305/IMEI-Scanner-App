@@ -109,4 +109,13 @@ dependencies {
     // optional - Paging 3 Integration
     implementation("androidx.room:room-paging:$roomVersion")
 
+    // CameraX
+    implementation ("androidx.camera:camera-camera2:1.2.3")
+    implementation ("androidx.camera:camera-lifecycle:1.2.3")
+    implementation ("androidx.camera:camera-view:1.4.0-alpha01")
+
+    // ML KIT
+    implementation("com.google.mlkit:barcode-scanning:17.2.0")
+    implementation("com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.0")
+
 }
