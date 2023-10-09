@@ -159,6 +159,14 @@ open class AppViewModel(
         ) == PackageManager.PERMISSION_GRANTED
     }
 
+    fun hasCameraPermission(context: Context): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+
+    }
+
 
 
 }
