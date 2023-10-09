@@ -29,12 +29,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -48,12 +47,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.PaintingStyle
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
@@ -66,15 +62,15 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import com.google.common.util.concurrent.ListenableFuture
-import com.hkr.mockupforproject.ui.AppViewModel
 import com.hkr.mockupforproject.ImeiCodeAnalyzer
+import com.hkr.mockupforproject.ui.AppViewModel
 
 
 /**
  * CameraWithBoundedBox creates a bounded box on top of the CameraPreview, and this bounded box
  * has x and y coordinates to relative to the root/parent. These coordinates are converted to Dp sizes,
  * which can be used to crate a Rect.
- * Then the scanned IMEI's are presented in a LazyColumn. TODO()
+ * Then the scanned IMEI's are presented in a LazyColumn.
  * @param modifier to change the layout parameters of the bounded box.
  * @param context to bind the CameraX lifecycle to activity's lifecycle.
  * @param appViewModel to add the scanned IMEI's to a MutableLiveData list in the view model.
@@ -109,25 +105,19 @@ fun CameraWithBoundedBox(
 
     Scaffold(
         topBar = {
-            IconButton(
+            ExtendedFloatingActionButton(
+                modifier = modifier
+                    .padding(start = xPadding.dp, top = 25.dp)
+                    .size(45.dp),
+
                 onClick = {
                     cameraProviderFuture.get().unbindAll()
                     mainNavController.popBackStack()
                 },
-                modifier = modifier
-                    .padding(start = xPadding.dp, top = 25.dp)
-                    .background(Color.White, shape = RoundedCornerShape(7.dp))
-                    .size(45.dp)
-
-            ) {
-                Icon(
-                    Icons.Filled.KeyboardArrowLeft,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = modifier
-                        .size(35.dp)
-                )
-            }
+                expanded = false,
+                icon = { Icon(Icons.Filled.KeyboardArrowLeft, null) },
+                text = { Text(text = "") },
+            )
         },
 
         floatingActionButton = {
@@ -142,7 +132,7 @@ fun CameraWithBoundedBox(
                         .align(Alignment.CenterHorizontally),
                     reverseLayout = true,
                 ) {
-                    items(imeis){imei ->
+                    items(imeis) { imei ->
                         Imei(imei = imei)
                     }
                 }
@@ -151,17 +141,17 @@ fun CameraWithBoundedBox(
                     onClick = {
                         if (imeis.isNotEmpty()) {
                             cameraProviderFuture.get().unbindAll()
-                            mainNavController.navigate("SavedDevices")
+                            mainNavController.navigate("StartScreen")
                         }
                     },
                     expanded = true,
-                    icon = { Icon(Icons.Filled.Add, null) },
-                    text = { Text(text = "Add (${imeis.size})") },
+                    icon = { Icon(Icons.Filled.Done, null) },
+                    text = { Text(text = "Done (${imeis.size})") },
                     containerColor = if (imeis.isNotEmpty()) MaterialTheme.colorScheme.primary else Color.Gray,
                     contentColor = if (imeis.isNotEmpty()) Color.White else Color.DarkGray
                 )
                 Text(
-                    text = "Scan manually",
+                    text = "Enter manually",
                     color = Color.White,
                     fontSize = 15.sp,
                     modifier = modifier
@@ -169,6 +159,7 @@ fun CameraWithBoundedBox(
                             enabled = true,
                             onClick = {
                                 mainNavController.navigate("StartScreen")
+                                appViewModel.bottomSheetExpand = true
                             }
                         )
                 )
@@ -188,7 +179,7 @@ fun CameraWithBoundedBox(
                 cameraProviderFuture,
                 rect = rect
             ) { imeis ->
-                appViewModel.addScannedImeis(imeis)
+                appViewModel.addScannedImei(imeis)
             }
 
             Column {
@@ -202,7 +193,7 @@ fun CameraWithBoundedBox(
                             end = xPadding.dp
                         )
                         .height(boxHeight.dp)
-                        .dashedBorder(2.dp, 7.dp, Color.White)
+                        .cornerBorder(2.dp, 7.dp, Color.White)
 
                         /*
                             Here we convert the coordinates of this box to sizes in Dp.
@@ -249,7 +240,7 @@ fun CameraWithBoundedBox(
  * @param imei
  */
 @Composable
-fun Imei(modifier: Modifier = Modifier, imei: Long) {
+private fun Imei(modifier: Modifier = Modifier, imei: Long) {
     var visible by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = true) {
@@ -377,31 +368,63 @@ private fun CameraPreview(
 
 
 /**
- * This is a dotted/dashed border.
+ * This adds border to only the corners.
  *
  * @param width of the border
- * @param radius for rounded corners
+ * @param cornerSize
  * @param color of the border
  */
-private fun Modifier.dashedBorder(width: Dp, radius: Dp, color: Color) =
-    drawBehind {
-        drawIntoCanvas {
-            val paint = Paint()
-                .apply {
-                    strokeWidth = width.toPx()
-                    this.color = color
-                    style = PaintingStyle.Stroke
-                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(20f, 20f), 0f)
-                }
+private fun Modifier.cornerBorder(width: Dp, cornerSize: Dp, color: Color) = drawWithContent {
+    drawContent()
 
-            it.drawRoundRect(
-                width.toPx(),
-                width.toPx(),
-                size.width - width.toPx(),
-                size.height - width.toPx(),
-                radius.toPx(),
-                radius.toPx(),
-                paint
-            )
-        }
-    }
+    val strokeWidth = width.toPx()
+    val cornerLength = cornerSize.toPx()
+
+    val halfStroke = strokeWidth / 2
+
+    // Top-left corner
+    drawLine(color, Offset(0f, halfStroke), Offset(cornerLength, halfStroke), strokeWidth)
+    drawLine(color, Offset(halfStroke, 0f), Offset(halfStroke, cornerLength), strokeWidth)
+
+    // Top-right corner
+    drawLine(
+        color,
+        Offset(size.width, halfStroke),
+        Offset(size.width - cornerLength, halfStroke),
+        strokeWidth
+    )
+    drawLine(
+        color,
+        Offset(size.width - halfStroke, 0f),
+        Offset(size.width - halfStroke, cornerLength),
+        strokeWidth
+    )
+
+    // Bottom-left corner
+    drawLine(
+        color,
+        Offset(0f, size.height - halfStroke),
+        Offset(cornerLength, size.height - halfStroke),
+        strokeWidth
+    )
+    drawLine(
+        color,
+        Offset(halfStroke, size.height),
+        Offset(halfStroke, size.height - cornerLength),
+        strokeWidth
+    )
+
+    // Bottom-right corner
+    drawLine(
+        color,
+        Offset(size.width, size.height - halfStroke),
+        Offset(size.width - cornerLength, size.height - halfStroke),
+        strokeWidth
+    )
+    drawLine(
+        color,
+        Offset(size.width - halfStroke, size.height),
+        Offset(size.width - halfStroke, size.height - cornerLength),
+        strokeWidth
+    )
+}

@@ -68,7 +68,7 @@ fun StartScreen(
     appViewModel: AppViewModel
 )
 {
-    var bottomMenuOption : Int by remember {mutableIntStateOf(1)}
+//    var bottomMenuOption : Int by remember {mutableIntStateOf(1)}
     // Box holding the camera scan button and the saved devices button
     Box {
         val imagePath = painterResource(id = R.drawable.bg_blue_x2)
@@ -167,7 +167,7 @@ fun StartScreen(
 
                 TextButton(onClick = {
                     appViewModel.bottomSheetExpand = !appViewModel.bottomSheetExpand
-                    bottomMenuOption = 1
+                    appViewModel.bottomMenuOption = 1
                 }) {
                     Text(
                         text = "Enter IMEI manually",
@@ -178,7 +178,7 @@ fun StartScreen(
                 }
                 TextButton(onClick = {
                     appViewModel.bottomSheetExpand = !appViewModel.bottomSheetExpand
-                    bottomMenuOption = 2
+                    appViewModel.bottomMenuOption  = 2
                 }) {
                     Text(
                         text = "View this device",
@@ -196,9 +196,9 @@ fun StartScreen(
 
             ) {
                 // Show either the local device info or "Enter IMEI manually"
-                if(bottomMenuOption == 1)
+                if(appViewModel.bottomMenuOption  == 1)
                     EnterIMEIManually(appViewModel = appViewModel)
-                else if(bottomMenuOption == 2)
+                else if(appViewModel.bottomMenuOption  == 2)
                     ViewThisDevice(appViewModel = appViewModel, navController = navController)
             }
         }

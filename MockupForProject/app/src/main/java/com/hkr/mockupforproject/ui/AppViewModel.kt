@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LifecycleOwner
@@ -47,7 +48,7 @@ open class AppViewModel(
 ) : ViewModel()
 {
     var bottomSheetExpand by mutableStateOf(false)
-
+    var bottomMenuOption by mutableIntStateOf(1)
     var localDeviceInformation : LocalDeviceInformation = LocalDeviceInformation()
 
     private lateinit var _allTowers: LiveData<List<CellTower>>
@@ -57,7 +58,8 @@ open class AppViewModel(
 
 
     /*
-        For scanning IMEI
+        For scanning IMEI -
+        TODO: Delete.
      */
     private val _scannedImeis = MutableLiveData<List<Long>>()
     val scannedImeis: LiveData<List<Long>> get() = _scannedImeis
@@ -74,15 +76,15 @@ open class AppViewModel(
     var searchInfo by mutableStateOf(false)
 
 
-    fun addScannedImeis(newImeis: List<Long>) {
-        val currentImeis = _scannedImeis.value ?: emptyList()
-        val uniqueImeis = newImeis.filter { it !in currentImeis }
-        _scannedImeis.value = currentImeis + uniqueImeis
+    fun addScannedImei(newImeis: List<Long>) {
+        if(currentDeviceToSave.imei != newImeis[0]){
+            currentDeviceToSave = SavedDevice(imei = newImeis[0])
+        }
     }
 
 
     // Current Device to save
-    val currentDeviceToSave: SavedDevice = SavedDevice()
+    var currentDeviceToSave: SavedDevice = SavedDevice()
 
     fun getAll() = viewModelScope.launch(Dispatchers.IO) {
         _allTowers = repository.getAll()
