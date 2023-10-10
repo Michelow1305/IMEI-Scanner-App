@@ -33,14 +33,19 @@ import com.hkr.mockupforproject.ui.theme.MockupForProjectTheme
 import androidx.core.app.ActivityCompat
 import com.hkr.mockupforproject.ui.screens.FetchDeviceInformation
 import androidx.compose.runtime.livedata.observeAsState
-
+import com.hkr.mockupforproject.data.DevicesRepository
+import com.hkr.mockupforproject.data.SavedDeviceData
 
 
 class MainActivity : ComponentActivity() {
 
     private val database by lazy { AppDatabase.getDatabase(this) }
-    private val repository by lazy { AppRepository(database.cellTowerDao()) }
-    private val viewModelFactory by lazy { AppViewModelFactory(repository, this) }
+    private val repository by lazy { AppRepository(database.cellTowerDao(),database.savedDeviceDataDao()) }
+    private val dao by lazy { DevicesRepository(database.savedDeviceDataDao()) } // Use the SavedDeviceDataDao
+    private val viewModelFactory by lazy { AppViewModelFactory(repository, this)}
+
+
+
 
     private val viewModel: AppViewModel by viewModels { viewModelFactory }
     companion object {
@@ -60,7 +65,7 @@ class MainActivity : ComponentActivity() {
         Thread.sleep(500)
 
         viewModel.getCellTowersInRange(viewModel.localDeviceInformation.latitude.value.toFloat(), viewModel.localDeviceInformation.longitude.value.toFloat())
-        viewModel.findByCid(208942101)
+
 
         // Observe the LiveData in Appviewmodel for permission request
         // If we need more permissions add it to the array below

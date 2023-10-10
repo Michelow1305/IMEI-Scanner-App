@@ -2,8 +2,9 @@ package com.hkr.mockupforproject.data
 
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
+import androidx.room.Delete
 
-class AppRepository(private val cellTowerDao: CellTowerDao) {
+class AppRepository(private val cellTowerDao: CellTowerDao, private val deviceDao: SavedDeviceDataDao ) {
     @WorkerThread
     fun getAll(): LiveData<List<CellTower>> {
         return cellTowerDao.getAll()
@@ -53,5 +54,25 @@ class AppRepository(private val cellTowerDao: CellTowerDao) {
             deltaLat = deltaLat,
             deltaLon = deltaLon
         )
+    }
+///////////////////////////////////////////////////////////////////////////////////
+    //SavedDevices
+
+    @WorkerThread
+    suspend fun SavedDeviceGetAll(): LiveData<List<SavedDeviceData>> {
+        return deviceDao.allSavedDevices()
+    }
+
+    @WorkerThread
+    suspend fun upsertSavedDevice(savedDevice: SavedDeviceData) {
+        deviceDao.insertDevice(savedDevice)
+    }
+    @WorkerThread
+    fun deleteDevice(deleteDevice: SavedDeviceData){
+        deviceDao.deleteDevice(deleteDevice)
+    }
+
+    fun devicesToDelete(imei: Int) {
+         deviceDao.devicesToDelete(imei)
     }
 }

@@ -39,6 +39,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.filled.Close
@@ -48,6 +50,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -55,6 +58,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.hkr.mockupforproject.R
+import com.hkr.mockupforproject.data.CellTower
+import com.hkr.mockupforproject.data.SavedDeviceData
 import com.hkr.mockupforproject.ui.AppViewModel
 
 @Preview
@@ -100,7 +105,19 @@ fun SavedDevices(
                 modifier = Modifier.padding(start = 18.dp, bottom = 15.dp, top = 47.dp),
                 color = Color.Black
             )
+            appViewModel.allSavedDevices()
+            val savedDevices: List<SavedDeviceData> by appViewModel.allSavedDevices.observeAsState(
+                initial = emptyList()
+            )
 
+            LazyColumn() {
+                items(savedDevices) { device ->
+                    // Use 'device' to display each SavedDeviceData
+                    Text(text = device.deviceName.toString() ?: "No description available")
+                }
+            }
+
+            /*
             for (i in 1..5) {
                 listObjectMaker(TextDecoration.None, false, showCard)
             }
@@ -115,6 +132,8 @@ fun SavedDevices(
             for (i in 1..3) {
                 listObjectMaker(TextDecoration.LineThrough, true, showCard)
             }
+
+             */
         }
     }
     moreInfoCard(showCard = showCard)
