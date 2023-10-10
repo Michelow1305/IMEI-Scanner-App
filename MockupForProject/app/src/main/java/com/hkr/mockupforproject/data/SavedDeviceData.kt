@@ -12,8 +12,6 @@ import androidx.room.Transaction
 import androidx.room.TypeConverters
 import androidx.room.Upsert
 
-@TypeConverters(ConvertListtoJson::class) // Add this annotation
-
 @Entity(tableName = "saved_device")
 data class SavedDeviceData(
     @PrimaryKey @ColumnInfo(name = "imei") val imei: Int? = null,
@@ -26,11 +24,13 @@ data class SavedDeviceData(
 
     @ColumnInfo(name = "recommendation") val recommendation: String? = null,
 
-    @ColumnInfo(name = "nearbyTowers") val nearbyTowers: List<String>? = null,
-
     @ColumnInfo(name = "deviceName") val deviceName: String? = null,
 
     @ColumnInfo(name = "priority") val priority: Int? = null,
+
+    @ColumnInfo(name = "latitude") val latitude: Float? = null,
+
+    @ColumnInfo(name = "longitude") val longitude: Float? = null,
 
     @ColumnInfo (name = "checked") val checked: Boolean = false
 
@@ -40,7 +40,7 @@ data class SavedDeviceData(
 ) {
     override fun toString(): String {
         return "SavedDeviceData(imei=$imei, deviceDescription=$deviceDescription, brand=$brand," +
-                "model=$model, recommendation=$recommendation, nearbyTowers=$nearbyTowers," +
+                "model=$model, recommendation=$recommendation,"+
                 "deviceName=$deviceName, priority= $priority, checked= $checked )"
     }
 }

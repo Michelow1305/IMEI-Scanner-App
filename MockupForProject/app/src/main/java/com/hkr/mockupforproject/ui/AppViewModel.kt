@@ -3,7 +3,6 @@ package com.hkr.mockupforproject.ui
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import androidx.annotation.WorkerThread
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -23,10 +22,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
-import com.hkr.mockupforproject.data.DevicesRepository
 import com.hkr.mockupforproject.data.LocalDeviceInformation
 import com.hkr.mockupforproject.data.SavedDeviceData
-import com.hkr.mockupforproject.data.SavedDeviceDataDao
 import kotlinx.coroutines.launch
 
 class AppViewModelFactory(

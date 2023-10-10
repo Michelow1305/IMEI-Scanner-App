@@ -8,7 +8,10 @@ data class SavedDevice(
     var recommendation: String = "Not defined",
     var nearbyTowers: List<CellTower> = emptyList(),
     var imei: Int = 0,
-    var priority: Int = 0
+    var priority: Int = 0,
+    var latitude: Float = 0F,
+    var longitude: Float = 0F,
+    var checked: Boolean = false
 ) {
     
 }

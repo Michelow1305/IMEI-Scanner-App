@@ -7,41 +7,26 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Observer
 import com.hkr.mockupforproject.data.AppDatabase
 import com.hkr.mockupforproject.data.AppRepository
-import com.hkr.mockupforproject.data.haversineDistance
 import com.hkr.mockupforproject.ui.AppViewModel
 import com.hkr.mockupforproject.ui.AppViewModelFactory
 import com.hkr.mockupforproject.ui.theme.MockupForProjectTheme
 import androidx.core.app.ActivityCompat
 import com.hkr.mockupforproject.ui.screens.FetchDeviceInformation
-import androidx.compose.runtime.livedata.observeAsState
-import com.hkr.mockupforproject.data.DevicesRepository
-import com.hkr.mockupforproject.data.SavedDeviceData
 
 
 class MainActivity : ComponentActivity() {
 
     private val database by lazy { AppDatabase.getDatabase(this) }
     private val repository by lazy { AppRepository(database.cellTowerDao(),database.savedDeviceDataDao()) }
-    private val dao by lazy { DevicesRepository(database.savedDeviceDataDao()) } // Use the SavedDeviceDataDao
     private val viewModelFactory by lazy { AppViewModelFactory(repository, this)}
 
 
