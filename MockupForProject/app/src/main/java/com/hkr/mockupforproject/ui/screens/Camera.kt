@@ -146,7 +146,7 @@ fun CameraWithBoundedBox(
                     },
                     expanded = true,
                     icon = { Icon(Icons.Filled.Done, null) },
-                    text = { Text(text = "Done (${imeis.size})") },
+                    text = { Text(text = "Done") },
                     containerColor = if (imeis.isNotEmpty()) MaterialTheme.colorScheme.primary else Color.Gray,
                     contentColor = if (imeis.isNotEmpty()) Color.White else Color.DarkGray
                 )
@@ -179,7 +179,7 @@ fun CameraWithBoundedBox(
                 cameraProviderFuture,
                 rect = rect
             ) { imeis ->
-                appViewModel.addScannedImei(imeis)
+                appViewModel.addScannedImeis(imeis)
             }
 
             Column {

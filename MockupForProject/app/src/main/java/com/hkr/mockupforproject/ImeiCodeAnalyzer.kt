@@ -58,9 +58,9 @@ class ImeiCodeAnalyzer(
 
                     }
 
-                }.toSet()
+                }
 
-                onImeiCodesDetected(imeis.toList())
+                onImeiCodesDetected(imeis)
 
             }
 

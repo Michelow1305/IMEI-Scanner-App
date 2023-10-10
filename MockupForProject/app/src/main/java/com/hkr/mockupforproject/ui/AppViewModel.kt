@@ -76,11 +76,17 @@ open class AppViewModel(
     var searchInfo by mutableStateOf(false)
 
 
-    fun addScannedImei(newImeis: List<Long>) {
-        if(currentDeviceToSave.imei != newImeis[0]){
-            currentDeviceToSave = SavedDevice(imei = newImeis[0])
+    fun addScannedImeis(newImeis: List<Long>) {
+        val currentImeis = _scannedImeis.value ?: emptyList()
+        val uniqueImeis = newImeis.filter { it !in currentImeis }
+        _scannedImeis.value = currentImeis + uniqueImeis
+        
+        if(currentImeis.isNotEmpty()){
+            currentDeviceToSave = SavedDevice(imei = currentImeis[0])
         }
+
     }
+
 
 
     // Current Device to save
