@@ -142,6 +142,7 @@ fun CameraWithBoundedBox(
                         if (imeis.isNotEmpty()) {
                             cameraProviderFuture.get().unbindAll()
                             mainNavController.navigate("StartScreen")
+                            appViewModel.searchInfo = true
                         }
                     },
                     expanded = true,
@@ -158,6 +159,7 @@ fun CameraWithBoundedBox(
                         .clickable(
                             enabled = true,
                             onClick = {
+                                cameraProviderFuture.get().unbindAll()
                                 mainNavController.navigate("StartScreen")
                                 appViewModel.bottomSheetExpand = true
                             }

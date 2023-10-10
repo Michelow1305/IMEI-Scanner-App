@@ -80,10 +80,11 @@ open class AppViewModel(
         val currentImeis = _scannedImeis.value ?: emptyList()
         val uniqueImeis = newImeis.filter { it !in currentImeis }
         _scannedImeis.value = currentImeis + uniqueImeis
-        
-        if(currentImeis.isNotEmpty()){
-            currentDeviceToSave = SavedDevice(imei = currentImeis[0])
+
+        if(newImeis.isNotEmpty()){
+            currentDeviceToSave.imei = newImeis[0]
         }
+
 
     }
 
