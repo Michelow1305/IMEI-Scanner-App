@@ -72,7 +72,10 @@ class AppRepository(private val cellTowerDao: CellTowerDao, private val deviceDa
         deviceDao.deleteDevice(deleteDevice)
     }
 
-    fun devicesToDelete(imei: Int) {
+    fun devicesToDelete(imei: Long) {
          deviceDao.devicesToDelete(imei)
+    }
+    fun updateCheckbox(imeiNumb: Long, checked: Boolean) {
+        deviceDao.updateCheckbox(imeiNumb,checked)
     }
 }

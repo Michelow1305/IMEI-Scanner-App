@@ -40,13 +40,12 @@ fun SearchResult_finish(
 ) {
     // State to track whether navigation should occur
     var shouldNavigate by remember { mutableStateOf(false) }
-    val savedDeviceData = SavedDeviceData(
+    var savedDeviceData = SavedDeviceData(
         imei = appViewModel.currentDeviceToSave.imei,
         deviceDescription =  appViewModel.currentDeviceToSave.deviceDescription,
         brand = appViewModel.currentDeviceToSave.brand,
         model = appViewModel.currentDeviceToSave.model,
         recommendation = appViewModel.currentDeviceToSave.recommendation,
-        nearbyTowers = appViewModel.currentDeviceToSave.nearbyTowers ,
         deviceName = appViewModel.currentDeviceToSave.deviceName,
         priority = appViewModel.currentDeviceToSave.priority,
         checked = false

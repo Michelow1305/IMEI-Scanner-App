@@ -80,12 +80,9 @@ fun SavedDevices(
             .background(Color.White)
             .fillMaxSize()
     ) {
-
-        val scrollState = rememberScrollState()
         Column(
             modifier = Modifier
                 .padding(start = 20.dp, end = 20.dp, top = 24.dp)
-                .verticalScroll(scrollState)
         ) {
             TextButton(
                 modifier = Modifier.padding(start = 10.dp),
@@ -109,11 +106,30 @@ fun SavedDevices(
             val savedDevices: List<SavedDeviceData> by appViewModel.allSavedDevices.observeAsState(
                 initial = emptyList()
             )
-
             LazyColumn() {
                 items(savedDevices) { device ->
-                    // Use 'device' to display each SavedDeviceData
-                    Text(text = device.deviceName.toString() ?: "No description available")
+                    if (!device.checked) {
+                        listObjectMaker(
+                            linethroughOrNo = TextDecoration.None,
+                            showCard = showCard,
+                            savedDevice = device,
+                            appViewModel = appViewModel
+                        )
+                    }
+                }
+                item {
+                    Divider(modifier = Modifier.padding(top = 30.dp, bottom = 30.dp))
+                }
+
+                items(savedDevices) { device ->
+                    if (device.checked) {
+                        listObjectMaker(
+                            linethroughOrNo = TextDecoration.None,
+                            showCard = showCard,
+                            savedDevice = device,
+                            appViewModel = appViewModel
+                        )
+                    }
                 }
             }
 
@@ -136,11 +152,11 @@ fun SavedDevices(
              */
         }
     }
-    moreInfoCard(showCard = showCard)
+    moreInfoCard(showCard = showCard, appViewModel)
 }
 
 @Composable
-fun imeiInformation() {
+fun imeiInformation(appViewModel: AppViewModel) {
     Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 50.dp)) {
         Text(
             text = "IMEI Information",
@@ -149,22 +165,25 @@ fun imeiInformation() {
             fontWeight = FontWeight(700),
             color = Color.Black
         )
-        RowTextElement(textLeft = "Name", textRight = "This is the name")
-        RowTextElement(textLeft = "Information", textRight = "Phone is in this location")
-        RowTextElement(textLeft = "Priority", textRight = "5 stars")
+        RowTextElement(textLeft = "Name", textRight = appViewModel.currentSavedDeviceToDisplay.deviceName?:"")
+        RowTextElement(textLeft = "Information", textRight = appViewModel.currentSavedDeviceToDisplay.deviceDescription?:"")
+        RowTextElement(textLeft = "Priority", textRight = appViewModel.currentSavedDeviceToDisplay.priority.toString())
         Divider(modifier = Modifier.padding(top = 30.dp, bottom = 30.dp))
-        RowTextElement(textLeft = "IMEI", textRight = "345454279843245")
-        RowTextElement(textLeft = "Brand", textRight = "Samsung")
-        RowTextElement(textLeft = "Model", textRight = "Smart system 1")
+        RowTextElement(textLeft = "IMEI", textRight = appViewModel.currentSavedDeviceToDisplay.imei.toString())
+        RowTextElement(textLeft = "Brand", textRight = appViewModel.currentSavedDeviceToDisplay.brand?:"")
+        RowTextElement(textLeft = "Model", textRight = appViewModel.currentSavedDeviceToDisplay.model?:"")
         RowTextElement(textLeft = "Current Network", textRight = "3G/ -105dBm")
         RowTextElement(textLeft = "Available Network", textRight = "4G/ -76dBm")
-        RowTextElement(textLeft = "Recommendation", textRight = "Upgrade to 4G device")
+        RowTextElement(textLeft = "Recommendation", textRight = appViewModel.currentSavedDeviceToDisplay.recommendation?:"")
     }
 }
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun moreInfoCard(showCard: MutableState<Boolean>) {
+fun moreInfoCard(
+    showCard: MutableState<Boolean>,
+    appViewModel: AppViewModel
+) {
     AnimatedVisibility(
         visible = showCard.value,
         enter = fadeIn(),
@@ -191,7 +210,7 @@ fun moreInfoCard(showCard: MutableState<Boolean>) {
                     .size(44.dp), onClick = { showCard.value = !showCard.value }) {
                     Icon(Icons.Filled.Close, contentDescription = null)
                 }
-                imeiInformation()
+                imeiInformation(appViewModel = appViewModel)
             }
         }
     }
@@ -200,30 +219,31 @@ fun moreInfoCard(showCard: MutableState<Boolean>) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun listObjectMaker(
+    appViewModel: AppViewModel,
     linethroughOrNo: TextDecoration,
-    checked: Boolean,
+    savedDevice: SavedDeviceData,
     showCard: MutableState<Boolean>
 ) {
     Row(modifier = Modifier.padding(5.dp), verticalAlignment = Alignment.CenterVertically) {
-        val checkedState = remember { mutableStateOf(checked) }
+        val checkedState = remember { mutableStateOf(savedDevice.checked) }
         Checkbox(
-            checked = checkedState.value,
-            onCheckedChange = { checkedState.value = it },
+            checked = savedDevice.checked,
+            onCheckedChange = { appViewModel.updateCheckbox(savedDevice.imei?:0, !savedDevice.checked) },
             colors = CheckboxDefaults.colors(
                 checkedColor = Color(0xFF3654F4),
                 checkmarkColor = Color.White
             )
         )
-        TextButton(onClick = { showCard.value = !showCard.value }) {
+        TextButton(onClick = { showCard.value = !showCard.value; appViewModel.currentSavedDeviceToDisplay = savedDevice }) {
             Column(modifier = Modifier.fillMaxWidth(0.7f)) {
                 Text(
-                    text = "Sony Ericsson",
+                    text = savedDevice.deviceName?:"",
                     textDecoration = linethroughOrNo,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
                 )
                 Text(
-                    text = "Phone at Infanterivägen 16",
+                    text = savedDevice.deviceDescription?:"",
                     textDecoration = linethroughOrNo,
                     color = Color.Gray,
                     fontWeight = FontWeight.Normal
@@ -236,14 +256,14 @@ fun listObjectMaker(
                 Icon(Icons.Filled.MoreVert, contentDescription = "")
             }
             DropdownMenu(expanded = expanded, onDismissRequest = { expanded = !expanded }) {
-                DropdownMenuItem(text = { Text(text = "Delete") }, onClick = { /*TODO*/ })
+                DropdownMenuItem(text = { Text(text = "Delete")}, onClick = {expanded = !expanded; appViewModel.devicesToDelete(savedDevice.imei!!)})
             }
         }
 
         BadgedBox(
             badge = {
                 Badge {
-                    Text(text = "5")
+                    Text(text = savedDevice.priority.toString())
                 }
             }) {
             Icon(painter = painterResource(id = R.drawable.star), contentDescription = "star")

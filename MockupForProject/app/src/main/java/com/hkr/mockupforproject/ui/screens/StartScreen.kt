@@ -73,9 +73,19 @@ fun StartScreen(
     //VALONS TEST
 
 
-    //val savedDevice = SavedDeviceData(deviceDescription = "New")
+    val savedDevice = SavedDeviceData(
+        deviceDescription = "Per",
+        brand = "test",
+        model = "test",
+        recommendation = "test",
+        deviceName = "test",
+        priority = 4,
+        latitude = 45.00F,
+        longitude = 45.00F,
+        checked = false
+    )
     //appViewModel.upsertSavedDevice(savedDevice)
-    appViewModel.devicesToDelete(1)
+    //appViewModel.devicesToDelete(1)
 
     ///////////////
     var bottomMenuOption : Int by remember {mutableIntStateOf(1)}
@@ -277,6 +287,7 @@ fun EnterIMEIManually(appViewModel : AppViewModel)
                         isError = false
                         appViewModel.searchInfo = !appViewModel.searchInfo
                         appViewModel.bottomSheetExpand = !appViewModel.bottomSheetExpand
+                        appViewModel.currentDeviceToSave.imei = text.toLong()
                         //keyboardController?.hide()
                     }
                 }

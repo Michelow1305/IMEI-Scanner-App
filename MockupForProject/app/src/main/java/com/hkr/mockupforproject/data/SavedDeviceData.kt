@@ -14,7 +14,7 @@ import androidx.room.Upsert
 
 @Entity(tableName = "saved_device")
 data class SavedDeviceData(
-    @PrimaryKey @ColumnInfo(name = "imei") val imei: Int? = null,
+    @PrimaryKey @ColumnInfo(name = "imei") val imei: Long? = null,
 
     @ColumnInfo(name = "deviceDescription") val deviceDescription: String? = null,
 
@@ -57,8 +57,10 @@ interface SavedDeviceDataDao {
     fun allSavedDevices(): LiveData<List<SavedDeviceData>>
 
     @Query("DELETE FROM saved_device WHERE imei = :imeiNumb")
-    fun devicesToDelete(imeiNumb: Int)
+    fun devicesToDelete(imeiNumb: Long)
 
+    @Query("UPDATE saved_device SET checked = :checked WHERE imei = :imeiNumb")
+    fun updateCheckbox(imeiNumb: Long, checked: Boolean)
 
 }
 

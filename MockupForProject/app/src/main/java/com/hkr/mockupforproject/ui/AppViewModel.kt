@@ -50,6 +50,7 @@ open class AppViewModel(
 ) : ViewModel()
 {
     var bottomSheetExpand by mutableStateOf(false)
+    lateinit var currentSavedDeviceToDisplay: SavedDeviceData
 
     var localDeviceInformation : LocalDeviceInformation = LocalDeviceInformation()
 
@@ -88,8 +89,9 @@ open class AppViewModel(
     val currentDeviceToSave: SavedDevice = SavedDevice()
 
 //////////////////////SavedDevices
-    private lateinit var _findAllDevices: LiveData<List<SavedDeviceData>>
-    val allSavedDevices: LiveData<List<SavedDeviceData>> get() = _findAllDevices
+    private var _findAllDevices: LiveData<List<SavedDeviceData>>? = null
+    val allSavedDevices: LiveData<List<SavedDeviceData>> get() = _findAllDevices ?: MutableLiveData(emptyList())
+
     //private lateinit var _deleteByImei: LiveData<List<SavedDeviceData>>
     //val deleteImei: LiveData<List<SavedDeviceData>> get() = _deleteByImei
 
@@ -101,12 +103,15 @@ open class AppViewModel(
         repository.upsertSavedDevice(savedDevice)
     }
 
+    fun updateCheckbox(imeiNumb: Long, checked: Boolean)= viewModelScope.launch(Dispatchers.IO) {
+        repository.updateCheckbox(imeiNumb,checked)
+    }
 
     fun deleteDevice(deleteDevice: SavedDeviceData){
         repository.deleteDevice(deleteDevice)
     }
 
-    fun devicesToDelete(imei: Int)= viewModelScope.launch(Dispatchers.IO) {
+    fun devicesToDelete(imei: Long)= viewModelScope.launch(Dispatchers.IO) {
         repository.devicesToDelete(imei)
     }
 
