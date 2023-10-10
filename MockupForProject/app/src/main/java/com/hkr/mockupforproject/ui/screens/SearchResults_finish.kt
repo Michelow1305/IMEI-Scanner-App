@@ -46,7 +46,7 @@ fun SearchResult_finish(
         brand = appViewModel.currentDeviceToSave.brand,
         model = appViewModel.currentDeviceToSave.model,
         recommendation = appViewModel.currentDeviceToSave.recommendation,
-        //nearbyTowers = appViewModel.currentDeviceToSave.nearbyTowers ,
+        nearbyTowers = appViewModel.currentDeviceToSave.nearbyTowers ,
         deviceName = appViewModel.currentDeviceToSave.deviceName,
         priority = appViewModel.currentDeviceToSave.priority,
         checked = false
