@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.hkr.mockupforproject.data.CellTower
+import com.hkr.mockupforproject.data.SavedDeviceData
 import com.hkr.mockupforproject.ui.AppViewModel
 import kotlinx.coroutines.delay
 
@@ -38,6 +40,18 @@ fun SearchResult_finish(
 ) {
     // State to track whether navigation should occur
     var shouldNavigate by remember { mutableStateOf(false) }
+    var savedDeviceData = SavedDeviceData(
+        imei = appViewModel.currentDeviceToSave.imei,
+        deviceDescription =  appViewModel.currentDeviceToSave.deviceDescription,
+        brand = appViewModel.currentDeviceToSave.brand,
+        model = appViewModel.currentDeviceToSave.model,
+        recommendation = appViewModel.currentDeviceToSave.recommendation,
+        deviceName = appViewModel.currentDeviceToSave.deviceName,
+        priority = appViewModel.currentDeviceToSave.priority,
+        checked = false
+
+    )
+    appViewModel.upsertSavedDevice(savedDeviceData)
     Log.d("Device to save",appViewModel.currentDeviceToSave.toString())
     // Use LaunchedEffect to trigger navigation after 1000ms
     LaunchedEffect(shouldNavigate) {

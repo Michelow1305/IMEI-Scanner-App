@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LifecycleOwner
@@ -24,11 +23,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import com.hkr.mockupforproject.data.LocalDeviceInformation
+import com.hkr.mockupforproject.data.SavedDeviceData
 import kotlinx.coroutines.launch
 
 class AppViewModelFactory(
     private val repository: AppRepository,
     private val owner: LifecycleOwner
+
+
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
@@ -48,7 +50,8 @@ open class AppViewModel(
 ) : ViewModel()
 {
     var bottomSheetExpand by mutableStateOf(false)
-    var bottomMenuOption by mutableIntStateOf(1)
+    lateinit var currentSavedDeviceToDisplay: SavedDeviceData
+
     var localDeviceInformation : LocalDeviceInformation = LocalDeviceInformation()
 
     private lateinit var _allTowers: LiveData<List<CellTower>>
@@ -58,8 +61,7 @@ open class AppViewModel(
 
 
     /*
-        For scanning IMEI -
-        TODO: Delete.
+        For scanning IMEI
      */
     private val _scannedImeis = MutableLiveData<List<Long>>()
     val scannedImeis: LiveData<List<Long>> get() = _scannedImeis
@@ -85,14 +87,41 @@ open class AppViewModel(
             currentDeviceToSave.imei = newImeis[0]
         }
 
-
     }
 
 
 
     // Current Device to save
-    var currentDeviceToSave: SavedDevice = SavedDevice()
+    val currentDeviceToSave: SavedDevice = SavedDevice()
 
+//////////////////////SavedDevices
+    private var _findAllDevices: LiveData<List<SavedDeviceData>>? = null
+    val allSavedDevices: LiveData<List<SavedDeviceData>> get() = _findAllDevices ?: MutableLiveData(emptyList())
+
+    //private lateinit var _deleteByImei: LiveData<List<SavedDeviceData>>
+    //val deleteImei: LiveData<List<SavedDeviceData>> get() = _deleteByImei
+
+    fun allSavedDevices () = viewModelScope.launch(Dispatchers.IO) {
+        _findAllDevices = repository.SavedDeviceGetAll()
+    }
+
+    fun upsertSavedDevice(savedDevice: SavedDeviceData) = viewModelScope.launch(Dispatchers.IO) {
+        repository.upsertSavedDevice(savedDevice)
+    }
+
+    fun updateCheckbox(imeiNumb: Long, checked: Boolean)= viewModelScope.launch(Dispatchers.IO) {
+        repository.updateCheckbox(imeiNumb,checked)
+    }
+
+    fun deleteDevice(deleteDevice: SavedDeviceData){
+        repository.deleteDevice(deleteDevice)
+    }
+
+    fun devicesToDelete(imei: Long)= viewModelScope.launch(Dispatchers.IO) {
+        repository.devicesToDelete(imei)
+    }
+
+/////////////////////////////////////////////////////////////////////////////////////////
     fun getAll() = viewModelScope.launch(Dispatchers.IO) {
         _allTowers = repository.getAll()
     }
@@ -166,14 +195,6 @@ open class AppViewModel(
             context,
             Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    fun hasCameraPermission(context: Context): Boolean {
-        return ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.CAMERA
-        ) == PackageManager.PERMISSION_GRANTED
-
     }
 
 

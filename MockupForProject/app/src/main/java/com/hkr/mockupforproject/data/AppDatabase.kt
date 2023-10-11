@@ -8,12 +8,16 @@ import androidx.room.RoomDatabase
 /*
     Add other Dao's to entities = []
  */
-@Database(entities = [CellTower::class], version = 1)
+@Database(entities = [CellTower::class, SavedDeviceData::class], version = 1)
+
 abstract class AppDatabase : RoomDatabase() {
     /*
         This is where all the Dao's are placed (an interface with queries)
      */
     abstract fun cellTowerDao(): CellTowerDao
+    abstract fun savedDeviceDataDao(): SavedDeviceDataDao
+
+
 
 
     /*
@@ -32,7 +36,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "app_database"
                 )
-                    .createFromAsset("app_database")
+                    //.createFromAsset("app_database")
                     .build()
                 INSTANCE = instance
                 // return instance

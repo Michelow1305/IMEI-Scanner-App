@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.hkr.mockupforproject.data.SavedDeviceData
 import com.hkr.mockupforproject.ui.AppViewModel
 import kotlinx.coroutines.launch
 
@@ -68,7 +69,26 @@ fun StartScreen(
     appViewModel: AppViewModel
 )
 {
-//    var bottomMenuOption : Int by remember {mutableIntStateOf(1)}
+    ////////////////
+    //VALONS TEST
+
+
+    val savedDevice = SavedDeviceData(
+        deviceDescription = "Per",
+        brand = "test",
+        model = "test",
+        recommendation = "test",
+        deviceName = "test",
+        priority = 4,
+        latitude = 45.00F,
+        longitude = 45.00F,
+        checked = false
+    )
+    //appViewModel.upsertSavedDevice(savedDevice)
+    //appViewModel.devicesToDelete(1)
+
+    ///////////////
+    var bottomMenuOption : Int by remember {mutableIntStateOf(1)}
     // Box holding the camera scan button and the saved devices button
     Box {
         val imagePath = painterResource(id = R.drawable.bg_blue_x2)
@@ -167,7 +187,7 @@ fun StartScreen(
 
                 TextButton(onClick = {
                     appViewModel.bottomSheetExpand = !appViewModel.bottomSheetExpand
-                    appViewModel.bottomMenuOption = 1
+                    bottomMenuOption = 1
                 }) {
                     Text(
                         text = "Enter IMEI manually",
@@ -178,7 +198,7 @@ fun StartScreen(
                 }
                 TextButton(onClick = {
                     appViewModel.bottomSheetExpand = !appViewModel.bottomSheetExpand
-                    appViewModel.bottomMenuOption  = 2
+                    bottomMenuOption = 2
                 }) {
                     Text(
                         text = "View this device",
@@ -196,9 +216,9 @@ fun StartScreen(
 
             ) {
                 // Show either the local device info or "Enter IMEI manually"
-                if(appViewModel.bottomMenuOption  == 1)
+                if(bottomMenuOption == 1)
                     EnterIMEIManually(appViewModel = appViewModel)
-                else if(appViewModel.bottomMenuOption  == 2)
+                else if(bottomMenuOption == 2)
                     ViewThisDevice(appViewModel = appViewModel, navController = navController)
             }
         }
@@ -267,6 +287,7 @@ fun EnterIMEIManually(appViewModel : AppViewModel)
                         isError = false
                         appViewModel.searchInfo = !appViewModel.searchInfo
                         appViewModel.bottomSheetExpand = !appViewModel.bottomSheetExpand
+                        appViewModel.currentDeviceToSave.imei = text.toLong()
                         //keyboardController?.hide()
                     }
                 }
