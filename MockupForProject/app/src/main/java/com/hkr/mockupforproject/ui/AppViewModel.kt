@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LifecycleOwner
@@ -50,9 +51,11 @@ open class AppViewModel(
 ) : ViewModel()
 {
     var bottomSheetExpand by mutableStateOf(false)
+    var bottomMenuOption by mutableIntStateOf(1)
+    var localDeviceInformation : LocalDeviceInformation = LocalDeviceInformation()
+
     lateinit var currentSavedDeviceToDisplay: SavedDeviceData
 
-    var localDeviceInformation : LocalDeviceInformation = LocalDeviceInformation()
 
     private lateinit var _allTowers: LiveData<List<CellTower>>
     private lateinit var _findByMncResult: LiveData<List<CellTower>>
@@ -196,7 +199,13 @@ open class AppViewModel(
             Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
     }
+    fun hasCameraPermission(context: Context): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
 
+    }
 
 
 }
