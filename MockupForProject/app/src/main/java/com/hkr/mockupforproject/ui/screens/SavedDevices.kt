@@ -155,7 +155,7 @@ fun imeiInformation(appViewModel: AppViewModel) {
 
     Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 50.dp)) {
         Text(
-            text = "IMEI Information",
+            text = "Scanning details",
             modifier = Modifier.padding(bottom = 14.dp),
             fontSize = 28.sp,
             fontWeight = FontWeight(700),
@@ -178,8 +178,9 @@ fun imeiInformation(appViewModel: AppViewModel) {
             color = Color.Black
         )
         RowTextElement(textLeft = "IMEI", textRight = appViewModel.currentSavedDeviceToDisplay.imei.toString())
-        RowTextElement(textLeft = "Brand", textRight = appViewModel.currentSavedDeviceToDisplay.brand?:"")
+        //Not in this version //RowTextElement(textLeft = "Brand", textRight = appViewModel.currentSavedDeviceToDisplay.brand?:"")
         RowTextElement(textLeft = "Model", textRight = appViewModel.currentSavedDeviceToDisplay.model?:"")
+        RowTextElement(textLeft = "Radio support", textRight = appViewModel.currentDeviceToSave.supportedTechnologies)
         Box(
             modifier = Modifier.clickable(onClick = {expandAvailableOperators=!expandAvailableOperators})
         ) {

@@ -203,7 +203,6 @@ fun addDevice(viewModel : AppViewModel, context: Context, imei: Long) : Boolean
     // Else, Save information to currentDeviceToSave in the appViewModel.
     else
     {
-        viewModel.currentDeviceToSave.imei = imei
         viewModel.currentDeviceToSave.model = result.keys.toList()[0]
         viewModel.currentDeviceToSave.supportedTechnologies = result[result.keys.toList()[0]].toString()
 

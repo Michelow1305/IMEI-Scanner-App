@@ -53,6 +53,7 @@ fun SearchResult_finish(
         currentNetworkOperator = appViewModel.localDeviceInformation.networkOperator,
         currentNetworkType = appViewModel.localDeviceInformation.currentNetwork,
         currentNetworkStrength = appViewModel.localDeviceInformation.signalStrength,
+        supportedTechnologies = appViewModel.currentDeviceToSave.supportedTechnologies,
         checked = false
 
     )

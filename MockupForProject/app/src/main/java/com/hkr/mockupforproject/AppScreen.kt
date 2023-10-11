@@ -54,7 +54,7 @@ fun AppScreen(viewModel : AppViewModel, context: Context) {
         scaffoldState = sheetScaffoldState,
         sheetSwipeEnabled = true,
         sheetContent = {
-            Box(modifier = Modifier.height(595.dp), contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier.height(620.dp), contentAlignment = Alignment.Center) {
                 bottomAppNavigation(appViewModel)
             }
         }

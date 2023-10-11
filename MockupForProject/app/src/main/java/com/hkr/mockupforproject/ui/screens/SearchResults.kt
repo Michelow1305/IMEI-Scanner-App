@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -37,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -49,6 +51,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.hkr.mockupforproject.R
 import com.hkr.mockupforproject.data.CellTower
+import com.hkr.mockupforproject.data.addDevice
 import com.hkr.mockupforproject.data.haversineDistance
 import com.hkr.mockupforproject.ui.AppViewModel
 
@@ -71,27 +74,28 @@ fun SearchResult(
     recommendation : String = "Upgrade to 4G device"
 
 ) {
+    if (appViewModel.currentDeviceToSave.imei>0) {
+        addDevice(viewModel = appViewModel, context = LocalContext.current, imei = appViewModel.currentDeviceToSave.imei)
+
+    }
     val scrollState = rememberScrollState()
     var expandAvailableOperators by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier
         .background(Color.White)) {
         Column(modifier = Modifier
-            .padding(40.dp)
+            .padding(top = 30.dp, bottom = 40.dp, start = 40.dp, end = 40.dp)
             .verticalScroll(scrollState)) {
             Text(
-                text = "IMEI\nInformation",
+                text = "Search results",
                 modifier = Modifier.padding(bottom = 14.dp),
                 fontSize = 28.sp,
                 fontWeight = FontWeight(700),
                 color = Color.Black
             )
             Log.d("Currentnetwork", appViewModel.localDeviceInformation.currentNetwork)
-            RowTextElement(textLeft = "IMEI", textRight = iMEI)
-            RowTextElement(textLeft = "Brand", textRight = brand)
-            RowTextElement(textLeft = "Model", textRight = model)
             RowTextElement(
-                textLeft = "Current Network",
+                textLeft = "My phone network",
                 textRight = appViewModel.localDeviceInformation.networkOperator+"/"+appViewModel.localDeviceInformation.currentNetwork+" ",
                 elementRight = {SignalStrengthBar(appViewModel.localDeviceInformation.signalStrength)}
             )
@@ -104,6 +108,18 @@ fun SearchResult(
             if(expandAvailableOperators || !appViewModel.searchInfo) {
                 ShowCellTowers(appViewModel = appViewModel)
             }
+            Divider(modifier = Modifier.fillMaxWidth())
+            Text(
+                text = "Scanned device",
+                modifier = Modifier.padding(bottom = 14.dp, top = 14.dp),
+                fontSize = 20.sp,
+                fontWeight = FontWeight(700),
+                color = Color.Black
+            )
+            RowTextElement(textLeft = "IMEI", textRight = appViewModel.currentDeviceToSave.imei.toString())
+            //Not in this version//RowTextElement(textLeft = "Brand", textRight = brand)
+            RowTextElement(textLeft = "Model", textRight = appViewModel.currentDeviceToSave.model)
+            RowTextElement(textLeft = "Radio support", textRight = appViewModel.currentDeviceToSave.supportedTechnologies)
 
             RowTextElement(textLeft = "Recommendation", textRight = recommendation)
             Spacer(

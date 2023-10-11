@@ -38,8 +38,9 @@ data class SavedDeviceData(
 
     @ColumnInfo(name = "longitude") val longitude: Float? = null,
 
-    @ColumnInfo (name = "checked") val checked: Boolean = false
+    @ColumnInfo(name = "supportedTechnologies") val supportedTechnologies: String? = null,
 
+    @ColumnInfo (name = "checked") val checked: Boolean = false
 
 
 
