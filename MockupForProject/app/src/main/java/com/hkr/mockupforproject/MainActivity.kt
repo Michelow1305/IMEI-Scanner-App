@@ -110,33 +110,3 @@ fun GreetingPreview() {
         //StartScreen()
     }
 }
-
-
-/*
-                        LazyColumn(
-                            modifier = Modifier
-                                  .fillMaxWidth()
-                                .background(Color.White, shape = RoundedCornerShape(10.dp))
-                                .height(200.dp)
-                        )
-                        {
-                            items(cellTowers)
-                            { step ->
-                                if (viewModel.cellTowersInRangeHasTowers) {
-                                    Log.d(
-                                        "",
-                                        haversineDistance(
-                                            viewModel.localDeviceInformation.latitude,
-                                            viewModel.localDeviceInformation.longitude,
-                                            step.latitude!!.toDouble(),
-                                            step.longitude!!.toDouble()
-                                        ).toString()
-                                    )
-                                }
-                                Text(
-                                    text = step.toString()
-                                )
-                            }
-                        }
- */
-

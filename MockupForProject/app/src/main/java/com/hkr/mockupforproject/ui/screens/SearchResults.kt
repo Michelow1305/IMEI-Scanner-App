@@ -240,7 +240,7 @@ fun ShowCellTowers(appViewModel: AppViewModel) {
     Log.d("DEBUG3", appViewModel.cellTowersInRangeResult.value.toString())
 
     if (cellTowersList != null) {
-        cellTowersList?.let { cellTowers ->
+            cellTowersList?.let { cellTowers ->
             val sortedCellTowers = cellTowers.sortedBy { step ->
                 haversineDistance(
                     localDeviceLatitude,

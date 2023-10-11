@@ -48,6 +48,11 @@ fun SearchResult_finish(
         recommendation = appViewModel.currentDeviceToSave.recommendation,
         deviceName = appViewModel.currentDeviceToSave.deviceName,
         priority = appViewModel.currentDeviceToSave.priority,
+        latitude = appViewModel.localDeviceInformation.latitude.value.toFloat(),
+        longitude = appViewModel.localDeviceInformation.longitude.value.toFloat(),
+        currentNetworkOperator = appViewModel.localDeviceInformation.networkOperator,
+        currentNetworkType = appViewModel.localDeviceInformation.currentNetwork,
+        currentNetworkStrength = appViewModel.localDeviceInformation.signalStrength,
         checked = false
 
     )

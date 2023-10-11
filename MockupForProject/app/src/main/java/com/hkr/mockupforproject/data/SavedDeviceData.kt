@@ -26,6 +26,12 @@ data class SavedDeviceData(
 
     @ColumnInfo(name = "deviceName") val deviceName: String? = null,
 
+    @ColumnInfo(name = "currentNetworkOperator") val currentNetworkOperator: String? = null,
+
+    @ColumnInfo(name = "currentNetworkType") val currentNetworkType: String? = null,
+
+    @ColumnInfo(name = "currentNetworkStrength") val currentNetworkStrength: Int? = null,
+
     @ColumnInfo(name = "priority") val priority: Int? = null,
 
     @ColumnInfo(name = "latitude") val latitude: Float? = null,

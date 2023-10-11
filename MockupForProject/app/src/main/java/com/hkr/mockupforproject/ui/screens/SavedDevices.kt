@@ -38,6 +38,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -68,6 +70,7 @@ fun SavedDevicesPreview() {
     SavedDevices(appViewModel = viewModel())
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SavedDevices(
     appViewModel: AppViewModel,
@@ -108,7 +111,11 @@ fun SavedDevices(
             )
             LazyColumn() {
                 items(savedDevices) { device ->
-                    if (!device.checked) {
+                    AnimatedVisibility(
+                        visible = !device.checked,
+                        enter = fadeIn(),
+                        exit = fadeOut()
+                    ) {
                         listObjectMaker(
                             linethroughOrNo = TextDecoration.None,
                             showCard = showCard,
@@ -117,12 +124,17 @@ fun SavedDevices(
                         )
                     }
                 }
+
                 item {
                     Divider(modifier = Modifier.padding(top = 30.dp, bottom = 30.dp))
                 }
 
                 items(savedDevices) { device ->
-                    if (device.checked) {
+                    AnimatedVisibility(
+                        visible = device.checked,
+                        enter = fadeIn(),
+                        exit = fadeOut()
+                    ) {
                         listObjectMaker(
                             linethroughOrNo = TextDecoration.None,
                             showCard = showCard,
@@ -132,24 +144,6 @@ fun SavedDevices(
                     }
                 }
             }
-
-            /*
-            for (i in 1..5) {
-                listObjectMaker(TextDecoration.None, false, showCard)
-            }
-            Divider(modifier = Modifier.padding(top = 30.dp, bottom = 30.dp))
-            Text(
-                text = "Updated Devices",
-                fontSize = 20.sp,
-                fontWeight = FontWeight(400),
-                modifier = Modifier.padding(start = 18.dp, bottom = 15.dp),
-                color = Color.Black
-            )
-            for (i in 1..3) {
-                listObjectMaker(TextDecoration.LineThrough, true, showCard)
-            }
-
-             */
         }
     }
     moreInfoCard(showCard = showCard, appViewModel)
@@ -157,6 +151,8 @@ fun SavedDevices(
 
 @Composable
 fun imeiInformation(appViewModel: AppViewModel) {
+    var expandAvailableOperators by remember { mutableStateOf(false) }
+
     Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 50.dp)) {
         Text(
             text = "IMEI Information",
@@ -168,12 +164,31 @@ fun imeiInformation(appViewModel: AppViewModel) {
         RowTextElement(textLeft = "Name", textRight = appViewModel.currentSavedDeviceToDisplay.deviceName?:"")
         RowTextElement(textLeft = "Information", textRight = appViewModel.currentSavedDeviceToDisplay.deviceDescription?:"")
         RowTextElement(textLeft = "Priority", textRight = appViewModel.currentSavedDeviceToDisplay.priority.toString())
+        RowTextElement(
+            textLeft = "Scanner phone",
+            textRight = appViewModel.currentSavedDeviceToDisplay.currentNetworkOperator+"/"+appViewModel.currentSavedDeviceToDisplay.currentNetworkType+" ",
+            elementRight = {SignalStrengthBar(appViewModel.currentSavedDeviceToDisplay.currentNetworkStrength?:0)}
+        )
         Divider(modifier = Modifier.padding(top = 30.dp, bottom = 30.dp))
+        Text(
+            text = "Scanned device",
+            modifier = Modifier.padding(bottom = 14.dp),
+            fontSize = 20.sp,
+            fontWeight = FontWeight(700),
+            color = Color.Black
+        )
         RowTextElement(textLeft = "IMEI", textRight = appViewModel.currentSavedDeviceToDisplay.imei.toString())
         RowTextElement(textLeft = "Brand", textRight = appViewModel.currentSavedDeviceToDisplay.brand?:"")
         RowTextElement(textLeft = "Model", textRight = appViewModel.currentSavedDeviceToDisplay.model?:"")
-        RowTextElement(textLeft = "Current Network", textRight = "3G/ -105dBm")
-        RowTextElement(textLeft = "Available Network", textRight = "4G/ -76dBm")
+        Box(
+            modifier = Modifier.clickable(onClick = {expandAvailableOperators=!expandAvailableOperators})
+        ) {
+            RowTextElement(textLeft = "Nearby cell towers...", elementRight = { AnimatedExpandArrow(expanded = expandAvailableOperators) })
+        }
+
+        if(expandAvailableOperators) {
+            ShowCellTowers(appViewModel = appViewModel)
+        }
         RowTextElement(textLeft = "Recommendation", textRight = appViewModel.currentSavedDeviceToDisplay.recommendation?:"")
     }
 }
