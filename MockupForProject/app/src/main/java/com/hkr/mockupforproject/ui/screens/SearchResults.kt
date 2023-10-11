@@ -178,7 +178,7 @@ fun LocalDeviceResult(
         .background(Color.White)) {
         Column(modifier = Modifier.padding(40.dp)) {
             Text(
-                text = "Device information",
+                text = "Phone information",
                 modifier = Modifier.padding(bottom = 14.dp),
                 fontSize = 28.sp,
                 fontWeight = FontWeight(700),

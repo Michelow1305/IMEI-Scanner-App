@@ -201,7 +201,7 @@ fun StartScreen(
                     bottomMenuOption = 2
                 }) {
                     Text(
-                        text = "View this device",
+                        text = "View this phone",
                         fontWeight = FontWeight(400),
                         fontSize = 14.sp,
                         color = Color(0xFF2F2E51)
@@ -234,12 +234,12 @@ Calls:			LocalDeviceResult() in SearchResults.kt
 Author:         Joel Andersson
  */
 @Composable
-fun ViewThisDevice(appViewModel : AppViewModel, navController : NavHostController)
+fun ViewThisDevice(appViewModel : AppViewModel, navController : NavHostController, modifier: Modifier = Modifier.fillMaxSize())
 {
     FetchDeviceInformation(appViewModel)
     appViewModel.localDeviceInformation.logDeviceInformation()
 
-    LocalDeviceResult(appViewModel, navController,
+    LocalDeviceResult(appViewModel = appViewModel, navController = navController,
         networkOperator = appViewModel.localDeviceInformation.networkOperator,
         iMEI = appViewModel.localDeviceInformation.iMEI,
         currentNetwork = appViewModel.localDeviceInformation.currentNetwork,
@@ -269,7 +269,8 @@ fun EnterIMEIManually(appViewModel : AppViewModel)
         OutlinedTextField(
             shape = RoundedCornerShape(16.dp),
             value = text,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .focusRequester(focusRequester),
             onValueChange = { if (it.length<=15) text = it; if (it.length==15) isError = false },
             isError = isError,
