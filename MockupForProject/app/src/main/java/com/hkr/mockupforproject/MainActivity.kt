@@ -21,6 +21,7 @@ import com.hkr.mockupforproject.ui.AppViewModelFactory
 import com.hkr.mockupforproject.ui.theme.MockupForProjectTheme
 import androidx.core.app.ActivityCompat
 import com.hkr.mockupforproject.ui.screens.FetchDeviceInformation
+import com.hkr.mockupforproject.data.addDevice
 
 
 class MainActivity : ComponentActivity() {
@@ -28,9 +29,6 @@ class MainActivity : ComponentActivity() {
     private val database by lazy { AppDatabase.getDatabase(this) }
     private val repository by lazy { AppRepository(database.cellTowerDao(),database.savedDeviceDataDao()) }
     private val viewModelFactory by lazy { AppViewModelFactory(repository, this)}
-
-
-
 
     private val viewModel: AppViewModel by viewModels { viewModelFactory }
     companion object {
@@ -50,7 +48,6 @@ class MainActivity : ComponentActivity() {
         Thread.sleep(500)
 
         viewModel.getCellTowersInRange(viewModel.localDeviceInformation.latitude.value.toFloat(), viewModel.localDeviceInformation.longitude.value.toFloat())
-
 
         // Observe the LiveData in Appviewmodel for permission request
         // If we need more permissions add it to the array below

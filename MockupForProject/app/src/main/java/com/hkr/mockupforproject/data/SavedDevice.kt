@@ -16,6 +16,7 @@ data class SavedDevice(
     val currentNetworkOperator: String = "Not defined",
     val currentNetworkType: String = "Not defined",
     val currentNetworkStrength: Int = 0,
+    var supportedTechnologies: String = "NA",
     var checked: Boolean = false
 ) {
     
