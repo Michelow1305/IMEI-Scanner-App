@@ -3,6 +3,8 @@ package com.hkr.mockupforproject
 import android.Manifest
 import android.content.ContentValues
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -20,7 +22,10 @@ import com.hkr.mockupforproject.ui.AppViewModel
 import com.hkr.mockupforproject.ui.AppViewModelFactory
 import com.hkr.mockupforproject.ui.theme.MockupForProjectTheme
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.lifecycleScope
+import com.hkr.mockupforproject.data.parseCSV
 import com.hkr.mockupforproject.ui.screens.FetchDeviceInformation
+import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
