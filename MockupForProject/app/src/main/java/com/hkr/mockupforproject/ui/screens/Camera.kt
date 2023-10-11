@@ -100,7 +100,7 @@ fun CameraWithBoundedBox(
     val rect = remember { mutableStateOf(Rect(0, 0, 0, 0)) }
 
     val density = LocalDensity.current
-    val boxHeight = 70
+    val boxHeight = 120
     val xPadding = 25
 
     Scaffold(
