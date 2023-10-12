@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imeAnimationTarget
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -86,7 +87,7 @@ fun StartScreen(
     appViewModel: AppViewModel,
 ) {
     ////////////////
-    Log.d("YES", WindowInsets.ime.toString())
+    Log.d("YES", WindowInsets.imeAnimationTarget.toString())
     ///////////////
     var bottomMenuOption: Int by remember { mutableIntStateOf(1) }
     // Box holding the camera scan button and the saved devices button
@@ -210,15 +211,11 @@ fun StartScreen(
         }
         if (appViewModel.bottomSheetExpand) {
             if (bottomMenuOption == 1) {
-                /*
                 Box(modifier = Modifier.align(Alignment.BottomCenter).windowInsetsPadding(
                     WindowInsets.ime)) {
                     EnterIMEIManually(appViewModel = appViewModel)
                 }
-                 */
-                ModalBottomSheet(onDismissRequest = { appViewModel.bottomSheetExpand = !appViewModel.bottomSheetExpand }, windowInsets = WindowInsets.ime) {
-                    EnterIMEIManually(appViewModel = appViewModel)
-                }
+
             } else if (bottomMenuOption == 2) {
                 ModalBottomSheet(
                     onDismissRequest = {
