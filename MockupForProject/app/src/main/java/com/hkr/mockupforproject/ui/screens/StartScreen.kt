@@ -217,8 +217,6 @@ fun StartScreen(
         }
         if (appViewModel.bottomSheetExpand) {
             if (bottomMenuOption == 1) {
-                val isFocused = remember { mutableStateOf(false) }
-                val focusRequester = rememberUpdatedState(FocusRequester.Default)
                 AnimatedVisibility(
                     visible = (bottomMenuOption == 1 && appViewModel.bottomSheetExpand),
                     enter = fadeIn(),
@@ -230,7 +228,6 @@ fun StartScreen(
                             .fillMaxSize()
                             .pointerInput(Unit) {
                                 detectTapGestures(onTap = {
-                                    // If TextField is focused and tap is detected outside of it
                                     appViewModel.bottomSheetExpand =
                                         !appViewModel.bottomSheetExpand
                                 })
