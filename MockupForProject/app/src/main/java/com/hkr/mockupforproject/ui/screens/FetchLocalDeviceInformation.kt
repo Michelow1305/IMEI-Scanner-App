@@ -123,8 +123,7 @@ fun fetchLocation(context: Context, appViewModel: AppViewModel) {
         }
         gpsLocation == null -> {
             Log.d("LocationProvider", "Using Network location provider.")
-            //networkLocation
-            gpsLocation
+            networkLocation
         }
         networkLocation == null -> {
             Log.d("LocationProvider", "Using GPS location provider.")
