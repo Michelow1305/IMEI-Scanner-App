@@ -81,7 +81,7 @@ Matching against existing device databases
 *	Detecting signal strength of different network and providers.       (grade5)
 *	Bar code scanning.                                                  (grade5)
 *	IMEI scanning.                                                      (grade5)
-*	Crosschecking hardware with LTE capabilities (with database?free?)  (grade5)
+*	Crosschecking hardware with LTE capabilities (use paid database?)   (grade5)
 
 ## Contributors
 * Per Magnusson
