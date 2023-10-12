@@ -208,7 +208,7 @@ fun StartScreen(
         }
         if (appViewModel.bottomSheetExpand) {
             Box(modifier = Modifier.align(Alignment.BottomCenter)) {
-                DigiPadInput(modifier = Modifier.fillMaxWidth().padding(0.dp))
+                EnterIMEIManually(appViewModel = appViewModel)
             }
 
             /*
@@ -271,13 +271,13 @@ Author:         Joel Andersson & Per Magnusson
 @Composable
 fun EnterIMEIManually(appViewModel : AppViewModel)
 {
-    Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp)) {
+    Column(modifier = Modifier.padding(start = 0.dp, end = 0.dp, bottom = 0.dp)) {
         var text by remember { mutableStateOf("") }
         val focusRequester = remember { FocusRequester() }
         var isError by remember { mutableStateOf(false) }
 
-        OutlinedTextField(
-            shape = RoundedCornerShape(16.dp),
+        TextField(
+            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
             value = text,
             modifier = Modifier
                 .fillMaxWidth()
@@ -309,7 +309,8 @@ fun EnterIMEIManually(appViewModel : AppViewModel)
                 unfocusedContainerColor = Color.White,
                 disabledContainerColor = Color.White,
                 cursorColor = Color.Black,
-                focusedBorderColor = Color.Black
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent
             )
         )
         if (isError) {
@@ -321,34 +322,3 @@ fun EnterIMEIManually(appViewModel : AppViewModel)
 
     }
 }
-
-
-@Composable
-fun DigiPadInput(modifier: Modifier) {
-    var textState by remember { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        // Display the input above the digipad.
-        TextField(
-            value = textState,
-            onValueChange = {
-                textState = it
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    // Handle done action, like dismissing the keyboard
-                }
-            )
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-    }
-}
-
