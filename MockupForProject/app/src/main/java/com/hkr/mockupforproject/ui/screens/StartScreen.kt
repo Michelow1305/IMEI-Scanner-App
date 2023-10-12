@@ -1,18 +1,24 @@
 package com.hkr.mockupforproject.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import com.hkr.mockupforproject.R
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -31,6 +37,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.LaunchedEffect
@@ -211,15 +218,20 @@ fun StartScreen(
         }
         if (appViewModel.bottomSheetExpand) {
             ModalBottomSheet(
+                sheetState = SheetState(skipPartiallyExpanded = true),
                 onDismissRequest = { appViewModel.bottomSheetExpand = !appViewModel.bottomSheetExpand },
-                containerColor = Color.White
-
+                containerColor = Color.White,
+                //windowInsets = WindowInsets.ime,
+                modifier = Modifier.consumeWindowInsets(WindowInsets.ime)
             ) {
                 // Show either the local device info or "Enter IMEI manually"
-                if(bottomMenuOption == 1)
+                if(bottomMenuOption == 1) {
                     EnterIMEIManually(appViewModel = appViewModel)
-                else if(bottomMenuOption == 2)
+                }
+
+                else if(bottomMenuOption == 2) {
                     ViewThisDevice(appViewModel = appViewModel, navController = navController)
+                }
             }
         }
     }

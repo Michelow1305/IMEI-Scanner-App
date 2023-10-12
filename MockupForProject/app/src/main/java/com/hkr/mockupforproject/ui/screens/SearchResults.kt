@@ -285,11 +285,11 @@ fun ShowCellTowers(appViewModel: AppViewModel) {
                     ).toInt().toString()
                     Row (horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth())  {
                         Row {
-                            Text(text = (index+1).toString()+". ")
-                            Text(text = step.mnc.toString()+"/")
-                            Text(text = step.radio.toString())
+                            Text(text = (index+1).toString()+". ", color = Color.Black)
+                            Text(text = step.mnc.toString()+"/", color = Color.Black)
+                            Text(text = step.radio.toString(), color = Color.Black)
                         }
-                        Text(text = "Distance: "+theDistance+"m")
+                        Text(text = "Distance: "+theDistance+"m", color = Color.Black)
                     }
                 }
             }
