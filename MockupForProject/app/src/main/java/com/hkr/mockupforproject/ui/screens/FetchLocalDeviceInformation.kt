@@ -132,7 +132,7 @@ fun fetchLocation(context: Context, appViewModel: AppViewModel) {
         }
         gpsLocation.accuracy <= networkLocation.accuracy -> {
             Log.d("LocationProvider", "GPS location is more accurate or equally accurate. Using GPS.")
-            gpsLocation // Lower accuracy value means higher precision
+            gpsLocation
         }
         else -> {
             Log.d("LocationProvider", "Network location is more accurate. Using Network.")

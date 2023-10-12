@@ -244,6 +244,8 @@ fun RowTextElement(
 
 @Composable
 fun ShowCellTowers(appViewModel: AppViewModel) {
+    FetchDeviceInformation(appViewModel = appViewModel)
+
     val localDeviceLatitude by remember { appViewModel.localDeviceInformation.latitude }
     val localDeviceLongitude by remember { appViewModel.localDeviceInformation.longitude }
     val cellTowersList: List<CellTower>? by appViewModel.cellTowersInRangeResult.observeAsState()
@@ -299,7 +301,7 @@ fun ShowCellTowers(appViewModel: AppViewModel) {
         Text(text = "List is null")
         // Handle the case when the list is null, e.g., show a loading indicator or a message
     }
-    FetchDeviceInformation(appViewModel = appViewModel)
+
 
 }
 

@@ -228,7 +228,7 @@ fun StartScreen(
 /*
 Function name:	ViewThisDevice()
 Inputs:			AppViewModel, NavHostController
-Outputs:			Draws local device information on the scaffold sheet
+Outputs:		Draws local device information on the scaffold sheet
 Called by:		StartScreen() if user clicks "view this device"-button
 Calls:			LocalDeviceResult() in SearchResults.kt
 Author:         Joel Andersson
