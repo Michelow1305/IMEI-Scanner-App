@@ -134,8 +134,6 @@ fun SearchResult(
                     .height(75.dp),
                 onClick = {
                     navController.navigate("SearchResults_saveDevice");
-                    appViewModel.currentDeviceToSave.brand = "test1";
-                    appViewModel.currentDeviceToSave.model = "Motorola";
                     appViewModel.currentDeviceToSave.recommendation = "Upgrade"
                           },
             ) {
