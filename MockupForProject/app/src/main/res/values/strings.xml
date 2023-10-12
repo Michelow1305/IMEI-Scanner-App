@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">MockupForProject</string>
-    <string name="startpage_text">The cutting-edge IMEI scanning techique effortlessly scan, verify and collect the essential information about the scanned device in an instant.</string>
+    <string name="app_name">IMEI Analyzer</string>
+    <string name="startpage_text">The cutting-edge IMEI scanning techique effortlessly scan, verify and collect the essential information about the scanned device in an instant. Almost an instant at least...</string>
 </resources>
