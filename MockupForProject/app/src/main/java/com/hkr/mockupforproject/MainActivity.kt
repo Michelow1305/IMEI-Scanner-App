@@ -22,6 +22,7 @@ import com.hkr.mockupforproject.ui.AppViewModel
 import com.hkr.mockupforproject.ui.AppViewModelFactory
 import com.hkr.mockupforproject.ui.theme.MockupForProjectTheme
 import androidx.core.app.ActivityCompat
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.hkr.mockupforproject.data.parseCSV
 import com.hkr.mockupforproject.ui.screens.FetchDeviceInformation
@@ -41,6 +42,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         Log.d(ContentValues.TAG, "Created viewmodel")
 

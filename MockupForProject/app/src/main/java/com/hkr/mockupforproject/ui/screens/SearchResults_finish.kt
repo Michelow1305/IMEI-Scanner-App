@@ -63,12 +63,14 @@ fun SearchResult_finish(
     LaunchedEffect(shouldNavigate) {
         if (shouldNavigate) {
             // Simulate navigation to the next composable
-            delay(2000)
+            delay(1500)
             // Replace this with your actual navigation logic
             // For example, navigate to another screen or composable
             // Replace the lambda below with your navigation logic
-            navController.navigate("SearchResults")
+
             appViewModel.searchInfo = !appViewModel.searchInfo
+            delay(2000)
+            navController.navigate("SearchResults")
         }
     }
 

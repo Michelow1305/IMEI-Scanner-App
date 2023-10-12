@@ -8,6 +8,7 @@ import com.hkr.mockupforproject.R
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -18,10 +19,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imeAnimationTarget
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -46,6 +50,7 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -70,24 +75,23 @@ import kotlinx.coroutines.launch
 
 @Preview
 @Composable
-fun startScreenPreview()
-{
-    StartScreen(appViewModel = viewModel())
+fun startScreenPreview() {
+    //StartScreen(appViewModel = viewModel())
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun StartScreen(
     navController: NavHostController = rememberNavController(),
-    appViewModel: AppViewModel
-)
-{
+    appViewModel: AppViewModel,
+) {
     ////////////////
-    Log.d("YES", WindowInsets.imeAnimationTarget.toString())
+    Log.d("YES", WindowInsets.ime.toString())
     ///////////////
-    var bottomMenuOption : Int by remember {mutableIntStateOf(1)}
+    var bottomMenuOption: Int by remember { mutableIntStateOf(1) }
     // Box holding the camera scan button and the saved devices button
-    Box {
+    Box (modifier = Modifier.windowInsetsPadding(
+        WindowInsets.systemBars)){
         val imagePath = painterResource(id = R.drawable.bg_blue_x2)
         Image(
             painter = imagePath,
@@ -103,7 +107,7 @@ fun StartScreen(
                  */
                 //appViewModel.searchInfo = !appViewModel.searchInfo
                 navController.navigate("CameraWithBoundedBox")
-                      },
+            },
             modifier = Modifier
                 .align(alignment = Alignment.BottomCenter)
                 .padding(bottom = 70.dp),
@@ -130,7 +134,6 @@ fun StartScreen(
                 tint = Color.Black
             )
         }
-
 
 
         // Main content column of the main screen
@@ -207,30 +210,29 @@ fun StartScreen(
             }
         }
         if (appViewModel.bottomSheetExpand) {
-            Box(modifier = Modifier.align(Alignment.BottomCenter)) {
-                EnterIMEIManually(appViewModel = appViewModel)
-            }
-
-            /*
-            ModalBottomSheet(
-                sheetState = SheetState(skipPartiallyExpanded = true),
-                onDismissRequest = { appViewModel.bottomSheetExpand = !appViewModel.bottomSheetExpand },
-                containerColor = Color.White,
-                //windowInsets = WindowInsets.imeAnimationTarget,
-                //modifier = Modifier.windowInsetsBottomHeight(WindowInsets.ime)
-            ) {
-                // Show either the local device info or "Enter IMEI manually"
-                if(bottomMenuOption == 1) {
-                    Log.d("YES", WindowInsets.imeAnimationTarget.toString())
-                    Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.ime))
+            if (bottomMenuOption == 1) {
+                /*
+                Box(modifier = Modifier.align(Alignment.BottomCenter).windowInsetsPadding(
+                    WindowInsets.ime)) {
                     EnterIMEIManually(appViewModel = appViewModel)
                 }
-
-                else if(bottomMenuOption == 2) {
+                 */
+                ModalBottomSheet(onDismissRequest = { appViewModel.bottomSheetExpand = !appViewModel.bottomSheetExpand }, windowInsets = WindowInsets.ime) {
+                    EnterIMEIManually(appViewModel = appViewModel)
+                }
+            } else if (bottomMenuOption == 2) {
+                ModalBottomSheet(
+                    windowInsets = WindowInsets.navigationBars,
+                    onDismissRequest = {
+                        appViewModel.bottomSheetExpand = !appViewModel.bottomSheetExpand
+                    },
+                    containerColor = Color.White,
+                ) {
                     ViewThisDevice(appViewModel = appViewModel, navController = navController)
                 }
             }
-            */
+
+
         }
     }
 }
@@ -244,19 +246,24 @@ Calls:			LocalDeviceResult() in SearchResults.kt
 Author:         Joel Andersson
  */
 @Composable
-fun ViewThisDevice(appViewModel : AppViewModel, navController : NavHostController, modifier: Modifier = Modifier.fillMaxSize())
-{
+fun ViewThisDevice(
+    appViewModel: AppViewModel,
+    navController: NavHostController,
+    modifier: Modifier = Modifier.fillMaxSize()
+) {
     FetchDeviceInformation(appViewModel)
     appViewModel.localDeviceInformation.logDeviceInformation()
 
-    LocalDeviceResult(appViewModel = appViewModel, navController = navController,
+    LocalDeviceResult(
+        appViewModel = appViewModel, navController = navController,
         networkOperator = appViewModel.localDeviceInformation.networkOperator,
         iMEI = appViewModel.localDeviceInformation.iMEI,
         currentNetwork = appViewModel.localDeviceInformation.currentNetwork,
         model = appViewModel.localDeviceInformation.model,
         signalStrength = appViewModel.localDeviceInformation.signalStrength.toString(),
         latitude = appViewModel.localDeviceInformation.latitude.value,
-        longitude = appViewModel.localDeviceInformation.longitude.value)
+        longitude = appViewModel.localDeviceInformation.longitude.value
+    )
 
 }
 
@@ -269,8 +276,7 @@ Calls:			SearchResult() in SearchResults.kt
 Author:         Joel Andersson & Per Magnusson
  */
 @Composable
-fun EnterIMEIManually(appViewModel : AppViewModel)
-{
+fun EnterIMEIManually(appViewModel: AppViewModel) {
     Column(modifier = Modifier.padding(start = 0.dp, end = 0.dp, bottom = 0.dp)) {
         var text by remember { mutableStateOf("") }
         val focusRequester = remember { FocusRequester() }
@@ -282,9 +288,17 @@ fun EnterIMEIManually(appViewModel : AppViewModel)
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(focusRequester),
-            onValueChange = { if (it.length<=15) text = it; if (it.length==15) isError = false },
+            onValueChange = {
+                if (it.length <= 15) text = it; if (it.length == 15) isError = false
+            },
             isError = isError,
-            label = { Text(text = "Enter IMEI", color = Color.Black) },
+            label = {
+                if (!isError) {
+                    Text(text = "Enter IMEI", color = Color.Black)
+                } else {
+                    Text(text = "Please enter 15 digits.", color = Color.Red)
+                }
+            },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Done
@@ -296,26 +310,22 @@ fun EnterIMEIManually(appViewModel : AppViewModel)
                         // Optionally show a toast or some other feedback
                     } else {
                         isError = false
-                        appViewModel.searchInfo = !appViewModel.searchInfo
                         appViewModel.bottomSheetExpand = !appViewModel.bottomSheetExpand
+                        appViewModel.searchInfo = !appViewModel.searchInfo
                         appViewModel.currentDeviceToSave.imei = text.toLong()
                         //keyboardController?.hide()
                     }
                 }
 
             ),
-            colors = OutlinedTextFieldDefaults.colors(
+            colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White,
                 disabledContainerColor = Color.White,
                 cursorColor = Color.Black,
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent
             )
         )
-        if (isError) {
-            Text(text = "Please enter 15 digits.", color = Color.Red)
-        }
+
         LaunchedEffect(Unit) {
             focusRequester.requestFocus()
         }
