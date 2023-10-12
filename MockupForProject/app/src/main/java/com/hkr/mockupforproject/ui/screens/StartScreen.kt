@@ -1,8 +1,12 @@
 package com.hkr.mockupforproject.ui.screens
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import com.hkr.mockupforproject.R
 import androidx.compose.foundation.layout.Box
@@ -57,10 +61,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -211,8 +217,33 @@ fun StartScreen(
         }
         if (appViewModel.bottomSheetExpand) {
             if (bottomMenuOption == 1) {
-                Box(modifier = Modifier.align(Alignment.BottomCenter).windowInsetsPadding(
-                    WindowInsets.ime)) {
+                val isFocused = remember { mutableStateOf(false) }
+                val focusRequester = rememberUpdatedState(FocusRequester.Default)
+                AnimatedVisibility(
+                    visible = (bottomMenuOption == 1 && appViewModel.bottomSheetExpand),
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .background(Color.Black.copy(0.5f))
+                            .fillMaxSize()
+                            .pointerInput(Unit) {
+                                detectTapGestures(onTap = {
+                                    // If TextField is focused and tap is detected outside of it
+                                    appViewModel.bottomSheetExpand =
+                                        !appViewModel.bottomSheetExpand
+                                })
+                            }
+                    )
+                }
+
+
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .windowInsetsPadding(WindowInsets.ime)
+                ) {
                     EnterIMEIManually(appViewModel = appViewModel)
                 }
 
