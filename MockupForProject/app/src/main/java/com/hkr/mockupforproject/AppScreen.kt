@@ -1,11 +1,6 @@
 package com.hkr.mockupforproject
 
-import android.Manifest
-import android.content.ContentValues
 import android.content.Context
-import android.content.pm.PackageManager
-import android.telephony.TelephonyManager
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
@@ -25,13 +20,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hkr.mockupforproject.ui.AppViewModel
 import kotlinx.coroutines.launch
 

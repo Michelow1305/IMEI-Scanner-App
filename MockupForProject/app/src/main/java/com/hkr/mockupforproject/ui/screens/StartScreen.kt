@@ -1,11 +1,13 @@
 package com.hkr.mockupforproject.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import com.hkr.mockupforproject.R
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -15,13 +17,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imeAnimationTarget
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
 
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.LargeFloatingActionButton
@@ -40,6 +45,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -69,7 +75,7 @@ fun startScreenPreview()
     StartScreen(appViewModel = viewModel())
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun StartScreen(
     navController: NavHostController = rememberNavController(),
@@ -77,23 +83,7 @@ fun StartScreen(
 )
 {
     ////////////////
-    //VALONS TEST
-
-
-    val savedDevice = SavedDeviceData(
-        deviceDescription = "Per",
-        brand = "test",
-        model = "test",
-        recommendation = "test",
-        deviceName = "test",
-        priority = 4,
-        latitude = 45.00F,
-        longitude = 45.00F,
-        checked = false
-    )
-    //appViewModel.upsertSavedDevice(savedDevice)
-    //appViewModel.devicesToDelete(1)
-
+    Log.d("YES", WindowInsets.imeAnimationTarget.toString())
     ///////////////
     var bottomMenuOption : Int by remember {mutableIntStateOf(1)}
     // Box holding the camera scan button and the saved devices button
@@ -217,15 +207,22 @@ fun StartScreen(
             }
         }
         if (appViewModel.bottomSheetExpand) {
+            Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+                DigiPadInput(modifier = Modifier.fillMaxWidth().padding(0.dp))
+            }
+
+            /*
             ModalBottomSheet(
                 sheetState = SheetState(skipPartiallyExpanded = true),
                 onDismissRequest = { appViewModel.bottomSheetExpand = !appViewModel.bottomSheetExpand },
                 containerColor = Color.White,
-                //windowInsets = WindowInsets.ime,
-                modifier = Modifier.consumeWindowInsets(WindowInsets.ime)
+                //windowInsets = WindowInsets.imeAnimationTarget,
+                //modifier = Modifier.windowInsetsBottomHeight(WindowInsets.ime)
             ) {
                 // Show either the local device info or "Enter IMEI manually"
                 if(bottomMenuOption == 1) {
+                    Log.d("YES", WindowInsets.imeAnimationTarget.toString())
+                    Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.ime))
                     EnterIMEIManually(appViewModel = appViewModel)
                 }
 
@@ -233,6 +230,7 @@ fun StartScreen(
                     ViewThisDevice(appViewModel = appViewModel, navController = navController)
                 }
             }
+            */
         }
     }
 }
@@ -324,4 +322,33 @@ fun EnterIMEIManually(appViewModel : AppViewModel)
     }
 }
 
+
+@Composable
+fun DigiPadInput(modifier: Modifier) {
+    var textState by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        // Display the input above the digipad.
+        TextField(
+            value = textState,
+            onValueChange = {
+                textState = it
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    // Handle done action, like dismissing the keyboard
+                }
+            )
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+    }
+}
 
