@@ -339,7 +339,8 @@ private fun CameraPreview(
 
     AndroidView(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+        ,
         factory = { ctx ->
             PreviewView(ctx).apply {
                 implementationMode = PreviewView.ImplementationMode.COMPATIBLE

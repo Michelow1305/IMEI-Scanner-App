@@ -90,8 +90,7 @@ fun StartScreen(
     ///////////////
     var bottomMenuOption: Int by remember { mutableIntStateOf(1) }
     // Box holding the camera scan button and the saved devices button
-    Box (modifier = Modifier.windowInsetsPadding(
-        WindowInsets.systemBars)){
+    Box {
         val imagePath = painterResource(id = R.drawable.bg_blue_x2)
         Image(
             painter = imagePath,
@@ -222,7 +221,6 @@ fun StartScreen(
                 }
             } else if (bottomMenuOption == 2) {
                 ModalBottomSheet(
-                    windowInsets = WindowInsets.navigationBars,
                     onDismissRequest = {
                         appViewModel.bottomSheetExpand = !appViewModel.bottomSheetExpand
                     },

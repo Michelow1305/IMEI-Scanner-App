@@ -36,53 +36,54 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun AppScreen(viewModel : AppViewModel, context: Context) {
+    Box (modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars)){
+        val appViewModel: AppViewModel = viewModel
 
-    val appViewModel: AppViewModel = viewModel
+        val sheetScope = rememberCoroutineScope()
+        val bottomSheetState = rememberStandardBottomSheetState(
+            initialValue = SheetValue.Hidden,
+            skipHiddenState = false
+        )
+        val sheetScaffoldState = rememberBottomSheetScaffoldState(bottomSheetState)
 
-    val sheetScope = rememberCoroutineScope()
-    val bottomSheetState = rememberStandardBottomSheetState(
-        initialValue = SheetValue.Hidden,
-        skipHiddenState = false
-    )
-    val sheetScaffoldState = rememberBottomSheetScaffoldState(bottomSheetState)
-
-    BottomSheetScaffold(
-        sheetPeekHeight = 0.dp,
-        sheetContainerColor = Color.White,
-        scaffoldState = sheetScaffoldState,
-        sheetSwipeEnabled = true,
-        sheetContent = {
-            Box(modifier = Modifier.height(620.dp), contentAlignment = Alignment.Center) {
-                bottomAppNavigation(appViewModel)
+        BottomSheetScaffold(
+            sheetPeekHeight = 0.dp,
+            sheetContainerColor = Color.White,
+            scaffoldState = sheetScaffoldState,
+            sheetSwipeEnabled = true,
+            sheetContent = {
+                Box(modifier = Modifier.height(620.dp), contentAlignment = Alignment.Center) {
+                    bottomAppNavigation(appViewModel)
+                }
             }
-        }
-    ) {
-        mainAppNavigation(appViewModel, context = context)
+        ) {
+            mainAppNavigation(appViewModel, context = context)
 
-        Log.d("Bottomsheet", (sheetScaffoldState.bottomSheetState.currentValue).toString())
-        var observer = appViewModel.searchInfo
-
-
-        LaunchedEffect(
-            key1 = ((sheetScaffoldState.bottomSheetState.currentValue==SheetValue.Expanded)),
-            block = { if ((sheetScaffoldState.bottomSheetState.currentValue==SheetValue.Expanded)){appViewModel.searchInfo = true} else {appViewModel.searchInfo=false} })
+            Log.d("Bottomsheet", (sheetScaffoldState.bottomSheetState.currentValue).toString())
+            var observer = appViewModel.searchInfo
 
 
-        AnimatedVisibility(visible = (sheetScaffoldState.bottomSheetState.currentValue==SheetValue.Expanded), enter = fadeIn(), exit = fadeOut()) {
-            Box(modifier = Modifier
-                .background(Color.Black.copy(alpha = 0.5f))
-                .fillMaxSize()
-            )
-        }
+            LaunchedEffect(
+                key1 = ((sheetScaffoldState.bottomSheetState.currentValue==SheetValue.Expanded)),
+                block = { if ((sheetScaffoldState.bottomSheetState.currentValue==SheetValue.Expanded)){appViewModel.searchInfo = true} else {appViewModel.searchInfo=false} })
 
-        LaunchedEffect(key1 = observer, block = {
-            if (observer) {
-                sheetScope.launch { sheetScaffoldState.bottomSheetState.expand() }
-            } else {
-                sheetScope.launch { sheetScaffoldState.bottomSheetState.hide() }
+
+            AnimatedVisibility(visible = (sheetScaffoldState.bottomSheetState.currentValue==SheetValue.Expanded), enter = fadeIn(), exit = fadeOut()) {
+                Box(modifier = Modifier
+                    .background(Color.Black.copy(alpha = 0.5f))
+                    .fillMaxSize()
+                )
             }
-        })
 
+            LaunchedEffect(key1 = observer, block = {
+                if (observer) {
+                    sheetScope.launch { sheetScaffoldState.bottomSheetState.expand() }
+                } else {
+                    sheetScope.launch { sheetScaffoldState.bottomSheetState.hide() }
+                }
+            })
+
+        }
     }
 }
 
