@@ -201,7 +201,11 @@ fun addDevice(viewModel : AppViewModel, context: Context, imei: Long) : Boolean
     val result = findModelAndTechnologyByTac(context, tac)
 
     // If nothing found, return false
-    if(result.isEmpty()) return false
+    if(result.isEmpty()) {
+        viewModel.currentDeviceToSave.model = "Not found"
+        viewModel.currentDeviceToSave.supportedTechnologies = "Not found"
+        return false
+    }
     // Else, Save information to currentDeviceToSave in the appViewModel.
     else
     {

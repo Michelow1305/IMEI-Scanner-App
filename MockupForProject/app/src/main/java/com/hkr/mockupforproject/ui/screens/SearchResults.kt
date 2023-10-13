@@ -54,6 +54,7 @@ import com.hkr.mockupforproject.data.CellTower
 import com.hkr.mockupforproject.data.addDevice
 import com.hkr.mockupforproject.data.haversineDistance
 import com.hkr.mockupforproject.ui.AppViewModel
+import kotlinx.coroutines.delay
 
 @Preview
 @Composable
@@ -74,9 +75,8 @@ fun SearchResult(
     recommendation : String = "Upgrade to 4G device"
 
 ) {
-    if (appViewModel.currentDeviceToSave.imei>0) {
+    if ((appViewModel.currentDeviceToSave.imei>0)&&(appViewModel.currentDeviceToSave.model == "Not defined")) {
         addDevice(viewModel = appViewModel, context = LocalContext.current, imei = appViewModel.currentDeviceToSave.imei)
-
     }
     val scrollState = rememberScrollState()
     var expandAvailableOperators by remember { mutableStateOf(false) }
@@ -93,7 +93,6 @@ fun SearchResult(
                 fontWeight = FontWeight(700),
                 color = Color.Black
             )
-            Log.d("Currentnetwork", appViewModel.localDeviceInformation.currentNetwork)
             RowTextElement(
                 textLeft = "My phone network",
                 textRight = appViewModel.localDeviceInformation.networkOperator+"/"+appViewModel.localDeviceInformation.currentNetwork+" ",
@@ -133,8 +132,8 @@ fun SearchResult(
                     .fillMaxWidth()
                     .height(75.dp),
                 onClick = {
-                    navController.navigate("SearchResults_saveDevice");
                     appViewModel.currentDeviceToSave.recommendation = "Upgrade"
+                    navController.navigate("SearchResults_saveDevice");
                           },
             ) {
                 Text(
@@ -248,12 +247,9 @@ fun ShowCellTowers(appViewModel: AppViewModel) {
     val localDeviceLongitude by remember { appViewModel.localDeviceInformation.longitude }
     val cellTowersList: List<CellTower>? by appViewModel.cellTowersInRangeResult.observeAsState()
 
-    Log.d("LatitudePhone", localDeviceLatitude.toString())
-    Log.d("LongitudePhone", localDeviceLongitude.toString())
 
     appViewModel.getCellTowersInRange(localDeviceLatitude.toFloat(),localDeviceLongitude.toFloat())
 
-    Log.d("DEBUG3", appViewModel.cellTowersInRangeResult.value.toString())
 
     if (cellTowersList != null) {
             cellTowersList?.let { cellTowers ->
@@ -266,7 +262,6 @@ fun ShowCellTowers(appViewModel: AppViewModel) {
                 )
             }
             appViewModel.currentDeviceToSave.nearbyTowers = sortedCellTowers
-            Log.d("Towers to save", appViewModel.currentDeviceToSave.nearbyTowers.toString())
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
