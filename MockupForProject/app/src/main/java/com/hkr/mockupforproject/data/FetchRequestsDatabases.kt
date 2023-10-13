@@ -36,6 +36,7 @@ fun findModelByTacFromCsv(context: Context, tacToSearch: String): String? {
 
                 if (tacToSearch == tac) {
                     modelNameFound = modelName
+                    Log.d("Joel Log", "TAC: $tac matches $modelName in CSV database")
                     break
                 }
             }
@@ -86,7 +87,7 @@ fun findModelByTacFromJSON(context: Context, tacToSearch: String): String? {
                 for (j in 0 until tacsArray.length()) {
                     val tac = tacsArray.optString(j)
                     if (tac == tacToSearch) {
-                        Log.d(ContentValues.TAG, "Found model for TAC $tac: $modelName")
+                        Log.d("Joel Log", "TAC: $tac matches $modelName in JSON database")
                         return modelName
                     }
                 }
@@ -128,6 +129,7 @@ fun findSupportedNetworkByModel(context: Context, modelNameToSearch: String): Mu
             val name = recordObject.getString("name")
 
             if (name == modelNameToSearch) {
+                Log.d("Joel Log", "$modelNameToSearch found in device database")
                 val specificationsStr = recordObject.getString("specifications")
                 val specificationsJSON = JSONObject(specificationsStr)
                 val technology = specificationsJSON.optString("Technology", "")
