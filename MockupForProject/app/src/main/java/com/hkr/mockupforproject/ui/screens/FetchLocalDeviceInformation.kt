@@ -102,75 +102,82 @@ Author:         Joel Andersson
  */
 @SuppressLint("MissingPermission")
 fun fetchLocation(context: Context, appViewModel: AppViewModel) {
-
-    Log.d("Joel Log", "Fetching Location")
-
     val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
 
-    var gpsLocation: Location? = null
-    var networkLocation: Location? = null
-
-    val locationListener: LocationListener = object : LocationListener {
-        override fun onLocationChanged(location: Location) {
-            // Update locations based on provider type
-            when (location.provider) {
-                LocationManager.GPS_PROVIDER -> gpsLocation = location
-                LocationManager.NETWORK_PROVIDER -> networkLocation = location
-            }
-
-            // Remove location updates to save battery
-            locationManager?.removeUpdates(this)
-
-            determineBestLocationAndUpdateViewModel(gpsLocation, networkLocation, appViewModel)
-        }
-
-        override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
-        override fun onProviderEnabled(provider: String) {}
-        override fun onProviderDisabled(provider: String) {}
+    val gpsLocation = if (locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) == true) {
+        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+    } else {
+        null
     }
 
-    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-        // If GPS Provider is enabled, request location update
-
-        if (locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) == true) {
-            locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null)
-            gpsLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            Log.d("Joel Log", "GPS Position Available")
-        }
-
-        // If Network Provider is enabled, request location update
-        if (locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) == true) {
-            locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, locationListener, null)
-            networkLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-            Log.d("Joel Log", "Network Position Available")
-        }
-
-        if (gpsLocation == null && networkLocation == null) {
-            Log.d("Joel Log", "Neither GPS nor Network location is available.")
-        }
+    val networkLocation = if (locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) == true) {
+        locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+    } else {
+        null
     }
-}
 
-fun determineBestLocationAndUpdateViewModel(gpsLocation: Location?, networkLocation: Location?, appViewModel: AppViewModel) {
     val bestLocation: Location? = when {
-        gpsLocation == null && networkLocation == null -> null
-        gpsLocation == null -> networkLocation
-        networkLocation == null -> gpsLocation
-        gpsLocation.accuracy <= networkLocation.accuracy -> gpsLocation
-        else -> networkLocation
+        gpsLocation == null && networkLocation == null -> {
+            Log.d("LocationProvider", "Neither GPS nor Network location is available.")
+            null
+        }
+        gpsLocation == null -> {
+            Log.d("LocationProvider", "Using Network location provider.")
+            networkLocation
+        }
+        networkLocation == null -> {
+            Log.d("LocationProvider", "Using GPS location provider.")
+            gpsLocation
+        }
+        gpsLocation.accuracy <= networkLocation.accuracy -> {
+            Log.d("LocationProvider", "GPS location is more accurate or equally accurate. Using GPS.")
+            gpsLocation
+        }
+        else -> {
+            Log.d("LocationProvider", "Network location is more accurate. Using Network.")
+            networkLocation
+        }
     }
 
     if (bestLocation != null) {
-        Log.d("Joel Log", "Determined Most Accurate Location Provider")
-        Log.d("Joel Log", "Latidute: " + bestLocation.latitude.toString() + " Longitude: " + bestLocation.longitude.toString())
         appViewModel.localDeviceInformation.latitude.value = bestLocation.latitude
         appViewModel.localDeviceInformation.longitude.value = bestLocation.longitude
-    } else {
-        Log.d("Joel Log", "GPS Location Not Available")
-        Log.d("Joel Log", "Trying to use tower triangulation instead")
     }
+    else {
+        Log.d(ContentValues.TAG, "GPS Location Not Available")
+        Log.d(ContentValues.TAG, "Trying to use tower triangulation instead")
+    }
+
+
+// You can now use latitude and longitude
+
+
+    /*
+    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
+    val locationProvider = LocationManager.GPS_PROVIDER
+    val lastKnownLocation = locationManager?.getLastKnownLocation(locationProvider)
+
+
+    val hasGps = locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    val hasNetwork = locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+
+    Log.d(ContentValues.TAG, "GPS available: " + hasGps.toString())
+    Log.d(ContentValues.TAG, "Network Location available: " + hasNetwork.toString())
+
+
+
+    if (lastKnownLocation != null) {
+        appViewModel.localDeviceInformation.latitude = lastKnownLocation.latitude
+        appViewModel.localDeviceInformation.longitude = lastKnownLocation.longitude
+    } else {
+        Log.d(ContentValues.TAG, "GPS Location Not Available")
+        Log.d(ContentValues.TAG, "Trying to use tower triangulation instead")
+
+    }
+
+     */
 }
+
 
 /*
 Function name:	fetchSecureInformation()
