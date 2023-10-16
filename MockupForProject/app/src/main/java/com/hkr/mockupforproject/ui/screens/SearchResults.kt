@@ -240,13 +240,26 @@ fun RowTextElement(
 }
 
 @Composable
-fun ShowCellTowers(appViewModel: AppViewModel) {
+fun ShowCellTowers(
+    appViewModel: AppViewModel,
+    latitude: Double = 0.0,
+    longitude: Double = 0.0
+
+) {
     FetchDeviceInformation(appViewModel = appViewModel)
 
-    val localDeviceLatitude by remember { appViewModel.localDeviceInformation.latitude }
-    val localDeviceLongitude by remember { appViewModel.localDeviceInformation.longitude }
     val cellTowersList: List<CellTower>? by appViewModel.cellTowersInRangeResult.observeAsState()
 
+    var localDeviceLatitude by remember { mutableStateOf(0.0) }
+    var localDeviceLongitude by remember { mutableStateOf(0.0) }
+
+    if (latitude != 0.0) {
+        localDeviceLongitude = longitude
+        localDeviceLatitude = latitude
+    } else {
+        localDeviceLatitude = appViewModel.localDeviceInformation.latitude.value
+        localDeviceLongitude = appViewModel.localDeviceInformation.longitude.value
+    }
 
     appViewModel.getCellTowersInRange(localDeviceLatitude.toFloat(),localDeviceLongitude.toFloat())
 

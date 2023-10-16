@@ -191,7 +191,9 @@ fun imeiInformation(appViewModel: AppViewModel) {
         }
 
         if(expandAvailableOperators) {
-            ShowCellTowers(appViewModel = appViewModel)
+            ShowCellTowers(appViewModel = appViewModel, appViewModel.currentSavedDeviceToDisplay.latitude?.toDouble()
+                ?:0.0, appViewModel.currentSavedDeviceToDisplay.longitude?.toDouble() ?:0.0
+            )
         }
         RowTextElement(textLeft = "Recommendation", textRight = appViewModel.currentSavedDeviceToDisplay.recommendation?:"")
     }
