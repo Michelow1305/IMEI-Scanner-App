@@ -92,6 +92,10 @@ open class AppViewModel(
 
     }
 
+    fun clearScannedImeis(){
+        _scannedImeis.value = emptyList()
+    }
+
 
 
     // Current Device to save

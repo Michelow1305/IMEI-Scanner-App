@@ -28,15 +28,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RichTooltipBox
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberRichTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -44,6 +49,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,6 +59,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,6 +76,7 @@ import androidx.navigation.NavController
 import com.google.common.util.concurrent.ListenableFuture
 import com.hkr.mockupforproject.ImeiCodeAnalyzer
 import com.hkr.mockupforproject.ui.AppViewModel
+import kotlinx.coroutines.launch
 
 
 /**
@@ -90,7 +103,7 @@ fun CameraWithBoundedBox(
     if (!appViewModel.hasCameraPermission(context)) {
         throw SecurityException("Camera permission not granted")
     }
-
+    var tempImei = appViewModel.currentDeviceToSave.imei
     val imeis by appViewModel.scannedImeis.observeAsState(emptyList())
     /*
         I added cameraProviderFuture outside the CameraPreview(), so I can unbind it, whenever the user
@@ -111,6 +124,7 @@ fun CameraWithBoundedBox(
                     .size(45.dp),
 
                 onClick = {
+                    appViewModel.clearScannedImeis()
                     cameraProviderFuture.get().unbindAll()
                     mainNavController.popBackStack()
                 },
@@ -132,14 +146,18 @@ fun CameraWithBoundedBox(
                         .align(Alignment.CenterHorizontally),
                     reverseLayout = true,
                 ) {
-                    items(imeis) { imei ->
-                        Imei(imei = imei)
+                    if(appViewModel.currentDeviceToSave.imei != tempImei){
+                        tempImei = appViewModel.currentDeviceToSave.imei
+                        items(listOf(tempImei)) { imei ->
+                            Imei(imei = imei)
+                        }
                     }
                 }
 
                 ExtendedFloatingActionButton(
                     onClick = {
                         if (imeis.isNotEmpty()) {
+                            appViewModel.clearScannedImeis()
                             cameraProviderFuture.get().unbindAll()
                             mainNavController.navigate("StartScreen")
                             appViewModel.searchInfo = true
@@ -159,6 +177,7 @@ fun CameraWithBoundedBox(
                         .clickable(
                             enabled = true,
                             onClick = {
+                                appViewModel.clearScannedImeis()
                                 cameraProviderFuture.get().unbindAll()
                                 mainNavController.navigate("StartScreen")
                                 appViewModel.bottomSheetExpand = true
@@ -220,14 +239,7 @@ fun CameraWithBoundedBox(
                         }
                 )
 
-                Text(
-                    modifier = modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(top = 17.dp),
-                    text = "Scan IMEI code",
-                    color = Color.White,
-                    fontSize = 15.sp
-                )
+                ScanImeiTooltip(modifier)
 
             }
 
@@ -367,6 +379,68 @@ private fun CameraPreview(
         },
 
         )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ScanImeiTooltip(modifier: Modifier = Modifier){
+    val tooltipState = rememberRichTooltipState(isPersistent = true)
+    val scope = rememberCoroutineScope()
+
+    val annotatedString = buildAnnotatedString {
+        append("Scan IMEI code. ")
+
+        pushStringAnnotation(tag = "learn more", annotation = "")
+        withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary, textDecoration = TextDecoration.Underline)) {
+            append("Learn more")
+        }
+    }
+    RichTooltipBox(
+        text = {
+
+            Text(text = "An IMEI barcode is a 15-digit code that is used to identify a device. " +
+                    "It is usually found on the back of the device.")
+        },
+        title = { Text(text = "Scanning IMEI barcodes") },
+        action = {
+
+            TextButton(
+                onClick = {
+                    scope.launch { tooltipState.dismiss() }
+                },
+                modifier = modifier
+            ) {
+                Text(text = "Close")
+            }
+        },
+        tooltipState = tooltipState,
+        modifier = modifier
+            .padding(top=200.dp, bottom = 170.dp),
+    ) {
+        Box(
+            modifier = modifier
+        ){
+
+            ClickableText(
+                text = annotatedString,
+                onClick = { offset ->
+                    annotatedString.getStringAnnotations(tag = "learn more", start = offset, end = offset).firstOrNull()?.let {
+                        scope.launch { tooltipState.show() }
+                    }
+                },
+                style = TextStyle(
+                    color = Color.White,
+                    fontSize = 15.sp,
+                    textAlign = TextAlign.Center
+                ),
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(top = 17.dp),
+            )
+
+        }
+
+    }
 }
 
 
