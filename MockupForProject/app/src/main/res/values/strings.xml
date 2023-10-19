@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">IMEI Analyzer</string>
     <string name="startpage_text">The cutting-edge IMEI scanning techique effortlessly scan, verify and collect the essential information about the scanned device in an instant. Almost an instant at least...</string>
+    <string name="scan_imei_tooltip">An IMEI barcode is a 15-digit code that is used to identify a device. It is usually found on the back of the device.</string>
 </resources>

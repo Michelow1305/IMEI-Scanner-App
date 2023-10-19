@@ -83,15 +83,23 @@ open class AppViewModel(
 
 
     fun addScannedImeis(newImeis: List<Long>) {
-        val currentImeis = _scannedImeis.value ?: emptyList()
+        val currentImeis = (_scannedImeis.value ?: emptyList()).toMutableList()
+
+        val test = newImeis.toSet()
+        test.forEach { i ->
+            if(currentImeis.contains(i)){
+                val index = currentImeis.indexOf(i)
+                currentImeis.add(currentImeis.removeAt(index))
+            }
+        }
         val uniqueImeis = newImeis.filter { it !in currentImeis }
         _scannedImeis.value = currentImeis + uniqueImeis
 
-        if(newImeis.isNotEmpty()){
-            currentDeviceToSave.imei = newImeis[0]
+        if(_scannedImeis.value?.isNotEmpty() == true){
+            currentDeviceToSave.imei = _scannedImeis.value!!.last()
         }
-
     }
+
 
     fun clearScannedImeis(){
         _scannedImeis.value = emptyList()
