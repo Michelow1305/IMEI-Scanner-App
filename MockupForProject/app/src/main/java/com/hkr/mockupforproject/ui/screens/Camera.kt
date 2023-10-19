@@ -7,8 +7,10 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
+import android.util.Size
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
@@ -329,15 +331,17 @@ private fun CameraPreview(
     onImeiCodesDetected: (imeis: List<Long>) -> Unit
 ) {
     val tag = "cameraPreview"
+    val previewSize = remember { mutableStateOf(Size(0, 0)) }
 
     val analyzer by remember(rect) {
         mutableStateOf(
-            ImeiCodeAnalyzer(onImeiCodesDetected, rect)
+            ImeiCodeAnalyzer(onImeiCodesDetected, rect, previewSize)
         )
     }
 
     val imageAnalysis = remember {
         ImageAnalysis.Builder()
+            .setTargetAspectRatio(AspectRatio.RATIO_DEFAULT)
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()
             .also {
@@ -365,10 +369,17 @@ private fun CameraPreview(
 
     AndroidView(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .onGloballyPositioned { coordinates ->
+                // Update the preview size when the layout changes
+                val size = coordinates.size
+                previewSize.value = Size(size.width, size.height)
+            },
         factory = { ctx ->
             PreviewView(ctx).apply {
                 implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+                scaleType = PreviewView.ScaleType.FILL_CENTER
+
             }
         },
         update = {
