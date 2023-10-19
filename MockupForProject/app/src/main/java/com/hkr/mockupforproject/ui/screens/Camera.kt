@@ -82,6 +82,7 @@ import androidx.navigation.NavController
 import com.google.common.util.concurrent.ListenableFuture
 import com.hkr.mockupforproject.ImeiCodeAnalyzer
 import com.hkr.mockupforproject.R
+import com.hkr.mockupforproject.data.SavedDevice
 import com.hkr.mockupforproject.ui.AppViewModel
 import kotlinx.coroutines.launch
 
@@ -108,6 +109,7 @@ fun CameraWithBoundedBox(
     appViewModel: AppViewModel,
     mainNavController: NavController
 ) {
+    appViewModel.currentDeviceToSave = SavedDevice()
     if (!appViewModel.hasCameraPermission(context)) {
         Toast.makeText(context, "Camera permission not granted", Toast.LENGTH_LONG).show()
         return
