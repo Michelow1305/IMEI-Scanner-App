@@ -23,6 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.hkr.mockupforproject.data.CellTower
+import com.hkr.mockupforproject.data.SavedDevice
 import com.hkr.mockupforproject.data.SavedDeviceData
 import com.hkr.mockupforproject.ui.AppViewModel
 import kotlinx.coroutines.delay

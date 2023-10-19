@@ -57,7 +57,7 @@ open class AppViewModel(
     lateinit var currentSavedDeviceToDisplay: SavedDeviceData
 
 
-    private lateinit var _allTowers: LiveData<List<CellTower>>
+    private var _allTowers: LiveData<List<CellTower>> = MutableLiveData<List<CellTower>>()
     private lateinit var _findByMncResult: LiveData<List<CellTower>>
     private lateinit var _cellTowersInRange: LiveData<List<CellTower>>
     private var _findByCidResult = MutableStateFlow(CellTower())
@@ -78,6 +78,7 @@ open class AppViewModel(
     val cellTowersInRangeResult: LiveData<List<CellTower>> get() = _cellTowersInRange
     val findByCidResult = _findByCidResult.asStateFlow()
     var cellTowersInRangeHasTowers by mutableStateOf(false)
+    var numberOfCellTowers by mutableIntStateOf(0)
     var searchInfo by mutableStateOf(false)
 
 
@@ -99,7 +100,7 @@ open class AppViewModel(
 
 
     // Current Device to save
-    val currentDeviceToSave: SavedDevice = SavedDevice()
+    var currentDeviceToSave: SavedDevice = SavedDevice()
 
 //////////////////////SavedDevices
     private var _findAllDevices: LiveData<List<SavedDeviceData>>? = null
@@ -175,6 +176,11 @@ open class AppViewModel(
             Observer { value -> cellTowersInRangeHasTowers = true })
     }
 
+    fun hasNumberOfTowers() {
+        cellTowersInRangeResult.observe(
+            owner,
+            Observer { value -> numberOfCellTowers = value.size })
+    }
 
     // This will notify the Activity, which is observing this LiveData, to request permissions
     /*

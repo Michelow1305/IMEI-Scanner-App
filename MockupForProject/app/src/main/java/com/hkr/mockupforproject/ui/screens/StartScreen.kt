@@ -76,6 +76,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.hkr.mockupforproject.data.SavedDevice
 import com.hkr.mockupforproject.data.SavedDeviceData
 import com.hkr.mockupforproject.ui.AppViewModel
 import kotlinx.coroutines.launch
@@ -94,6 +95,8 @@ fun StartScreen(
 ) {
     ////////////////
     Log.d("YES", WindowInsets.imeAnimationTarget.toString())
+
+    Log.d("RADIO SUPPORT", appViewModel.currentDeviceToSave.supportedTechnologies.toString())
     ///////////////
     var bottomMenuOption: Int by remember { mutableIntStateOf(1) }
     // Box holding the camera scan button and the saved devices button
@@ -300,6 +303,7 @@ Author:         Joel Andersson & Per Magnusson
  */
 @Composable
 fun EnterIMEIManually(appViewModel: AppViewModel) {
+    appViewModel.currentDeviceToSave = SavedDevice()
     Column(modifier = Modifier.padding(start = 0.dp, end = 0.dp, bottom = 0.dp)) {
         var text by remember { mutableStateOf("") }
         val focusRequester = remember { FocusRequester() }

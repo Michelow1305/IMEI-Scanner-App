@@ -29,6 +29,7 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -51,6 +52,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.hkr.mockupforproject.R
 import com.hkr.mockupforproject.data.CellTower
+import com.hkr.mockupforproject.data.SavedDevice
 import com.hkr.mockupforproject.data.addDevice
 import com.hkr.mockupforproject.data.haversineDistance
 import com.hkr.mockupforproject.ui.AppViewModel
@@ -67,19 +69,19 @@ fun SearchResultPreview() {
 fun SearchResult(
     appViewModel: AppViewModel,
     navController: NavHostController = rememberNavController(),
-    iMEI : String = "No information",
-    brand : String = "No information",
-    model : String = "No information",
-    currentNetwork : String = "No information",
-    availableNetwork : String = "4G/ -76dBm",
-    recommendation : String = "Upgrade to 4G device"
 
 ) {
+    appViewModel.getCellTowersInRange(appViewModel.localDeviceInformation.latitude.value.toFloat(), appViewModel.localDeviceInformation.longitude.value.toFloat())
+    appViewModel.hasNumberOfTowers()
+
     if ((appViewModel.currentDeviceToSave.imei>0)&&(appViewModel.currentDeviceToSave.model == "Not defined")) {
         addDevice(viewModel = appViewModel, context = LocalContext.current, imei = appViewModel.currentDeviceToSave.imei)
     }
+    getRecommendation(appViewModel = appViewModel)
+    
     val scrollState = rememberScrollState()
     var expandAvailableOperators by remember { mutableStateOf(false) }
+    var expendRecommendation by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier
         .background(Color.White)) {
@@ -104,9 +106,11 @@ fun SearchResult(
                 RowTextElement(textLeft = "Nearby cell towers...", elementRight = { AnimatedExpandArrow(expanded = expandAvailableOperators) })
             }
 
+
             if(expandAvailableOperators || !appViewModel.searchInfo) {
                 ShowCellTowers(appViewModel = appViewModel)
             }
+
             Divider(modifier = Modifier.fillMaxWidth())
             Text(
                 text = "Scanned device",
@@ -120,7 +124,23 @@ fun SearchResult(
             RowTextElement(textLeft = "Model", textRight = appViewModel.currentDeviceToSave.model)
             RowTextElement(textLeft = "Radio support", textRight = appViewModel.currentDeviceToSave.supportedTechnologies)
 
-            RowTextElement(textLeft = "Recommendation", textRight = recommendation)
+            Box(
+                modifier = Modifier.clickable(onClick = {expendRecommendation=!expendRecommendation})
+            ) {
+                RowTextElement(textLeft = "Recommendation", elementRight = { AnimatedExpandArrow(expanded = expendRecommendation) })
+            }
+
+
+            if(expendRecommendation || !appViewModel.searchInfo) {
+                Text(text = appViewModel.currentDeviceToSave.recommendation)
+                getRecommendation(appViewModel = appViewModel)
+
+            }
+            
+            Divider(modifier = Modifier.fillMaxWidth())
+
+
+            //RowTextElement(textLeft = "Recommendation", textRight = appViewModel.currentDeviceToSave.recommendation)
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -162,6 +182,65 @@ fun SearchResult(
 
         }
     }
+}
+
+@Composable
+fun getRecommendation(appViewModel: AppViewModel) {
+    appViewModel.hasNumberOfTowers()
+    val numberOfTowers = appViewModel.numberOfCellTowers
+    val hardwareSupport = appViewModel.currentDeviceToSave.supportedTechnologies
+    val currentNetwork = appViewModel.localDeviceInformation.currentNetwork
+    var recommendation = ""
+
+    val supportedTechnologiesList = hardwareSupport.split(", ").map { it.trim() }
+    val currentNetworkList = currentNetwork.split(", ").map { it.trim() }
+
+    if (numberOfTowers == 0) {
+        //recommendation = "There is no 4G towers withing 1000m from this location, therefore you can't have any 4G!"
+        recommendation = "" +
+                "Number of Towers : $numberOfTowers \n" +
+                "Hardware Support:  $hardwareSupport \n" +
+                "\n" +
+                "There is no 4G towers withing 1000m from this location, therefore you can't have any 4G!"
+    }
+
+    else if (!currentNetworkList.contains("4G")) {
+        recommendation =  "" +
+                "Number of Towers : $numberOfTowers \n" +
+                "Hardware Support:  $hardwareSupport \n" +
+                "\n" +
+                "You are not covered by 4G network right now"
+    }
+
+    else if (!currentNetworkList.contains("4G") && numberOfTowers >= 1) {
+        recommendation =  "" +
+                "Number of Towers : $numberOfTowers \n" +
+                "Hardware Support:  $hardwareSupport \n" +
+                "\n" +
+                "You are not covered by 4G network right now. \n" +
+                " However there are $numberOfTowers in your area" +
+                "so we recommmend to use a repeater to help you get some access on 4g to your current location. \n" +
+                "For more info about repaters check YouTube :D "
+    }
+
+    else if (numberOfTowers >= 1 && supportedTechnologiesList.contains("LTE")) {
+        recommendation =   "" +
+                "Number of Towers : $numberOfTowers \n" +
+                "Hardware Support:  $hardwareSupport \n" +
+                "\n" +
+                "Your Hardware support 4G and there are $numberOfTowers 4g towers withing 1000m from your location "
+    }
+
+    else if (numberOfTowers >= 1 && !supportedTechnologiesList.contains("LTE")) {
+        recommendation =   "" +
+                "Number of Towers : $numberOfTowers \n" +
+                "Hardware Support:  $hardwareSupport \n" +
+                "\n" +
+                "Your Hardware doesn't support 4G but there are $numberOfTowers 4g towers withing 1000m from your location.\n" +
+                "Please upgrade your device"
+    }
+
+    appViewModel.currentDeviceToSave.recommendation = recommendation
 }
 
 /*
