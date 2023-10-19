@@ -64,16 +64,19 @@ class ImeiCodeAnalyzer(
             .addOnSuccessListener {text ->
                 for (block in text.textBlocks) {
                     for (line in block.lines) {
-                        val lineText = line.text
-                        if(lineText.length == imeiLength) {
-                            var imeis: List<Long> = listOf()
-                            try {
-                                imeis = listOf(lineText.toLong())
-                            } catch (e : NumberFormatException) { null }
-                            if(imeis.isNotEmpty()) {
-                                onImeiCodesDetected(imeis)
-                            } else null
+                        if(line.boundingBox?.let{adjustedRect.contains(it)} == true){
+                            val lineText = line.text
+                            if(lineText.length == imeiLength) {
+                                var imeis: List<Long> = listOf()
+                                try {
+                                    imeis = listOf(lineText.toLong())
+                                } catch (e : NumberFormatException) { null }
+                                if(imeis.isNotEmpty()) {
+                                    onImeiCodesDetected(imeis)
+                                } else null
+                            }
                         }
+
                         // I leave all these examples in here in case we want to work with it later
                         /*
                         val blockText = block.text
