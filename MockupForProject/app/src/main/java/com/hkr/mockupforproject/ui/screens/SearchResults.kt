@@ -294,29 +294,26 @@ fun RowTextElement(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 10.dp, bottom = 10.dp)
+            .padding(top = 10.dp, bottom = 10.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = textLeft,
             fontWeight = FontWeight(500),
-            color = Color.Black,
-            modifier = Modifier.weight(1.2f) // Give it a weight so it takes up only the space it needs
+            color = Color.Black
         )
-        Row(
-            modifier = Modifier.weight(1f), // This will ensure it takes up the remaining space
-            horizontalArrangement = Arrangement.End
-        ) {
+        Row {
             Text(
                 text = textRight,
                 fontWeight = FontWeight(500),
                 color = Color.Gray,
-                maxLines = 2, // or any number you prefer
             )
             elementRight()
         }
-    }
 
+    }
 }
+
 
 @Composable
 fun ShowCellTowers(
