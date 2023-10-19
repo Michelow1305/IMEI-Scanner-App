@@ -103,7 +103,7 @@ fun SearchResult(
             Box(
                 modifier = Modifier.clickable(onClick = {expandAvailableOperators=!expandAvailableOperators})
             ) {
-                RowTextElement(textLeft = "Nearby cell towers...", elementRight = { AnimatedExpandArrow(expanded = expandAvailableOperators) })
+                RowTextElement(textLeft = "Nearby cell towers", elementRight = { AnimatedExpandArrow(expanded = expandAvailableOperators) })
             }
 
 
@@ -136,11 +136,7 @@ fun SearchResult(
                 getRecommendation(appViewModel = appViewModel)
 
             }
-            
-            Divider(modifier = Modifier.fillMaxWidth())
 
-
-            //RowTextElement(textLeft = "Recommendation", textRight = appViewModel.currentDeviceToSave.recommendation)
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -298,24 +294,28 @@ fun RowTextElement(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 10.dp, bottom = 10.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+            .padding(top = 10.dp, bottom = 10.dp)
     ) {
         Text(
             text = textLeft,
             fontWeight = FontWeight(500),
-            color = Color.Black
+            color = Color.Black,
+            modifier = Modifier.weight(1.2f) // Give it a weight so it takes up only the space it needs
         )
-        Row {
+        Row(
+            modifier = Modifier.weight(1f), // This will ensure it takes up the remaining space
+            horizontalArrangement = Arrangement.End
+        ) {
             Text(
                 text = textRight,
                 fontWeight = FontWeight(500),
                 color = Color.Gray,
+                maxLines = 2, // or any number you prefer
             )
             elementRight()
         }
-
     }
+
 }
 
 @Composable
