@@ -187,7 +187,7 @@ fun imeiInformation(appViewModel: AppViewModel) {
         Box(
             modifier = Modifier.clickable(onClick = {expandAvailableOperators=!expandAvailableOperators})
         ) {
-            RowTextElement(textLeft = "Nearby cell towers...", elementRight = { AnimatedExpandArrow(expanded = expandAvailableOperators) })
+            RowTextElement(textLeft = "Nearby cell towers", elementRight = { AnimatedExpandArrow(expanded = expandAvailableOperators) })
         }
 
         if(expandAvailableOperators) {
@@ -195,7 +195,16 @@ fun imeiInformation(appViewModel: AppViewModel) {
                 ?:0.0, appViewModel.currentSavedDeviceToDisplay.longitude?.toDouble() ?:0.0
             )
         }
-        RowTextElement(textLeft = "Recommendation", textRight = appViewModel.currentSavedDeviceToDisplay.recommendation?:"")
+        var expendRecommendation by remember { mutableStateOf(false) }
+        Box(
+            modifier = Modifier.clickable(onClick = {expendRecommendation=!expendRecommendation})
+        ) {
+            RowTextElement(textLeft = "Recommendation", elementRight = { AnimatedExpandArrow(expanded = expendRecommendation) })
+        }
+        if(expendRecommendation) {
+            Text(text = appViewModel.currentDeviceToSave.recommendation)
+
+        }
     }
 }
 
