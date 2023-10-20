@@ -16,11 +16,7 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 
-//val adjustedRect = Rect()
-//adjustedRect.left = rect.left
-//adjustedRect.top = mediaImage.height - rect.top
-//adjustedRect.right = rect.right
-//adjustedRect.bottom = rect.bottom
+
 class ImeiCodeAnalyzer(
     private val onImeiCodesDetected: (imeis: List<Long>) -> Unit,
     private val rect: State<Rect>,
@@ -50,22 +46,28 @@ class ImeiCodeAnalyzer(
         val scaleX = rect.width().toFloat() / previewWidth
         val scaleY = rect.height().toFloat() / previewHeight
 
+        val adjustedRect = Rect()
+        adjustedRect.left = rect.left
+        adjustedRect.top = mediaImage.height - rect.top
+        adjustedRect.right = rect.right
+        adjustedRect.bottom = rect.bottom
+
 
         scanner.process(image)
             .addOnSuccessListener { barcodes ->
                 val imeis = barcodes.mapNotNull { barcode ->
                     barcode.boundingBox?.let {boundingBox ->
                         // Scale the bounding box to fit your rectangle
-                        val scaledBox = Rect(
-                            (boundingBox.left * scaleX).toInt(),
-                            (mediaImage.height - boundingBox.top * scaleY).toInt(),
-                            (boundingBox.right * scaleX).toInt(),
-                            (boundingBox.bottom * scaleY).toInt()
-                        )
+//                        val scaledBox = Rect(
+//                            (boundingBox.left * scaleX).toInt(),
+//                            (mediaImage.height - boundingBox.top * scaleY).toInt(),
+//                            (boundingBox.right * scaleX).toInt(),
+//                            (boundingBox.bottom * scaleY).toInt()
+//                        )
+//
+//                        Log.d("ImeiCodeAnalyzer", "Original box: $boundingBox, Scaled box: $scaledBox, MyRect: $rect")
 
-                        Log.d("ImeiCodeAnalyzer", "Original box: $boundingBox, Scaled box: $scaledBox, MyRect: $rect")
-
-                        if (rect.contains(scaledBox)) {
+                        if (adjustedRect.contains(boundingBox)) {
                             try {
                                 barcode.rawValue?.takeIf {
                                     it.isNotBlank() && it.length == imeiLength && it.all { char -> char.isDigit() }

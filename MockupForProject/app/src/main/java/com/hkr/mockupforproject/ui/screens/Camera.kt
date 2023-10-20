@@ -8,6 +8,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
 import android.util.Size
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.camera.core.AspectRatio
@@ -379,6 +380,10 @@ private fun CameraPreview(
             PreviewView(ctx).apply {
                 implementationMode = PreviewView.ImplementationMode.COMPATIBLE
                 scaleType = PreviewView.ScaleType.FILL_CENTER
+                layoutParams = LinearLayout.LayoutParams(
+                    previewSize.value.width,
+                    previewSize.value.height
+                )
 
             }
         },
